@@ -2,7 +2,7 @@
 # Script para subir o painel automaticamente para o GitHub
 
 # 1. Verificar se o Git está instalado no PATH
- = Get-Command git.exe -ErrorAction SilentlyContinue
+$gitCmd = Get-Command git.exe -ErrorAction SilentlyContinue
 if (!$gitCmd) {
     $userGit = "$env:USERPROFILE\AppData\Local\Programs\Git\cmd\git.exe"
     if (Test-Path $userGit) {
@@ -42,7 +42,7 @@ if (!$remote) {
 
 # 4. Adicionar arquivos e fazer commit
 Write-Host "[INFO] Adicionando arquivos..." -ForegroundColor Cyan
-& $gitPath add index.html procedimentos.html base.yml "painel_espanso_siape corrigido.html" "painel_procedimentos_sgp_nuap.html" .gitignore deploy.ps1
+& $gitPath add index.html procedimentos.html base.yml "painel_espanso_siape corrigido.html" "painel_procedimentos_sgp_nuap.html" .gitignore deploy.ps1 *.md *.txt
 
 # Verificar status
 $status = & $gitPath status --porcelain
@@ -50,7 +50,13 @@ if (!$status) {
     Write-Host "[INFO] Nenhuma alteração pendente para commitar." -ForegroundColor Green
 } else {
     Write-Host "[INFO] Fazendo commit das alterações..." -ForegroundColor Cyan
-    & $gitPath commit -m "Auto-deploy: atualização do painel e atalhos"
+    # Configurar identidade local se estiver vazio
+    $hasEmail = & $gitPath config user.email
+    if (!$hasEmail) {
+        & $gitPath config user.email "nathanaeladmin@gmail.com"
+        & $gitPath config user.name "Nathanael Lacerda"
+    }
+    & $gitPath commit -m "Auto-deploy: atualização do painel, manuais e atalhos"
 }
 
 # 5. Push para o GitHub

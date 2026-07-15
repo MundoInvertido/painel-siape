@@ -1,0 +1,497 @@
+﻿Ministério da Justiça e Segurança Pública
+POLÍCIA RODOVIÁRIA FEDERAL
+Superintendência do Pará
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Procedimentos Mapeados
+Seção de Gestão de Pessoas
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+2024
+________________
+SUMÁRIO
+SUMÁRIO        2
+1. CONCESSÃO DE PENSÃO POR MORTE        4
+1.1. Conceito        4
+1.2. Procedimentos        4
+1.3. Fontes Normativas        5
+2. EXTRAÇÃO DE MAPA DE TEMPO DE SERVIÇO        6
+2.1. Conceito        6
+2.2. Procedimentos        6
+2.3. Fontes Normativas        6
+3. CONSULTA LOTAÇÃO        7
+3.1. Conceito        7
+3.2. Procedimento        7
+3.3. Fontes Normativas        8
+4. TRILHA DA CGU        9
+4.1. Conceito        9
+4.2. Procedimento        9
+4.3. Fontes Normativas        10
+5. EXONERAÇÃO DE FUNÇÃO        11
+5.1. Conceito        11
+5.2. Procedimento        11
+5.3. Fontes Normativas        11
+6. PROVIMENTO DE FUNÇÃO        12
+6.1. Conceito        12
+6.2. Procedimentos        12
+6.3. Fontes Normativas        13
+7. INCLUSÃO DE RENDIMENTO/DÉBITO        14
+7.1. Conceito        14
+7.2. Procedimentos        14
+7.3. Fontes Normativas        15
+8. CONSULTA FÉRIAS NA UORG        16
+8.1. >CACOFERUOR        16
+9. DESIGNAÇÃO/DISPENSA DE FUNÇÃO        17
+9.1. DESIGNAÇÃO DE FUNÇÃO - ORIENTAÇÕES GERAIS        17
+9.2. INSTRUÇÃO PROCESSUAL        17
+9.3. CASOS ESPECIAIS        18
+10. REMOÇÃO        21
+11. ANEXO I - UORG        22
+________________
+1. CONCESSÃO DE PENSÃO POR MORTE
+   1. Conceito
+
+
+      1.       2. Trata-se de processo visando a concessão de pensão decorrente da morte de servidor da PRF, pode ser iniciado por requerimento de qualquer dos interessados.
+      3. Normalmente será realizado logo após o falecimento do servidor. Dessa forma, é fundamental atentar-se à sensibilidade da situação ao tratar do assunto com os requerentes (em regra, cônjuge ou filhos(as) do de cujus).
+   2. Procedimentos
+
+
+      4. O processo de concessão de pensão por morte será instruído, por meio do sistema SEI, pela SGP, com posterior encaminhamento à Diretoria de Gestão de Pessoas para análise, decisão e edição da Portaria (após manifestação técnica da Divisão de Seguridade e Benefícios).
+      5. O processo SEI será instaurado na unidade SGP-PA, com anexação dos seguintes documentos a seguir relacionados.
+         1. Em relação à(ao) cônjuge ou companheira(o): 
+* Requerimento (versão digital);
+* Requerimento assinado;
+* Documento de identidade;
+* Certidão de casamento / União estável;
+* Outros documentos comprobatórios de união estável;
+* Comprovante bancário;
+* Declaração de não acumulação de benefícios
+
+
+         2. Em relação aos(às) filhos(as) do servidor falecido:
+* Requerimento (versão digital);
+* Requerimento assinado;
+* Documento de identidade;
+* Certidão de nascimento;
+* Comprovante bancário;
+* Declaração de não acumulação de benefícios.
+
+
+         3. Documentos do servidor falecido:
+* Documento de identidade;
+* Declaração Imposto de Renda;
+* Comprovante de residência;
+* Certidão de óbito;
+* Ficha financeira;
+* Consulta CDCOINDFUN;
+* Consulta CDCOINDPES;
+* Consulta dependentes Siape;
+* Formulário (cálculo da pensão);
+* Despacho (relatório, análise legal e relação de documentos).
+
+
+      6. O formulário mencionado é o “Formulário de Concessão de Pensão EC N° 103/19”, no qual serão relacionados os dependentes e realizado o cálculo da pensão.
+      7. Registra-se que o referido cálculo é provisório, sendo que o sistema irá calcular o valor real da pensão devida a cada dependente, sanando eventuais erros de cálculo cometidos.
+      8. No despacho deverá ser realizada a síntese do procedimento e da situação fática enfrentada, com posterior análise quanto ao (in)deferimento dos requerimentos, de modo a embasar a decisão da SGP e evitar que os autos sejam devolvidos sem apreciação.
+   3. Fontes Normativas
+________________
+
+
+2. EXTRAÇÃO DE MAPA DE TEMPO DE SERVIÇO
+   1. Conceito
+      1. Procedimento para extração do “Mapa de Tempo de Serviço” do servidor, documento que contém extrato detalhado do tempo de serviço, data de entrada em exercício e contagem total de tempo para fins de aposentadoria.
+      2. É usualmente requerido pelo próprio servidor para finalidades que exijam comprovação do tempo de serviço policial ou tempo na PRF, a exemplo de cursos internos ou concursos públicos na fase de títulos.
+      3. O extrato ora tratado será, em regra, acompanhado de certidão firmada pelo Chefe da SGP, indicando o tempo de serviço do servidor no âmbito da PRF.
+   2. Procedimentos
+      1. Tela branca CAEMTRQAPO
+
+
+   3. Fontes Normativas
+________________
+
+
+3. CONSULTA LOTAÇÃO
+   1. Conceito
+
+
+      2. Trata-se de documento comprobatório da lotação atual e anteriores do servidor, extraído diretamente do sistema SIAPE.
+      3. Normalmente é requisitado pelo próprio servidor para finalidades administrativas, a exemplo de inscrição para cursos internos que pontuem a lotação em grupamentos especializados (NOE, por exemplo).
+
+
+   2. Procedimento
+      1. Acessar o sistema SIAPENet (tela preta);
+      2. Inserir comando “CACONLOTAC”, ou:
+         1. Selecionar o menu SIAPEDCAD (Cadastro Detalhado Servidores);
+         2. Selecionar DADOSFUNC (Dados Funcionais);
+         3. Selecionar LOTAÇÃO (Lotação/Exercício/Localização.);
+         4. Selecionar CONSRELAT (Consultas e Relatórios);
+         5. Selecionar CACONLOTAC (Consulta Lot/Exerc/Loc. Física);
+      3. Inserir matrícula do servidor (F1 para consulta por nome ou matrícula Siape);
+      4. Na tela seguinte, serão relacionadas as lotações pretérias e a vigente do servidor. É possível, para fins de juntada com a finalidade instrutória/comprobatória em processos SEI, a captura da tela atual.
+      5. Para isso, selecione a opção “Coleta de Tela”, na barra superior (Barra de Ferramentas), a Coleta será representada por uma seta descendente apontando para um recipiente, ambos em azul.
+      6. Se a barra de ferramentas não estiver visível, abra a guia “Exibir” na linha superior e clique na opção “Barra de Ferramentas” para habilitá-la.
+      7. Caso seja necessária a extração do relatório detalhado, marque com “x” as lotações e pressione “enter”.
+   3. Fontes Normativas
+________________
+
+
+4. TRILHA DA CGU
+   1. Conceito
+
+
+      8. Trata-se de procedimento encaminhado pela Controladoria-Geral da União, por meio da qual relata eventuais irregularidades identificadas pelo sistema e-Aud, daquele órgão;
+      9. Em regra, trata-se de possíveis acumulações indevidas de cargos, empregos e funções na administração pública.
+      10. A intermediação entre CGU e PRF é realizada pela Controladoria de Controle Interno da PRF (CCIN).
+   2. Procedimento
+
+
+      11. Constatados indícios de possíveis irregularidades, o processo SEI será encaminhado à SPRF-PA, com posterior remessa à NCINT-PA e SGP-PA para que apresentem resposta a ser encaminhada para a CGU.
+      12. Sugere-se a cientificação, por e-mail, dos servidores objeto de auditoria, para que apresentem documentos comprobatórios da não acumulação ilícita (declaração de não acumulação, publicação no DJ da sua exoneração do cargo anterior, foto da carteira de trabalho com data de encerramento do vínculo etc);
+      13. Deve-se ainda juntar o termo de posse assinado pelo servidor na PRF, confirmando a data de posse;
+      14. Por fim, cabe a elaboração de tabela com os servidores e respectivos anexos dos documentos comprobatórios, nos moldes do doc. 43457316, seguido pelo encaminhamento do SEI ao NCI-PA;
+      15. O NCI irá minutar o ofício do Superintendente endereçado à Controladora-Geral de Controle Interno.
+      16. Em momento posterior, a CGU irá realizar a devolutiva das apurações, informando suas conclusões e solicitando a cientificação dos servidores.
+   3. Fontes Normativas
+      1. 5. EXONERAÇÃO DE FUNÇÃO
+   1. Conceito
+
+
+      2. Procedimento para exonerar servidor de função de confiança, por exemplo Chefia de NPF, Chefia de Delegacia ou Chefia de Seção.
+      3. Será realizado em atendimento a requisição formulada pela autoridade competente para destituir o servidor da respectiva função.
+      4. Usualmente é acompanhada pelo procedimento de provimento de função, seja pela indicação de outro servidor para substituir o exonerado em sua função, seja pela indicação deste para ocupar outra função.
+
+
+   2. Procedimento
+      1. Acessar o sistema SIAPENet (tela preta);
+      2. Inserir comando “CAVADIRFEX”, ou:
+         1. Selecionar o menu SIAPEDCAD (Cadastro Detalhado Servidores);
+         2. Selecionar PFU (Provimento de Função/CC/CNE);
+         3. Selecionar EXONERAÇÃO (Exoneração/Dispensa/Destit.);
+         4. Selecionar CAVADIRFEX (Vacância Direta Função/CC Dl. Ext).
+      3. Inserir matrícula do servidor (F1 para consulta);
+      4. Preencher DL da Vacância: “Identificação da Portaria de Exoneração”;
+      5. Preencher data da exoneração;
+      6. Confirmar e finalizar.
+   3. Fontes Normativas
+6. PROVIMENTO DE FUNÇÃO
+   1. Conceito
+
+
+      7. Procedimento para registrar formalmente o provimento de função de confiança.
+      8. Terá início por provocação da autoridade competente para indicar o ocupante da respectiva função de confiança, a qual deverá ser acompanhada da documentação mínima exigida (currículo, informações prestadas pelos setores de corregedoria e de inteligência etc).
+
+
+   2. Procedimentos
+
+
+      9. Acessar o sistema SIAPENet (tela preta);
+      10. Inserir comando “CANOPFUDEX”, ou:
+         1. Selecionar o menu SIAPEDCAD (Cadastro Detalhado Servidores);
+         2. Selecionar PFU (Provimento de Função/CC/CNE);
+         3. Selecionar NOMEAÇÃO (Nomeação/Designação);
+         4. Selecionar CANOPFUDEX (Vacância Direta Função/CC Dl. Ext).
+      11. Inserir matrícula do servidor (F1 para consulta);
+      12. Preencher denominação com respectivo código da chefia (0061 para Chefe de Núcleo);
+      13. Preencher Cód. Função/ Cargo Comissionado (FEX-0101 p/ NPF;  FEX-0104 p/ Chefe de Seção/Delegacia; FEX-0107 p/ Superintendente);
+      14. Selecionar se Titular ou Substituto;
+      15. Preencher UORG conforme unidade pagadora (verificar anexo correspondente);
+      16. Confirmar e finalizar.
+   3. Fontes Normativas
+7. INCLUSÃO DE RENDIMENTO/DÉBITO
+   1. Conceito
+
+
+      17. Procedimento básico por meio do qual são realizadas alterações diretamente na folha de pagamento do servidor, com inclusão de rendimentos ou débitos (acréscimos ou descontos).
+      18. Poderá ser realizado em inúmeros contextos, mediante provocação ou de ofício, a depender da situação.
+      19. Em suma, será o procedimento por meio do qual o setor realizará ajustes manuais na folha de pagamento do servidor.
+   2. Procedimentos
+      1. Acessar o sistema e-Siape (tela branca);
+      2. Acessar Folha de Pagamentos;
+      3. Selecionar “Atualiza Informações Servidor”;
+      4. Selecionar Movimentação Financeira (FPATMOVFIN).
+      5. Preencher nome do servidor;
+         1. Selecionar se Rendimento/Débito;
+         2. Marcar a operação “Inclusão”;
+         3. Em código, preencher código da rubrica (utilizar de 6 a 9, conforme o caso).
+         4. Selecionar “Valor Informado” para valores exatos, já discriminados;
+         5. Enter.
+      6. Preencher data inicial do evento gerador e final até o final do mês referência;
+      7. Incluir valor exato e salvar;
+      8. Para conferência, realizar “Cálculo Online do Pagamento do Servidor” (descrito em tópico à parte).
+   3. Fontes Normativas
+8. CONSULTA FÉRIAS NA UORG
+   1. >CACOFERUOR
+
+
+
+
+9. DESIGNAÇÃO/DISPENSA DE FUNÇÃO
+Ofício-Circular Nº 7/2023/GAB-DGP/DGP (SEI nº 47505092)
+
+
+   2. DESIGNAÇÃO DE FUNÇÃO - ORIENTAÇÕES GERAIS
+      1. A designação iniciar-se-á com a autuação de processo SEI do tipo, mesmo quando houver necessidade de remoção do servidor.
+      2. "Pessoal: Designação de Função Comissionada ou Gratificada - (Titular ou Substituto)"
+
+
+   3. INSTRUÇÃO PROCESSUAL
+
+
+      3. Funções Comissionadas Executivas - FCE (TITULAR e SUBSTITUTO)
+
+
+         6. Currículo profissional do servidor indicado (Currículo SOU GOV);
+         7.  Termo de Autorização de Acesso a Dados subscrito pelo postulante, conforme modelo disponibilizado (SEI nº 31875613);
+         8. Formulário para Postulante a Cargo em Comissão ou Função Comissionada do Poder Executivo" (modelo SEI), assinado pelo servidor indicado e pela autoridade responsável pela indicação, preenchido os requisitos de acordo com a função. É obrigatório que se assinale o item em que declara que o servidor atende os requisitos para exercício da função ou, em caso do não atendimento dos requisitos, deve ser apresentada a justificativa para a indicação. 
+         9. Certidão disciplinar e informação sobre antecedentes criminais e judiciais (Tramitação corregedoria e inteligência);
+         10. Informação expressa do Superintendente ou Diretor responsável que ateste seu conhecimento sobre os resultados das pesquisas do item anterior.
+         11. Consulta Siape ">CACONLOTAC", com o registro das lotações;
+         12. Consulta Siape ">CACODETPFU", para titulares;
+         13. Consulta Siape ">CACOCHEFIA"; 
+         14. "Requerimento de Dispensa" ou preenchimento dos campos referentes ao servidor que será dispensado no "Formulário para Postulante", se for o caso.
+         15. Portaria de designação do servidor a ser dispensado, se for o caso.
+         16. Despacho informando se o servidor foi removido anteriormente para exercer a função, conforme item 2.3.1.1 deste Ofício-Circular, se for o caso.
+         17. Após a verificação dos documentos essenciais pela gestão de pessoas local, encaminhar os autos à DGP para confecção e publicação de portaria.
+
+
+   4. CASOS ESPECIAIS
+
+
+      4. DESIGNAÇÃO DE GESTORES OPERACIONAIS
+         1. Além da documentação citada no subitem 1.2., será exigida, ainda, no mínimo, a conclusão da primeira fase do Curso de Gestores Operacionais, a ser realizada na modalidade de ensino à distância ou presencial.
+         2. Na ausência do certificado citado no subitem anterior, deverá ser juntada Comunicação Interna do postulante à função se comprometendo a realizá-lo, junto com a declaração da autoridade indicante, certificando que, tão logo seja disponibilizado, o curso será realizado.
+
+   5. DESIGNAÇÃO PARA A FUNÇÃO DE CORREGEDOR REGIONAL (TITULAR)
+   1. Além da documentação citada no item 1.2., há necessidade de validação da escorreita instrução processual pela área de apoio da Corregedoria-Geral e Controle Interno, rconforme os requisitos determinados na Instrução Normativa PRF nº 39, de 28 de maio de 2021, alterada pela Instrução Normativa PRF Nº 77 de 22 de fevereiro de 2022 (SEI nº 39547286).
+
+      6. DESIGNAÇÃO PARA A FUNÇÃO DE CHEFES DE INTELIGÊNCIA REGIONAIS (TITULAR e SUBSTITUTO)
+      1. Além da documentação citada no subitem 1.2., são necessários o cumprimento dos requisitos determinados na Instrução Normativa PRF nº 95, de 28 de setembro de 2022  (SEI nº 44062296):
+      2.  Manifestação da Diretoria de Inteligência acerca da indicação;
+      3. Requisitos determinados na Instrução Normativa PRF nº 95, de 28 de setembro de 2022, publicada no BSE em 30 de setembro de 2022 (SEI nº 44062296), com atenção para o Art. 18.
+
+         7. CASOS ESPECÍFICOS
+ 
+            1. DESIGNAÇÃO QUE IMPLIQUE EM REMOÇÃO COM ÔNUS PARA A ADMINISTRAÇÃO
+            1. Quando a Designação de função de confiança implicar em Remoção com mudança de Sede, deverão ser juntados os seguintes documentos:
+            2. Manifestação do gestor da unidade de origem do servidor, quando for o caso; 
+            3. Manifestação do servidor indicado;
+            4. Declaração do servidor acerca dos dependentes que o acompanharão na nova Sede;
+            5. Planilha de ajuda de custo, a ser providenciada pela DIPAG; e
+            6. Nota de empenho; a ser providenciada pela SOFIP.
+            7. A instrução processual da remoção, nos casos que impliquem em mudança de domicílio, ocorrerá no mesmo processo de designação.
+
+               2. DESIGNAÇÃO PARA FUNÇÃO OCUPADA POR OUTRO SERVIDOR
+               1. No mesmo processo em que se requer a designação, deverão ser juntados os seguintes documentos:
+               2. "Requerimento de Dispensa para Função Comissionada ou Gratificada" (modelo SEI) ou preenchimento do item referente à dispensa disponível no Formulário para Postulante;
+               3. Portaria de designação; 
+               4. Despacho informando se o servidor foi removido anteriormente para exercer a função, conforme item 2.3.1.1 deste Ofício-Circular; e
+               5. Requerimento de dispensa apresentado pelo servidor, em se tratando de dispensa a pedido do próprio interessado.
+
+                  8. OBSERVAÇÕES
+                  1. Consulta Siape ">CACONLOTAC"
+                  2. A indicação de titular somente deve ocorrer quando o servidor estiver lotado na unidade onde exercerá a função. No caso da substituição, é possível que, eventualmente, esta seja exercida por servidor lotado em unidade diversa da unidade de exercício do encargo, sendo, nesse caso, indispensável a prévia anuência do Diretor ou Superintendente responsável pela área onde o postulante encontra-se lotado, observados os procedimentos descritos no Art 12 da Instrução Normativa PRF nº 75, de 11 de fevereiro de 2022 (SEI nº 39345085)
+                  3. Caso a designação implique em remoção, a autoridade requerente providenciará, previamente, o ajuste de lotação do servidor, observando as regras próprias. Em sendo necessária remoção cuja competência seja da Diretoria de Gestão de Pessoas, deverão ser juntados, no mesmo processo, os documentos elencados no item 1.4.1.
+
+                  4. Consulta Siape ">CACODETPFU"
+                  5. O servidor apenas pode ocupar 1 (uma) função como titular. Desta forma, é necessário verificar se o indicado já ocupa outra titularidade. Em caso positivo, deverá ser solicitada a sua dispensa da função por ele ocupada naquele momento.
+
+                  6. Consulta Siape ">CACOCHEFIA"
+                  7. Deve-se identificar se o cargo, a função ou o encargo para o qual se objetiva a designação está ocupado por outro servidor. Em caso positivo, deve-se incluir no processo o "Requerimento de Dispensa" ou Preencher os campos, no "Formulário para Postulante", referentes ao servidor que será dispensado, bem como os demais documentos referentes à dispensa elencados no item 2.2 deste expediente.
+                  8. Deve existir apenas um pedido por processo, procedendo-se ao relacionamento entre eles, se for o caso.
+
+
+                     10. REMOÇÃO
+
+
+
+
+                     11. ANEXO I - UORG                                        
+N°
+	IDENTIFICAÇÃO
+	UNIDADE ORGANIZACIONAL
+	CÓDIGO UORG
+	1
+	Superintendência Regional
+	SPRF-PA
+	1840 / 0960
+	1.1
+	Seção de Gabinete
+	GAB-PA
+	1841
+	2
+	Seção de Tecnologia da Informação e Comunicação
+	SETIC-PA
+	4262
+	2.1
+	Serviço de Inteligência
+	SEINT-PA
+	4257
+	2.2
+	Núcleo de Contrainteligência
+	NUCINT-PA
+	4535
+	3
+	Seção de Corregedoria
+	CR-PA
+	4264
+	3.1
+	Núcleo de Investigação Correcional e Assuntos Internos
+	NICAI-PA
+	4534
+	4
+	Superintendência Executiva
+	SUPEX-PA
+	1865
+	4.1
+	Núcleo de Comunicação Social
+	NUCOM-PA
+	3917
+	4.2
+	Núcleo de Análise Técnica e Controle Interno
+	NAT-PA
+	3920
+	5
+	Seção de Gestão de Pessoas
+	SGP-PA
+	1847
+	5.1
+	Núcleo de Atenção à Saúde Integral do Servidor
+	NUSINT-PA
+	1848
+	5.2
+	Núcleo de Administração de Pessoas
+	NUAP-PA
+	1849
+	5.3
+	Núcleo de Educação Corporativa
+	NEC-PA
+	3922
+	6
+	Serviço de Operações
+	SEOP-PA
+	1854
+	6.1
+	Núcleo de Gestão Operacional
+	NGO-PA
+	3975
+	6.2
+	Núcleo de Segurança Viária
+	NSV-PA
+	3977
+	6.3
+	Núcleo de Comando de Operações Especiais
+	COE-PA
+	3916
+	7
+	Seção de Administração
+	SAD-PA
+	1843
+	7.1
+	Núcleo de Gestão Administrativa e Contratação Públicas
+	NUCONT-PA
+	1844
+	7.2
+	Núcleo de Orçamento e Finanças
+	NUOFI-PA
+	1845
+	7.3
+	Núcleo de Logística
+	NULOG-PA
+	1846
+	8
+	Delegacia em Capanema
+	DEL01-PA
+	4190
+	8.1
+	Núcleo de Policiamento e Fiscalização 01
+	NPF-DEL01-PA
+	4458
+	9
+	Delegacia em Ipixuna
+	DEL02-PA
+	4170
+	9.1
+	Núcleo de Policiamento e Fiscalização 02
+	NPF-DEL02-PA
+	4463
+	10
+	Delegacia em Marabá
+	DEL03-PA
+	4172
+	10.1
+	Núcleo de Policiamento e Fiscalização 03
+	NPF-DEL03-PA
+	4470
+	10.2
+	Núcleo de Inteligência 03
+	NUINT-DEL03-PA
+	4468
+	11
+	Delegacia em Altamira
+	DEL04-PA
+	4237
+	11.1
+	Núcleo de Policiamento e Fiscalização 04
+	NPF-DEL04-PA
+	4530
+	11.2
+	Núcleo de Inteligência 04
+	NUINT-DEL04-PA
+	4529
+	12
+	Delegacia em Santarém
+	DEL05-PA
+	4243
+	12.1
+	Núcleo de Policiamento e Fiscalização 05
+	NPF-DEL05-PA
+	4532
+	12.2
+	Núcleo de Inteligência 05
+	NUINT-DEL05-PA
+	4533
+	
+
+
+
+
+
+Av. Júlio César, 7060 Bairro Souza, Belém / PA  
+CEP 66617-420
+Fones: (91) 
+E-mail: @prf.gov.br
