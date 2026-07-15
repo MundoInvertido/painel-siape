@@ -1,0 +1,2998 @@
+# espanso match file
+
+# For a complete introduction, visit the official docs at: https://espanso.org/docs/
+
+# You can use this file to define the base matches (aka snippets)
+# that will be available in every application when using espanso.
+
+# Matches are substitution rules: when you type the "trigger" string
+# it gets replaced by the "replace" string.
+
+# yaml-language-server: $schema=https://raw.githubusercontent.com/espanso/espanso/dev/schemas/match.schema.json
+
+matches:
+  # Simple text replacement
+
+  - trigger: ":espanso"
+    replace: "Hi there!"
+
+  # NOTE: espanso uses YAML to define matches, so pay attention to the indentation!
+
+  # But matches can also be dynamic:
+
+  # Print the current date
+
+  - trigger: ":date"
+    replace: "{{mydate}}"
+    vars:
+      - name: mydate
+        type: date
+        params:
+          format: "%m/%d/%Y"
+
+  # Print the output of a shell command
+
+  - trigger: ":shell"
+    replace: "{{output}}"
+    vars:
+      - name: output
+        type: shell
+        params:
+          cmd: "echo 'Hello from your shell'"
+
+  # And much more! For more information, visit the docs: https://espanso.org/docs/
+
+
+  # ===========================================================================
+  # 1. TRANSAÇÕES E COMANDOS DO SISTEMA (SIAPE / SIAPECAD / e-SIAPE)
+  # ===========================================================================
+
+  - trigger: ">GRIAPROADM"
+    replace: ">GRIAPROADM"
+    label: "Exercícios Anteriores: Cadastra/inclui o processo e gera dois identificadores finais"
+
+  - trigger: ">GRINBENEF"
+    replace: ">GRINBENEF"
+    label: "Exercícios Anteriores: Inclui ou corrige dados e valores do servidor beneficiado"
+
+  - trigger: ">TBCOOBJPAG"
+    replace: ">TBCOOBJPAG"
+    label: "Tabela: Mostra objetos cadastrados para pagamento de exercícios anteriores"
+
+  - trigger: ">FPMOVSUPLIN"
+    replace: ">FPMOVSUPLIN"
+    label: "Folha Suplementar: Realiza lançamentos para servidor com ocorrência de exclusão"
+
+  - trigger: ">FPCLSUPLIN"
+    replace: ">FPCLSUPLIN"
+    label: "Folha Suplementar: Executa o cálculo de pagamento de servidor excluído"
+
+  - trigger: ">ADMINIST"
+    replace: ">ADMINIST"
+    label: "Auditoria: Tela geral para verificação de consultas e histórico de atualizações do RH"
+
+  - trigger: ">ADCOLOG"
+    replace: ">ADCOLOG"
+    label: "Auditoria: Consulta todas as inclusões, alterações e exclusões feitas por uma matrícula"
+
+  - trigger: ">ADCONVEHAB"
+    replace: ">ADCONVEHAB"
+    label: "Consulta: Verifica qual habilitação específica é necessária para acessar uma função"
+
+  - trigger: ">ADCOTRANS"
+    replace: ">ADCOTRANS"
+    label: "Consulta: Mostra o nível atual de acesso e habilitação do usuário no sistema"
+
+  - trigger: ">MUDAPAH"
+    replace: ">MUDAPAH"
+    label: "Configuração: Permite ao cadastrador alterar os perfis de usuários no SIAPE"
+
+  - trigger: ">CAAPSERVID"
+    replace: ">CAAPSERVID"
+    label: "Aposentadoria: Efetua o lançamento de aposentadoria (não usar na mesma folha de publicação)"
+
+  - trigger: ">TBSIAPE"
+    replace: ">TBSIAPE"
+    label: "Tabela: Atalho para acessar as tabelas gerais do SIAPE (Apertar F8 na tela principal)"
+
+  - trigger: ">tbcoorgao"
+    replace: ">tbcoorgao"
+    label: "Tabela: Consulta códigos, CNPJ, endereços e contatos de outros órgãos públicos"
+
+  - trigger: ">tbfunciona"
+    replace: ">tbfunciona"
+    label: "Tabela: Acesso às tabelas funcionais, principalmente rubricas e suas incidências"
+
+  - trigger: ">TBCOBENEF"
+    replace: ">TBCOBENEF"
+    label: "Tabela: Consulta a tabela de benefícios cadastrados para os dependentes"
+
+  - trigger: ">benefdepen"
+    replace: ">benefdepen"
+    label: "Tabela: Cadastro e consulta da relação de condição versus benefício do dependente"
+
+  - trigger: ">CARGEMP"
+    replace: ">CARGEMP"
+    label: "Consulta: Consulta CBO, grupo/cargo, jornada e escolaridade para fins de acumulação"
+
+  - trigger: ">TBCONIVCEM"
+    replace: ">TBCONIVCEM"
+    label: "Tabela: Consulta tabelas salariais e níveis (essencial para exercícios anteriores)"
+
+  - trigger: ">CONSULTAS"
+    replace: ">CONSULTAS"
+    label: "Consulta: Atalho global para o menu de consultas de tabelas do sistema"
+
+  - trigger: ">COTBRUBRI"
+    replace: ">COTBRUBRI"
+    label: "Consulta: Verifica incidências de PSS, Imposto de Renda e limites por rubrica"
+
+  - trigger: ">CDCOINDFUN"
+    replace: ">CDCOINDFUN"
+    label: "Cadastro: Dados Individuais Funcionais do servidor / Consulta dados bancários e admissão"
+
+  - trigger: ">CDCOINDPES"
+    replace: ">CDCOINDPES"
+    label: "Cadastro: Consulta os Dados Individuais Pessoais do servidor"
+
+  - trigger: ">CACODADORH"
+    replace: ">CACODADORH"
+    label: "Relatório: Emite o espelho cadastral consolidado de dados pessoais, funcionais e familiares"
+
+  - trigger: ">FPCLPAGTO"
+    replace: ">FPCLPAGTO"
+    label: "Folha: Realiza o cálculo do pagamento do mês corrente do servidor (Folha Aberta)"
+
+  - trigger: ">FPCOFICHAF"
+    replace: ">FPCOFICHAF"
+    label: "Folha: Consulta fichas financeiras de meses anteriores individualmente"
+
+  - trigger: ">FPEMFICHAF"
+    replace: ">FPEMFICHAF"
+    label: "Folha: Emite fichas financeiras consolidadas de vários meses agrupados"
+
+  - trigger: ">CONLEG"
+    replace: ">CONLEG"
+    label: "Tabela: Constantes legais (Tabelas de IR, alíquotas e Seguridade Social)"
+
+  - trigger: ">tbcoclegdv"
+    replace: ">tbcoclegdv"
+    label: "Tabela: Consulta valores vigentes de salário mínimo e teto salarial constitucional"
+
+  - trigger: ">tbconsfunc"
+    replace: ">tbconsfunc"
+    label: "Tabela: Consulta valores de DAS / Função Comissionada para instrução de substituições"
+
+  - trigger: ">tbconinfun"
+    replace: ">tbconinfun"
+    label: "Consulta: Verifica quintos administrativos incorporados via cadastro"
+
+  - trigger: ">TBCOOCORRE"
+    replace: ">TBCOOCORRE"
+    label: "Tabela: Consulta a tabela geral de códigos de ocorrências"
+
+  - trigger: ">TBCORUBRIC"
+    replace: ">TBCORUBRIC"
+    label: "Tabela: Consulta o código da rubrica e o valor máximo permitido para lançamento"
+
+  - trigger: ">TBINCORUBR"
+    replace: ">TBINCORUBR"
+    label: "Folha: Incompatibiliza matrícula de servidor/pensionista com rubrica de consignação"
+
+  - trigger: ">TBCOUF"
+    replace: ">TBCOUF"
+    label: "Tabela: Consulta os valores regionais de auxílio-alimentação e pré-escolar por UF"
+
+  - trigger: ">TBCOUORG"
+    replace: ">TBCOUORG"
+    label: "Tabela: Consulta dados e hierarquia da Unidade Organizacional (UORG) por código"
+
+  - trigger: ">TBCOAUXTRAN"
+    replace: ">TBCOAUXTRAN"
+    label: "Tabela: Consulta parâmetros e valores da tabela de auxílio-transporte"
+
+  - trigger: ">TBCOASSPAR"
+    replace: ">TBCOASSPAR"
+    label: "Tabela: Consulta a listagem de assuntos cadastrados para cálculo"
+
+  - trigger: ">FPATPARAM"
+    replace: ">FPATPARAM"
+    label: "Folha: Configura ou desliga parâmetros de cálculos automáticos e benefícios do servidor"
+
+  - trigger: ">CDCOUPGSER"
+    replace: ">CDCOUPGSER"
+    label: "Consulta: Localiza a Unidade Pagadora (UPAG) de vinculação do servidor"
+
+  - trigger: ">CAALPESERR"
+    replace: ">CAALPESERR"
+    label: "Cadastro: Permite a alteração de dados pessoais inseridos com erro material"
+
+  - trigger: ">CAALENDRH"
+    replace: ">CAALENDRH"
+    label: "Cadastro: Realiza a alteração de endereço residencial do servidor"
+
+  - trigger: ">FPATRENDEX"
+    replace: ">FPATRENDEX"
+    label: "Folha: Atualiza rendimentos extra SIAPE para controle de teto de servidores cedidos"
+
+  - trigger: ">fpatmovfin"
+    replace: ">fpatmovfin"
+    label: "Folha: Abre a tela de movimentação financeira para lançamentos manuais na folha"
+
+  - trigger: ">CAATCONPSS"
+    replace: ">CAATCONPSS"
+    label: "Previdência: Permite atualizar/incluir a base de contribuição do PSS da vida funcional"
+
+  - trigger: ">CDATALIIND"
+    replace: ">CDATALIIND"
+    label: "Benefícios: Inclusão, alteração ou exclusão do parâmetro de Auxílio-Alimentação"
+
+  - trigger: ">CDIADEPEND"
+    replace: ">CDIADEPEND"
+    label: "Dependentes: Inclui/altera dependente no e-SIAPE (IR, Plano de Saúde, Pré-Escolar)"
+
+  - trigger: ">CDCODEPEND"
+    replace: ">CDCODEPEND"
+    label: "Dependentes: Consulta o espelho de dependentes cadastrados e suas linhas de benefícios"
+
+  - trigger: ">CAIASERVID"
+    replace: ">CAIASERVID"
+    label: "Cadastro: Altera o número total de dependentes na ficha do servidor"
+
+  - trigger: ">CDINAUXNAT"
+    replace: ">CDINAUXNAT"
+    label: "Benefícios: Lançamento e efetivação do pagamento de Auxílio-Natalidade"
+
+  - trigger: ">CAINOCORSE"
+    replace: ">CAINOCORSE"
+    label: "Cadastro: Registra ocorrências e ausências (Faltas, Paternidade, Prisão, Suspensão)"
+
+  - trigger: ">CAINREGJUR"
+    replace: ">CAINREGJUR"
+    label: "PCA: Permite alterar o regime jurídico em um PCA que já esteja encerrado ou no histórico"
+
+  - trigger: ">CAALREGPCA"
+    replace: ">CAALREGPCA"
+    label: "PCA: Permite alterar o regime jurídico em um PCA que esteja atualmente vigente"
+
+  - trigger: ">CAALPROVEN"
+    replace: ">CAALPROVEN"
+    label: "Aposentadoria: Altera proventos, fundamentação legal e cômputo de LPA em dobro"
+
+  - trigger: ">CACOAPOSSE"
+    replace: ">CACOAPOSSE"
+    label: "Aposentadoria: Consulta a homologação, telas de concessão e finalização do processo"
+
+  - trigger: ">CAALDTPCA"
+    replace: ">CAALDTPCA"
+    label: "PCA: Altera dados gerais do histórico do PCA ou ajusta a data de posse do servidor"
+
+  - trigger: ">CADTMATFP"
+    replace: ">CADTMATFP"
+    label: "Integração: Desativa a matrícula do servidor para correções, exclusões ou macros"
+
+  - trigger: ">CAEXPCAHIS"
+    replace: ">CAEXPCAHIS"
+    label: "PCA: Realiza a exclusão definitiva do histórico de um PCA lançado incorretamente"
+
+  - trigger: ">CARTMATFP"
+    replace: ">CARTMATFP"
+    label: "Integração: Reativa a matrícula do servidor na folha após procedimentos de correção"
+
+  - trigger: ">CAEXOCORSE"
+    replace: ">CAEXOCORSE"
+    label: "Cadastro: Exclui ocorrências ou impedimentos críticos gravados na ficha do servidor"
+
+  - trigger: ">CAIFHISOCO"
+    replace: ">CAIFHISOCO"
+    label: "Cadastro: Permite reincluir o histórico de ocorrências após limpezas de tela"
+
+  - trigger: ">CDEXDEPEND"
+    replace: ">CDEXDEPEND"
+    label: "Dependentes: Realiza a exclusão de um dependente do cadastro do servidor"
+
+  - trigger: ">CDINTITSAU"
+    replace: ">CDINTITSAU"
+    label: "Saúde: Cadastra/altera a situação do plano de saúde complementar do titular ativo"
+
+  - trigger: ">CDINPSTSAU"
+    replace: ">CDINPSTSAU"
+    label: "Saúde: Cadastra/altera a situação do plano de saúde complementar de pensionistas"
+
+  - trigger: ">CANOPFUDEX"
+    replace: ">CANOPFUDEX"
+    label: "Chefia: Registra a nomeação de função de confiança / cargo comissionado"
+
+  - trigger: ">CACODETPFU"
+    replace: ">CACODETPFU"
+    label: "Chefia: Consulta detalhada do histórico de funções de confiança exercidas"
+
+  - trigger: ">CAVADIRFEX"
+    replace: ">CAVADIRFEX"
+    label: "Chefia: Efetua a dispensa ou vacância de cargo em comissão / função de chefia"
+
+  - trigger: ">CAEXNOMEAC"
+    replace: ">CAEXNOMEAC"
+    label: "Chefia: Exclui uma nomeação de chefia indevida ou gerada por erro do sistema"
+
+  - trigger: ">grcoserrub"
+    replace: ">grcoserrub"
+    label: "Consulta: Identifica quais servidores possuem uma determinada rubrica em sua folha"
+
+  - trigger: ">gremserrub"
+    replace: ">gremserrub"
+    label: "Relatório: Emite a listagem consolidada de servidores associados a uma rubrica"
+
+  - trigger: ">caenexcapo"
+    replace: ">caenexcapo"
+    label: "Aposentadoria: Encerra aposentadoria por óbito, reversão ou suspensão temporária"
+
+  - trigger: ">FPEXCLPAGC"
+    replace: ">FPEXCLPAGC"
+    label: "Folha: Consulta os servidores excluídos da folha (Obrigatório antes da homologação)"
+
+  - trigger: ">fpexpspagc"
+    replace: ">fpexpspagc"
+    label: "Folha: Consulta pensionistas excluídos da folha de pagamento do mês"
+
+  - trigger: ">GRCOFINDDP"
+    replace: ">GRCOFINDDP"
+    label: "Relatório: Mostra o demonstrativo financeiro de gastos com pessoal e estagiários"
+
+  - trigger: ">TBCOSAUSUP"
+    replace: ">TBCOSAUSUP"
+    label: "Tabela: Relação de valores per capita para assistência à saúde suplementar"
+
+  - trigger: ">TBCOPREESC"
+    replace: ">TBCOPREESC"
+    label: "Tabela: Relação de valores de desconto de cota-parte do auxílio pré-escolar"
+
+  - trigger: ">TBCOFARBEN"
+    replace: ">TBCOFARBEN"
+    label: "Tabela: Consulta fatores de reajuste e índices para cálculo de proventos"
+
+  - trigger: ">TBCOPROCES"
+    replace: ">TBCOPROCES"
+    label: "Tabela: Consulta as datas limites de processamento e fechamento da folha"
+
+  - trigger: ">CACOPCA"
+    replace: ">CACOPCA"
+    label: "PCA: Consulta o histórico de PCAs e verifica duplicidade de matrículas SIAPECAD"
+
+  - trigger: ">CAIFFERIAS"
+    replace: ">CAIFFERIAS"
+    label: "Férias: Programação de férias regulares ou inclusão de saldo de outro órgão"
+
+  - trigger: ">CAREPERFER"
+    replace: ">CAREPERFER"
+    label: "Férias: Recupera o direito de férias após o comando de férias informadas"
+
+  - trigger: ">fpatpeqmse"
+    replace: ">fpatpeqmse"
+    label: "Folha: Realiza o comando de fechamento/homologação de pequena monta"
+
+  - trigger: ">CDINPSBENE"
+    replace: ">CDINPSBENE"
+    label: "Pensão: Cadastra/inclui o beneficiário de uma pensão alimentícia ou judicial"
+
+  - trigger: ">FPATPSCOTA"
+    replace: ">FPATPSCOTA"
+    label: "Pensão: Define, altera ou redistribui as cotas partes entre os beneficiários"
+
+  - trigger: ">FPSRPSPGTO"
+    replace: ">FPSRPSPGTO"
+    label: "Pensão: Atualiza e grava a situação do pagamento para liberação bancária"
+
+  - trigger: ">caatdadsia"
+    replace: ">caatdadsia"
+    label: "Cadastro: Altera a data de entrada/ingresso no serviço público do servidor"
+
+  - trigger: ">cacolotper"
+    replace: ">cacolotper"
+    label: "Consulta: Lista os servidores que estiveram lotados em uma UORG por período"
+
+  - trigger: ">CAEMCERPTS"
+    replace: ">CAEMCERPTS"
+    label: "Relatório: Emite formalmente a Certidão de Tempo de Serviço no SIAPE"
+
+  - trigger: ">CAINCESSAO"
+    replace: ">CAINCESSAO"
+    label: "Movimentação: Registra a saída do servidor por motivo de Cessão"
+
+  - trigger: ">CARRSERCED"
+    replace: ">CARRSERCED"
+    label: "Movimentação: Transação para registrar o retorno definitivo de um servidor cedido"
+
+  - trigger: ">CACONLOTAC"
+    replace: ">CACONLOTAC"
+    label: "Consulta: Imprime o espelho de exercício para comprovação de retorno do servidor"
+
+  - trigger: ">CACOSERVEE"
+    replace: ">CACOSERVEE"
+    label: "Movimentação: Executa o retorno coletivo de servidores que estavam cedidos"
+
+  - trigger: ">CAINREQUIS"
+    replace: ">CAINREQUIS"
+    label: "Movimentação: Registra a saída do servidor por motivo de Requisição"
+
+  - trigger: ">CARRSERREQ"
+    replace: ">CARRSERREQ"
+    label: "Movimentação: Transação para registrar o retorno definitivo de servidor requisitado"
+
+  - trigger: ">CAEXEXRCER"
+    replace: ">CAEXEXRCER"
+    label: "Férias: Exclui o exercício futuro do substituto gerado de forma automática"
+
+  - trigger: ">FPATPSCALC"
+    replace: ">FPATPSCALC"
+    label: "Pensão: Executa o cálculo da folha de pagamento do beneficiário de pensão"
+
+  - trigger: ">CAINTAS"
+    replace: ">CAINTAS"
+    label: "Averbação: Registra tempos de serviço externos (CLT, PM, Estados, Prefeituras)"
+
+  - trigger: ">CAALDOCUME"
+    replace: ">CAALDOCUME"
+    label: "Cadastro: Altera a data do primeiro emprego para sanar críticas na averbação"
+
+  - trigger: ">TBCOINCNAT"
+    replace: ">TBCOINCNAT"
+    label: "Tabela: Consulta a tabela de incidências cruzadas de natureza jurídica e atividade"
+
+  - trigger: ">caaltas"
+    replace: ">caaltas"
+    label: "Averbação: Permite a alteração de dados de um período de tempo já averbado"
+
+  - trigger: ">cacotas"
+    replace: ">cacotas"
+    label: "Averbação: Consulta genérica de dias averbados e aplicação de multiplicadores"
+
+  - trigger: ">tbcofundle"
+    replace: ">tbcofundle"
+    label: "Tabela: Consulta a listagem completa de fundamentos legais de aposentadoria"
+
+  - trigger: ">CAINPCAHIS"
+    replace: ">CAINPCAHIS"
+    label: "PCA: Lançamento de PCA Histórico (Tempo federal anterior à Lei 8.112/1990)"
+
+  - trigger: ">CAEMTRQAPO"
+    replace: ">CAEMTRQAPO"
+    label: "Relatório: Emite o mapa de tempo de serviço para instrução de aposentadoria/abono"
+
+  - trigger: ">CDISPSSABP"
+    replace: ">CDISPSSABP"
+    label: "Abono: Tela de concessão e gravação do Abono de Permanência"
+
+  - trigger: ">CASIAPOSEN"
+    replace: ">CASIAPOSEN"
+    label: "Abono: Emite documento comprobatório de idade para fins de instrução de abono"
+
+  - trigger: ">FPPATMOVFIN"
+    replace: ">FPPATMOVFIN"
+    label: "Folha: Lançamento e pagamento de valores retroativos de abono de permanência"
+
+  - trigger: ">CACANPCA"
+    replace: ">CACANPCA"
+    label: "PCA: Cancela um PCA lançado por erro (Utilizado em problemas de unificação)"
+
+  - trigger: ">CACRPROVAP"
+    replace: ">CACRPROVAP"
+    label: "Aposentadoria: Abre o módulo de retificação/correção de proventos por erro"
+
+  - trigger: ">CDATAPOSEN"
+    replace: ">CDATAPOSEN"
+    label: "Aposentadoria: Atualiza fundamentação e restabelece parâmetros após exclusão"
+
+
+  - trigger: ">CDISIMPREN"
+    replace: ">CDISIMPREN"
+    label: "Folha: Concede isenção de Imposto de Renda e PSS por moléstia especificada em lei"
+
+
+  - trigger: ">ADCOVAGA"
+    replace: ">ADCOVAGA"
+    label: "Vagas: Consulta a situação, classe, padrão e histórico de um código de vaga"
+
+  - trigger: ">ADEXVAGDIS"
+    replace: ">ADEXVAGDIS"
+    label: "Vagas: Exclui a vaga distribuída para a UORG atual para permitir remanejamento"
+
+  - trigger: ">ADDIVAGAPR"
+    replace: ">ADDIVAGAPR"
+    label: "Vagas: Distribui e vincula uma vaga aprovada para a nova UORG desejada"
+
+  - trigger: ">CAEXMATRIC"
+    replace: ">CAEXMATRIC"
+    label: "Integração: Exclui uma matrícula SIAPECAD gerada em duplicidade ou com erro"
+
+  - trigger: ">CAINMATRIC"
+    replace: ">CAINMATRIC"
+    label: "Integração: Cria uma nova matrícula no SIAPECAD"
+
+  - trigger: ">CDAUSPUBL"
+    replace: ">CDAUSPUBL"
+    label: "Cadastro: Solicita liberação para alterar dados de ingresso bloqueados no sistema"
+
+  - trigger: ">CAALPROGMA"
+    replace: ">CAALPROGMA"
+    label: "Progressão: Efetua o enquadramento/reenquadramento manual de classe e padrão"
+
+  - trigger: ">cacopospro"
+    replace: ">cacopospro"
+    label: "Progressão: Consulta o histórico completo de posicionamentos e progressões"
+
+  - trigger: ">CAEXPOSIC"
+    replace: ">CAEXPOSIC"
+    label: "Progressão: Exclui do histórico uma linha de progressão/posicionamento errada"
+
+
+  - trigger: ">GRCOQUAVAG"
+    replace: ">GRCOQUAVAG"
+    label: "Vagas: Consulta quantitativa de vagas disponíveis e ocupadas (Carreiras PRF/ADM)"
+
+  - trigger: ">CAEMDOSSIE"
+    replace: ">CAEMDOSSIE"
+    label: "Relatório: Emite o dossiê com o histórico de vida completo do servidor no órgão"
+
+  - trigger: ">CACOPENDAT"
+    replace: ">CACOPENDAT"
+    label: "Cadastro: Consulta pendências e inconsistências que bloqueiam a atualização da matrícula"
+
+  - trigger: ">CACANVAC"
+    replace: ">CACANVAC"
+    label: "Aposentadoria: Cancela a vacância de aposentadoria por erro ou em caso de reversão"
+
+  - trigger: ">CACAENCAPO"
+    replace: ">CACAENCAPO"
+    label: "Aposentadoria: Exclui afastamento temporário de encerramento para permitir ajustes"
+
+  - trigger: ">CACAOBITRH"
+    replace: ">CACAOBITRH"
+    label: "Cadastro: Cancela o lançamento de óbito feito de forma equivocada no sistema"
+
+  - trigger: ">CAVAEXCEP"
+    replace: ">CAVAEXCEP"
+    label: "Cadastro: Lança vacância excepcional para interrupção de folha de ativo por óbito"
+
+  - trigger: ">CDALFUNC"
+    replace: ">CDALFUNC"
+    label: "Movimentação: Altera localização e dados funcionais de servidor requisitado"
+
+  - trigger: ">CDINREGIST"
+    replace: ">CDINREGIST"
+    label: "Movimentação: Registra dados cadastrais e bancários de exercício provisório"
+
+  - trigger: ">CDIADADOS"
+    replace: ">CDIADADOS"
+    label: "Movimentação: Altera a situação funcional em casos de Força de Trabalho"
+
+  - trigger: ">CDLIUPAG"
+    replace: ">CDLIUPAG"
+    label: "Movimentação: Libera a matrícula do servidor para alteração de UPAG"
+
+  - trigger: ">CDACTFUPAG"
+    replace: ">CDACTFUPAG"
+    label: "Movimentação: Aceita e consolida a entrada da matrícula na nova UPAG"
+
+  - trigger: ">CAATSITSIA"
+    replace: ">CAATSITSIA"
+    label: "Cadastro: Atualiza de forma direta a situação funcional do servidor no SIAPE"
+
+  - trigger: ">CAEXLOcexce"
+    replace: ">CAEXLOcexce"
+    label: "Chefia: Exclui exercício duplicado ou errôneo de chefe em outra regional"
+
+  - trigger: ">CACAVACPFU"
+    replace: ">CACAVACPFU"
+    label: "Chefia: Cancela vacância de função gratificada lançada por erro"
+
+  - trigger: ">CAROCOLHIS"
+    replace: ">CAROCOLHIS"
+    label: "Movimentação: Remove servidor internamente vinculando novas UORGs de exercício"
+
+  - trigger: ">CDIAPSBENE"
+    replace: ">CDIAPSBENE"
+    label: "Pensão: Inclui ou altera dados e bases brutas de cálculo de pensionistas"
+
+  - trigger: ">CDALPSRLEG"
+    replace: ">CDALPSRLEG"
+    label: "Pensão: Altera ou cadastra o representante legal associado ao pensionista"
+
+  - trigger: ">TBALUORG"
+    replace: ">TBALUORG"
+    label: "Estrutura: Realiza a alteração de nomenclatura ou dados geográficos de uma UORG"
+
+  - trigger: ">ADCOPREFUN"
+    replace: ">ADCOPREFUN"
+    label: "Chefia: Consulta a previsão de funções e abre tela de remanejamento de vagas"
+
+  - trigger: ">GRCOLOTREA"
+    replace: ">GRCOLOTREA"
+    label: "Relatório: Permite a consulta detalhada da lotação real e distribuição por UORG"
+
+  - trigger: ">CACOCHEFIA"
+    replace: ">CACOCHEFIA"
+    label: "Chefia: Emite relatório de chefias ativas e mapeia setores sem titulares"
+
+  - trigger: ">ADCOCRIFUN"
+    replace: ">ADCOCRIFUN"
+    label: "Chefia: Consulta vagas consolidadas de funções e cargos comissionados no órgão"
+
+  - trigger: ">CONSGRAT"
+    replace: ">CONSGRAT"
+    label: "GDATPRF: Emite o relatório de média de pontos nos últimos 60 meses para aposentados"
+
+  - trigger: ">dppoblbs"
+    replace: ">dppoblbs"
+    label: "Progressão: Sana a crítica 'programação de bp não foi efetuada' ao finalizar o DL"
+
+  - trigger: ">CAITFERIAS"
+    replace: ">CAITFERIAS"
+    label: "Férias: Registra a interrupção oficial de um período de gozo em andamento"
+
+  - trigger: ">CAPRFERIAS"
+    replace: ">CAPRFERIAS"
+    label: "Férias: Executa a reprogramação de períodos de férias dentro do mesmo ano"
+
+  - trigger: ">CACAFERIAS"
+    replace: ">CACAFERIAS"
+    label: "Férias: Associa documento legal para reprogramação de saldo de anos anteriores"
+
+  - trigger: ">DPEDITADL"
+    replace: ">DPEDITADL"
+    label: "Módulo: Edita Documento Legal Interno (Abertura de Portarias, Ofícios, BS)"
+
+  - trigger: ">DPFINAL"
+    replace: ">DPFINAL"
+    label: "Módulo: Finaliza o documento legal interno gravando seus efeitos no sistema"
+
+  - trigger: ">DPRBDL"
+    replace: ">DPRBDL"
+    label: "Módulo: Reabre um documento legal interno que já havia sido finalizado"
+
+  - trigger: ">CAIFGZLPA"
+    replace: ">CAIFGZLPA"
+    label: "LPA: Lança o período de gozo de Licença Prêmio por Assiduidade"
+
+  - trigger: ">CACOOCORSE"
+    replace: ">CACOOCORSE"
+    label: "Cadastro: Verifica ocorrências ou pendências ativas antes de vacâncias"
+
+  - trigger: ">CAVAEXONER"
+    replace: ">CAVAEXONER"
+    label: "Movimentação: Efetiva o desligamento do cargo por motivo de exoneração"
+
+  - trigger: ">GRCOSITCAR"
+    replace: ">GRCOSITCAR"
+    label: "Relatório: Emite estatística de quantitativo de servidores por situação e cargo"
+
+  - trigger: ">CALIREDIST"
+    replace: ">CALIREDIST"
+    label: "Movimentação: Libera a matrícula para redistribuição/vínculo em outra UPAG"
+
+  - trigger: ">CDEXCADAST"
+    replace: ">CDEXCADAST"
+    label: "Movimentação: Exclui o cadastro da matrícula no órgão cessionário (Retorno)"
+
+  - trigger: ">CALCEXEXT"
+    replace: ">CALCEXEXT"
+    label: "Movimentação: Consulta dados cadastrais de exercício externo do servidor"
+
+  - trigger: ">CALITRANSF"
+    replace: ">CALITRANSF"
+    label: "Movimentação: Comando para liberar e enviar aposentado para nova UPAG"
+
+  - trigger: ">CAACTRANSF"
+    replace: ">CAACTRANSF"
+    label: "Movimentação: Comando para aceitar e receber aposentado em nova UPAG"
+
+  - trigger: ">CDLIPSUPAG"
+    replace: ">CDLIPSUPAG"
+    label: "Movimentação: Libera e envia o cadastro de pensionista para nova UPAG"
+
+  - trigger: ">CDACPSUPAG"
+    replace: ">CDACPSUPAG"
+    label: "Movimentação: Aceita e recebe o cadastro de pensionista na nova UPAG"
+
+  - trigger: ">CANHISPFU"
+    replace: ">CANHISPFU"
+    label: "Chefia: Permite incluir o histórico de função gratificada de servidor já removido"
+
+  - trigger: ">CACOCONPSS"
+    replace: ">CACOCONPSS"
+    label: "Previdência: Emite a ficha analítica de valores recolhidos e bases do PSS"
+
+  - trigger: "CAEXGZLP"
+    replace: ">CAEXGZLP"
+    label: "LPA: Exclui ou retifica um período de gozo lançado incorretamente"
+
+  - trigger: "CACAUTLOC"
+    replace: ">CACAUTLOC"
+    label: "Aposentadoria: Cancela a última UORG de localização cadastrada"
+
+  - trigger: "CAEXAPOS"
+    replace: ">CAEXAPOS"
+    label: "Aposentadoria: Exclui de forma excepcional o registro de aposentadoria por erro"
+
+  - trigger: "CDANUENIO"
+    replace: ">CDANUENIO"
+    label: "Anuênio: Módulo para cadastramento e concessão de gratificação por tempo"
+
+  - trigger: "CAACLSIND"
+    replace: ">CAACLSIND"
+    label: "Anuênio: Executa o cálculo automático de anuênios com base no tempo"
+
+  - trigger: "CEIAMENSAG"
+    replace: ">CEIAMENSAG"
+    label: "Comunica: Abre a tela para digitação e envio efetivo da mensagem gravada"
+
+  - trigger: "CDLIPSGRAC"
+    replace: ">CDLIPSGRAC"
+    label: "Pensão: Libera e envia o cadastro de pensão graciosa para nova UPAG"
+
+  - trigger: "CDACPSGRAC"
+    replace: ">CDACPSGRAC"
+    label: "Pensão: Aceita e recebe o cadastro de pensão graciosa na nova UPAG"
+  # ===========================================================================
+  # 2. RUBRICAS FINANCEIRAS E PARÂMETROS DE CÁLCULO
+  # ===========================================================================
+
+  - trigger: "rub_00951"
+    replace: "00951"
+    label: "Rubrica: Auxílio-Transporte (Uso exclusivo para lançamentos automáticos)"
+
+  - trigger: "rub_00370"
+    replace: "00370"
+    label: "Rubrica: Auxílio Transporte - Regime CLT (Lançamento automático)"
+
+  - trigger: "rub_82850"
+    replace: "82850"
+    label: "Rubrica: Auxílio-Transporte CDT (Lançamento automático)"
+
+  - trigger: "rub_83297"
+    replace: "83297"
+    label: "Rubrica: Acerto de Auxílio-Transporte AT (Uso para ajustes manuais)"
+
+  - trigger: "rub_83296"
+    replace: "83296"
+    label: "Rubrica: Acerto de Auxílio-Transporte CLT (Uso para ajustes manuais)"
+
+  - trigger: "rub_83295"
+    replace: "83295"
+    label: "Rubrica: Acerto de Auxílio-Transporte CDT (Uso para ajustes manuais)"
+
+  - trigger: "rub_83081"
+    replace: "83081"
+    label: "Rubrica: Pagamento de Indenização por Flexibilização de Repouso (IFR)"
+
+  - trigger: "rub_00136"
+    replace: "00136"
+    label: "Rubrica: Auxílio-Alimentação (Inclusão manual proporcional/integral)"
+
+  - trigger: "rub_73580"
+    replace: "73580"
+    label: "Rubrica: Cota-Parte do Auxílio Pré-Escolar (Código de desconto)"
+
+  - trigger: "rub_0700"
+    replace: "0700"
+    label: "Rubrica: Código de operação em tela para desconto de Cota-Parte Pré-Escolar"
+
+  - trigger: "rub_00067"
+    replace: "00067"
+    label: "Rubrica: Pagamento avulso/eventual do adicional de Periculoridade"
+
+  - trigger: "rub_00066"
+    replace: "00066"
+    label: "Rubrica: Pagamento do encargo de Curso ou Concurso"
+
+  - trigger: "rub_00028"
+    replace: "00028"
+    label: "Rubrica: Adicional Noturno (Lançamentos em sequência 1 ou sequências 6 a 9)"
+
+  - trigger: "rub_82737"
+    replace: "82737"
+    label: "Rubrica: Ressarcimento de desconto indevido de Per Capita - Saúde Suplementar"
+
+  - trigger: "rub_32623"
+    replace: "32623"
+    label: "Rubrica: Desconto de débito cadastral lançado em folha pela GEAP"
+
+  - trigger: "rub_82273"
+    replace: "82273"
+    label: "Rubrica: Pagamento retroativo de meses anteriores de Abono de Permanência"
+
+  - trigger: "rub_80701"
+    replace: "80701"
+    label: "Rubrica: Desconto em folha por motivo de dias de Suspensão funcional"
+
+  - trigger: "rub_00145"
+    replace: "00145"
+    label: "Rubrica: Reposição ao Erário / Desconto de valores recebidos indevidamente"
+
+  - trigger: "rub_83212"
+    replace: "83212"
+    label: "Rubrica: Reposição ao Erário (Especificação sem incidência de PSS)"
+
+  - trigger: "rub_98002"
+    replace: "98002"
+    label: "Rubrica: Contribuição de PSS sobre ativos (Referência para reposições)"
+
+  - trigger: "rub_97002"
+    replace: "97002"
+    label: "Rubrica: Inclusão manual de desconto de Pensão Alimentícia em folha"
+
+  - trigger: "rub_80001"
+    replace: "80001"
+    label: "Rubrica: Desconto financeiro por motivo de falta não justificada"
+
+  # ===========================================================================
+  # 3. CÓDIGOS DE OCORRÊNCIA, AFASTAMENTO E PARÂMETROS DO SISTEMA
+  # ===========================================================================
+
+  - trigger: "oc_1001"
+    replace: "1001"
+    label: "PGD: Código para Teletrabalho Integral (Sem comparecimento à sede)"
+
+  - trigger: "oc_1002"
+    replace: "1002"
+    label: "PGD: Código para Teletrabalho Parcial (Somente nos dias remotos)"
+
+  - trigger: "oc_1003"
+    replace: "1003"
+    label: "PGD: Código para Teletrabalho no Exterior (Quando autorizado)"
+
+  - trigger: "oc_1005"
+    replace: "1005"
+    label: "PGD: Código para dias de efetivo deslocamento presencial do servidor"
+
+  - trigger: "oc_0449"
+    replace: "0449"
+    label: "PGD: Afastamento exclusivo para Usufruto de Recesso em regime de PGD"
+
+  - trigger: "oc_00122"
+    replace: "00122"
+    label: "Ocorrência: Código para registro de Licença Paternidade"
+
+  - trigger: "oc_0096"
+    replace: "0096"
+    label: "Afastamento: Código SUSTEMAMDI (Suspensão preventiva de pagamento)"
+
+  - trigger: "oc_104"
+    replace: "104"
+    label: "Afastamento: Licença para Tratar de Assuntos Particulares (Art. 91)"
+
+  - trigger: "oc_243"
+    replace: "243"
+    label: "Afastamento: Suspensão Temporária Administrativa de aposentado (Sem óbito)"
+
+  - trigger: "oc_024"
+    replace: "024"
+    label: "Afastamento: Suspensão do Exercício da Função Pública por Decisão Judicial"
+
+  - trigger: "oc_129"
+    replace: "129"
+    label: "Ocorrência: Registro de Falta não justificada na folha ponto"
+
+  - trigger: "oc_167"
+    replace: "167"
+    label: "Ocorrência: Registro de afastamento por motivo de Prisão do servidor"
+
+  - trigger: "oc_046"
+    replace: "046"
+    label: "Parâmetro: Código de forma de entrada para Progressão Funcional Manual"
+
+  - trigger: "oc_054"
+    replace: "054"
+    label: "Parâmetro: Código de forma de entrada para Progressão Judicial"
+
+  - trigger: "oc_009"
+    replace: "009"
+    label: "Parâmetro: Código de Forma de Provimento Excepcional / Posse de cargo"
+
+  - trigger: "oc_501"
+    replace: "501"
+    label: "Parâmetro: Admissão sem concurso público (Uso em PCA Histórico)"
+
+  - trigger: "oc_534"
+    replace: "534"
+    label: "Parâmetro: Entrada/Saída por transformação de cargo (Uso em PCA Histórico)"
+
+  - trigger: "oc_611"
+    replace: "611"
+    label: "Parâmetro: Código de saída por vacância devido a posse em cargo inacumulável"
+
+  - trigger: "oc_01100"
+    replace: "01100"
+    label: "Ocorrência: Código de ingresso por Nomeação em cargo efetivo (Art. 9, I)"
+
+  - trigger: "oc_187"
+    replace: "187"
+    label: "Afastamento: Código preventivo de vacância para corte prévio de folha"
+
+  - trigger: "oc_037"
+    replace: "037"
+    label: "Ocorrência: Código para registro de Dispensa da função/cargo comissão/CNE"
+
+  - trigger: "oc_44"
+    replace: "44"
+    label: "Parâmetro: Assunto de cálculo para lançamento sem prazo fixado (Tela Preta)"
+
+  - trigger: "oc_099"
+    replace: "099"
+    label: "Parâmetro: Objeto de pagamento para cadastro de exercícios anteriores"
+
+  # ===========================================================================
+  # 4. CÓDIGOS DE ARRECADAÇÃO E CAIXA (GRU / PAGTESOURO / DARF)
+  # ===========================================================================
+
+  - trigger: "gru_18806-9"
+    replace: "18806-9"
+    label: "GRU: Devolução de valores de exercícios anteriores (Método Antigo)"
+
+  - trigger: "gru_68801-0"
+    replace: "68801-0"
+    label: "GRU: Devolução de créditos recebidos a mais na folha (No exercício corrente)"
+
+  - trigger: "gru_68817-7"
+    replace: "68817-7"
+    label: "GRU: Código para ressarcimento de folha de pessoal cedido (Método Antigo)"
+
+  - trigger: "gru_68888-6"
+    replace: "68888-6"
+    label: "GRU: Anulação de despesa paga no exercício referente à Ajuda de Custo"
+
+  - trigger: "gru_017437"
+    replace: "017437"
+    label: "GRU: Devolução de valores de exercícios anteriores (Novo Portal PagTesouro)"
+
+  - trigger: "gru_016430"
+    replace: "016430"
+    label: "GRU: Devolução de créditos da folha dentro do exercício (Novo Portal)"
+
+  - trigger: "gru_016431"
+    replace: "016431"
+    label: "GRU: Código para ressarcimento de pessoal cedido (Novo Portal PagTesouro)"
+
+  - trigger: "darf_1635"
+    replace: "1635"
+    label: "DARF: Código de receita para recolhimento de Contribuição Patronal ao PSS"
+
+
+  # ===========================================================================
+  # MÓDULO ATUAFOLHA / ATUAPENSIO / ATUASERV (Manual de Procedimentos - Folha de Pagamento)
+  # ===========================================================================
+
+  # ---------------------------------------------------------------------------
+  # 1. MÓDULO ATUAFOLHA - ATUALIZA DADOS PARA PAGAMENTO
+  # ---------------------------------------------------------------------------
+
+  - trigger: ">FPATMSGORG"
+    replace: ">FPATMSGORG"
+    label: "Mensagem: Lança informativos nos contracheques de todos os servidores do Órgão"
+
+  - trigger: ">FPATMSGUPG"
+    replace: ">FPATMSGUPG"
+    label: "Mensagem: Lança informativos nos contracheques da unidade pagadora (UPAG) especifica"
+
+  - trigger: ">FPATREDREN"
+    replace: ">FPATREDREN"
+    label: "DIRF: Atualiza remuneração extra-SIAPE p/ comprovante de rendimentos e retenção na fonte"
+
+  - trigger: ">FPATREUPAG"
+    replace: ">FPATREUPAG"
+    label: "Relatório: Atualiza relatórios da folha a serem disponibilizados via SIAPENET"
+
+  - trigger: ">FPCOREUPAG"
+    replace: ">FPCOREUPAG"
+    label: "Relatório: Consulta os relatórios disponibilizados para a UPAG após processamento"
+
+  # ---------------------------------------------------------------------------
+  # 2. MÓDULO ATUAPENSIO - INFORMAÇÕES DE PENSIONISTA
+  # ---------------------------------------------------------------------------
+
+  - trigger: ">FPATPARPEN"
+    replace: ">FPATPARPEN"
+    label: "Pensão: Atualiza Parâmetros de cálculo automático de pensionistas"
+
+  - trigger: ">FPATPEQMPE"
+    replace: ">FPATPEQMPE"
+    label: "Pensão: Libera pagamento de pequena monta de pensionista"
+  - trigger: ">FPATPSMFIN"
+    replace: ">FPATPSMFIN"
+    label: "Pensão: Efetua acertos financeiros manuais (valores informados/parametrizados) de pensionistas"
+
+  - trigger: ">FPATREMEXP"
+    replace: ">FPATREMEXP"
+    label: "Pensão: Atualiza remuneração extra-SIAPE de pensionista para controle de teto"
+
+  - trigger: ">FPAT13PENS"
+    replace: ">FPAT13PENS"
+    label: "Pensão: Atualiza Gratificação Natalina e 13º salário de pensionista"
+
+  - trigger: ">FPCL13PENS"
+    replace: ">FPCL13PENS"
+    label: "Pensão: Executa cálculo da Gratificação Natalina de pensionista"
+  # ---------------------------------------------------------------------------
+  # 3. MÓDULO ATUASERV - INFORMAÇÕES DE SERVIDOR
+  # ---------------------------------------------------------------------------
+  - trigger: ">FPATMOVIFIN"
+    replace: ">FPATMOVIFIN"
+    label: "Folha: Acesso direto à tela de movimentação financeira manual (valores/parametrizado)"
+
+  - trigger: ">FPATMOVRUB"
+    replace: ">FPATMOVRUB"
+    label: "Folha: Permite lançar rubrica de mesmo valor para lote de matrículas simultaneamente"
+  - trigger: ">FPAT13SERV"
+    replace: ">FPAT13SERV"
+    label: "Folha: Atualiza Gratificação Natalina e 13º salário do servidor"
+  - trigger: ">FPCL12SERV"
+    replace: ">FPCL12SERV"
+    label: "Folha: Executa cálculo de Gratificação Natalina de servidor/aposentado"
+
+  # ---------------------------------------------------------------------------
+  # 4. MÓDULO ATUASUPLIN - FOLHA SUPLEMENTAR INTERNA
+  # ---------------------------------------------------------------------------
+
+  - trigger: ">FPCLPSUPIN"
+    replace: ">FPCLPSUPIN"
+    label: "Suplementar: Calcula suplementar interna para verificar os cálculos do pensionista"
+  - trigger: ">FPCOPSUPIN"
+    replace: ">FPCOPSUPIN"
+    label: "Suplementar: Consulta a ficha financeira da folha suplementar interna de pensionista"
+
+  - trigger: ">FPCOSUPLIN"
+    replace: ">FPCOSUPLIN"
+    label: "Suplementar: Consulta a ficha financeira da suplementar interna de ativo/aposentado"
+
+  - trigger: ">FPMOVPSUPI"
+    replace: ">FPMOVPSUPI"
+    label: "Suplementar: Movimentação financeira de pensionista na suplementar interna"
+
+  - trigger: ">FPMOVSUPIN"
+    replace: ">FPMOVSUPIN"
+    label: "Suplementar: Movimentação financeira de ativo/aposentado na suplementar interna"
+
+  # ---------------------------------------------------------------------------
+  # 5. MÓDULOS DE CONSULTAS GERAIS DA FOLHA
+  # ---------------------------------------------------------------------------
+
+  - trigger: ">FPCOMSGORG"
+    replace: ">FPCOMSGORG"
+    label: "Consulta: Informativos gerais incluídos pelo gestor do Órgão no contracheque"
+
+  - trigger: ">FPCOMSGUPA"
+    replace: ">FPCOMSGUPA"
+    label: "Consulta: Informativos da UPAG incluídos no contracheque dos servidores lotados"
+  - trigger: ">FPCORENDEX"
+    replace: ">FPCORENDEX"
+    label: "Consulta: Rendimentos extra-SIAPE informados para servidor ativo ou aposentado"
+
+  - trigger: ">FPCORUBEXC"
+    replace: ">FPCORUBEXC"
+    label: "Consulta: Rubricas excluídas da movimentação financeira do servidor em mês/ano"
+  - trigger: ">FPCOPSFICF"
+    replace: ">FPCOPSFICF"
+    label: "Consulta: Ficha financeira (contracheque) de pensionista civil em mês/ano"
+
+  - trigger: ">FPCOPSRUEX"
+    replace: ">FPCOPSRUEX"
+    label: "Consulta: Rubricas excluídas da movimentação de pensionista em mês/ano"
+  # ---------------------------------------------------------------------------
+  # 6. Exercícios Anteriores E PROCESSO GERENCIAL
+  # ---------------------------------------------------------------------------
+  - trigger: ">GRAZPGTO"
+    replace: ">GRAZPGTO"
+    label: "Exercícios Anteriores: Autorização do processo de pagamento (GERENCIAL > GRPROCESSO)"
+
+  - trigger: ">GRDESBLQRH"
+    replace: ">GRDESBLQRH"
+    label: "Exercícios Anteriores: Desbloqueio do processo pelo dirigente de RH (valores < R$ 30.000)"
+
+  - trigger: ">GRDESBSPOA"
+    replace: ">GRDESBSPOA"
+    label: "Exercícios Anteriores: Desbloqueio do processo pela autoridade SPOA (valores > R$ 30.000)"
+
+  # ---------------------------------------------------------------------------
+  # 7. TABELAS DO SISTEMA (TBCO / TBC)
+  # ---------------------------------------------------------------------------
+
+  - trigger: ">TBCOAGEN"
+    replace: ">TBCOAGEN"
+    label: "Tabela: Consulta as agências bancárias cadastradas no sistema"
+
+  - trigger: ">TBCOASSAUT"
+    replace: ">TBCOASSAUT"
+    label: "Tabela: Consulta os assuntos de cálculo automáticos do sistema"
+  - trigger: ">TBCOBANCO"
+    replace: ">TBCOBANCO"
+    label: "Tabela: Consulta os bancos conveniados e cadastrados no SIAPE"
+
+  - trigger: ">TBCOBENDEP"
+    replace: ">TBCOBENDEP"
+    label: "Tabela: Consulta benefícios permitidos por dependente, idade limite e parentesco"
+
+  - trigger: ">TBCOCEMP"
+    replace: ">TBCOCEMP"
+    label: "Tabela: Consulta informações relacionadas aos cargos e empregos das carreiras"
+  - trigger: ">TBCOCLEGIR"
+    replace: ">TBCOCLEGIR"
+    label: "Tabela: Constantes Legais - Tabela mensal vigente do imposto de renda (IR)"
+
+  - trigger: ">TBCOCLEGSS"
+    replace: ">TBCOCLEGSS"
+    label: "Tabela: Constantes Legais - Tabela de contribuição e alíquotas do INSS e PSS"
+  - trigger: ">TBCOFUNCAO"
+    replace: ">TBCOFUNCAO"
+    label: "Tabela: Consulta informações sobre funções gratificadas e cargos comissionados"
+  - trigger: ">TBCOSITUAC"
+    replace: ">TBCOSITUAC"
+    label: "Tabela: Consulta as diversas situações funcionais cadastradas no SIAPE"
+  - trigger: ">TBCOUPAG"
+    replace: ">TBCOUPAG"
+    label: "Tabela: Consulta dados das unidades pagadoras (UPAG) e convênios de crédito"
+
+  - trigger: ">COTBCAPARA"
+    replace: ">COTBCAPARA"
+    label: "Tabela: Consulta os assuntos de cálculo parametrizados vinculados a rubricas"
+
+  # ---------------------------------------------------------------------------
+  # 8. RUBRICAS FINANCEIRAS DO SISTEMA
+  # ---------------------------------------------------------------------------
+
+  - trigger: "rub_00024"
+    replace: "00024"
+    label: "Rubrica: Lançamento de Substituição de Função"
+
+
+  # ===========================================================================
+  # MÓDULOS ADICIONAIS (SIAPE COMANDOS)
+  # ===========================================================================
+
+  - trigger: ">GRPENSAO"
+    replace: ">GRPENSAO"
+    label: "Administração: Cadastro de pensionistas"
+
+  - trigger: ">CDAUCRIT"
+    replace: ">CDAUCRIT"
+    label: "Administração: Autoriza nao criticar dados"
+
+  - trigger: ">CACOANUUPA"
+    replace: ">CACOANUUPA"
+    label: "Consulta: Consulta anuênios por UPAG"
+
+  - trigger: ">CDCOLOTUOR"
+    replace: ">CDCOLOTUOR"
+    label: "Administração: Servidor vinculado em uma UORG"
+
+  - trigger: ">COTBASSGCE"
+    replace: ">COTBASSGCE"
+    label: "Administração: Ass. calc. gratif. cargo/empr"
+
+  - trigger: ">COTBREGJUR"
+    replace: ">COTBREGJUR"
+    label: "Administração: Regime juridico"
+
+  - trigger: ">CAIAOUTROS"
+    replace: ">CAIAOUTROS"
+    label: "Consulta: Inclui/altera outros"
+
+  - trigger: ">ADCONTATUA"
+    replace: ">ADCONTATUA"
+    label: "Tabela: Controle de atualizações"
+
+  - trigger: ">TIPOBENEFI"
+    replace: ">TIPOBENEFI"
+    label: "Tabela: Tipo de benefício"
+
+  - trigger: ">CAALREDIST"
+    replace: ">CAALREDIST"
+    label: "Consulta: Aceita redist/lot.carreira AGU"
+
+  - trigger: ">DPEXBS"
+    replace: ">DPEXBS"
+    label: "Administração: Exclui boletim de servico"
+
+  - trigger: ">CACAPOSPFU"
+    replace: ">CACAPOSPFU"
+    label: "Consulta: Cancela posse"
+
+  - trigger: ">DPCONDL"
+    replace: ">DPCONDL"
+    label: "Administração: Consulta doc. legal"
+
+  - trigger: ">CDINEXCL"
+    replace: ">CDINEXCL"
+    label: "Administração: Exclui dados do servidor"
+
+  - trigger: ">CDCOOCFUNC"
+    replace: ">CDCOOCFUNC"
+    label: "Administração: Servidores ocupantes de função"
+
+  - trigger: ">DPCOBP"
+    replace: ">DPCOBP"
+    label: "Administração: Consulta boletim de pessoal"
+
+  - trigger: ">CDCOPSPROC"
+    replace: ">CDCOPSPROC"
+    label: "Consulta: Cons.proc.assoc. beneficiario"
+
+  - trigger: ">IMPEDE"
+    replace: ">IMPEDE"
+    label: "Consulta: Impedimento exercer func/cargo"
+
+  - trigger: ">BANFITUN"
+    replace: ">BANFITUN"
+    label: "Tabela: Dados bancarios p/fita unica"
+
+  - trigger: ">CACGOPCAO"
+    replace: ">CACGOPCAO"
+    label: "Consulta: Corrige opção de remuneracao"
+
+  - trigger: ">CDCOINCL"
+    replace: ">CDCOINCL"
+    label: "Administração: Servidores em processo de incl"
+
+  - trigger: ">ADIFPRELOT"
+    replace: ">ADIFPRELOT"
+    label: "Administração: Informa prev. lotacao na ua"
+
+  - trigger: ">CAEDEXERED"
+    replace: ">CAEDEXERED"
+    label: "Consulta: Inf. exer. externo redistrib"
+
+  - trigger: ">DPEMBSUPAG"
+    replace: ">DPEMBSUPAG"
+    label: "Administração: Emite boletim de servico - UPAG"
+
+  - trigger: ">ATUAFOLHA"
+    replace: ">ATUAFOLHA"
+    label: "Administração: Atualiza dados p/pagamento"
+
+  - trigger: ">CAINHISTLO"
+    replace: ">CAINHISTLO"
+    label: "Consulta: Inclui histórico de lotacao"
+
+  - trigger: ">CAINAVRFU"
+    replace: ">CAINAVRFU"
+    label: "Consulta: Informar as funções de confiança"
+
+  - trigger: ">CDCOPSRLEG"
+    replace: ">CDCOPSRLEG"
+    label: "Consulta: Consulta representantelegal"
+
+  - trigger: ">CDINPSINST"
+    replace: ">CDINPSINST"
+    label: "Consulta: Inclui instituidor de pensão"
+
+  - trigger: ">GRCOSERESC"
+    replace: ">GRCOSERESC"
+    label: "Administração: Servidores p/escolaridade"
+
+  - trigger: ">DPGEBP"
+    replace: ">DPGEBP"
+    label: "Administração: Geracao do boletim de pessoal"
+
+  - trigger: ">DESREARH"
+    replace: ">DESREARH"
+    label: "Consulta: Bloqueia servidor no cadastro"
+
+  - trigger: ">CDEXPENSIO"
+    replace: ">CDEXPENSIO"
+    label: "Administração: Exclui pensionista"
+
+  - trigger: ">GRVAGACARG"
+    replace: ">GRVAGACARG"
+    label: "Administração: Vagas de cargo"
+
+  - trigger: ">CACOEDITAL"
+    replace: ">CACOEDITAL"
+    label: "Consulta: Consulta edital homologacao"
+
+  - trigger: ">COTBORGAO"
+    replace: ">COTBORGAO"
+    label: "Administração: Orgao"
+
+  - trigger: ">CAIFDTPOS"
+    replace: ">CAIFDTPOS"
+    label: "Consulta: Informa data de posse"
+
+  - trigger: ">CACAINTFER"
+    replace: ">CACAINTFER"
+    label: "Consulta: Cancela interrupcao de férias"
+
+  - trigger: ">CACOANUENI"
+    replace: ">CACOANUENI"
+    label: "Consulta: Consulta anuênio do servidor"
+
+  - trigger: ">TBCOPENSAO"
+    replace: ">TBCOPENSAO"
+    label: "Consulta: Tabela de tipo de pensão"
+
+  - trigger: ">COTBPARUGR"
+    replace: ">COTBPARUGR"
+    label: "Administração: Parametr. rubrica gratificação"
+
+  - trigger: ">CDATAUXTRA"
+    replace: ">CDATAUXTRA"
+    label: "Administração: Atualiza auxilio transporte"
+
+  - trigger: ">ADCLESTAT"
+    replace: ">ADCLESTAT"
+    label: "Folha: Calcula estatística mensal"
+
+  - trigger: ">COTBLOCAL"
+    replace: ">COTBLOCAL"
+    label: "Administração: Consulta local fisico orgao"
+
+  - trigger: ">CACONATUAL"
+    replace: ">CACONATUAL"
+    label: "Consulta: Con.serv. nunca atualizados"
+
+  - trigger: ">CDATAFAST"
+    replace: ">CDATAFAST"
+    label: "Administração: Atualiza afastamento"
+
+  - trigger: ">CAINAPOSEN"
+    replace: ">CAINAPOSEN"
+    label: "Administração: Inclui aposentado"
+
+  - trigger: ">CACOMATSRL"
+    replace: ">CACOMATSRL"
+    label: "Consulta: Matriculas serv. lotados UORG"
+
+  - trigger: ">CABLCONCUR"
+    replace: ">CABLCONCUR"
+    label: "Consulta: Bloqueia concursado p/nomeac"
+
+  - trigger: ">CDACTFORG"
+    replace: ">CDACTFORG"
+    label: "Administração: Aceita entrada em novo orgao"
+
+  - trigger: ">DPINCLEXT"
+    replace: ">DPINCLEXT"
+    label: "Administração: Inclui doc. legal externo"
+
+  - trigger: ">COTBPAIS"
+    replace: ">COTBPAIS"
+    label: "Administração: Pais"
+
+  - trigger: ">CDCODUPPAS"
+    replace: ">CDCODUPPAS"
+    label: "Administração: Cons pis/pasep em duplicidade"
+
+  - trigger: ">GRAUPAR"
+    replace: ">GRAUPAR"
+    label: "Tabela: Grau de parentesco"
+
+  - trigger: ">DPEMBS"
+    replace: ">DPEMBS"
+    label: "Administração: Emite boletim de servico BS"
+
+  - trigger: ">CAIFFERESP"
+    replace: ">CAIFFERESP"
+    label: "Consulta: Informa férias especiais"
+
+  - trigger: ">CACOLPAFER"
+    replace: ">CACOLPAFER"
+    label: "Consulta: Consulta LPA/férias da UORG"
+
+  - trigger: ">CAIFPORTNO"
+    replace: ">CAIFPORTNO"
+    label: "Consulta: Informa lotacao/exer.concur"
+
+  - trigger: ">COTBDIPLEG"
+    replace: ">COTBDIPLEG"
+    label: "Administração: Diploma legal"
+
+  - trigger: ">ADDIPREFUN"
+    replace: ">ADDIPREFUN"
+    label: "Administração: Distribui função para as uorgs"
+
+  - trigger: ">CAAAFUNCAO"
+    replace: ">CAAAFUNCAO"
+    label: "Consulta: Apostilamento de função"
+
+  - trigger: ">CACOLOTCAR"
+    replace: ">CACOLOTCAR"
+    label: "Consulta: Serv. lotados na UORG p/cargo"
+
+  - trigger: ">INTERRFER"
+    replace: ">INTERRFER"
+    label: "Consulta: Interrupcao de férias"
+
+  - trigger: ">CDACPSBENE"
+    replace: ">CDACPSBENE"
+    label: "Consulta: Órgão destino faz o aceite"
+
+  - trigger: ">CAIADESPSS"
+    replace: ">CAIADESPSS"
+    label: "Consulta: Opção de desconto de PSS"
+
+  - trigger: ">DPGEBS"
+    replace: ">DPGEBS"
+    label: "Administração: Geracao de boletim de servico BS"
+
+  - trigger: ">CDCOPISPAS"
+    replace: ">CDCOPISPAS"
+    label: "Administração: Info. pis/pasep bco brasil"
+
+  - trigger: ">GREVOLFUNC"
+    replace: ">GREVOLFUNC"
+    label: "Administração: Evolucao funcional"
+
+  - trigger: ">CDREPLEG"
+    replace: ">CDREPLEG"
+    label: "Administração: Rep legal de ativos e aposenta"
+
+  - trigger: ">DPEMITEDL"
+    replace: ">DPEMITEDL"
+    label: "Administração: Emite doc. legal interno"
+
+  - trigger: ">CDVISENGRU"
+    replace: ">CDVISENGRU"
+    label: "Administração: Vincula sentenca por grupo"
+
+  - trigger: ">CDLIPSBENE"
+    replace: ">CDLIPSBENE"
+    label: "Consulta: Liberação"
+
+  - trigger: ">NIVESC"
+    replace: ">NIVESC"
+    label: "Tabela: Nivel de escolaridade"
+
+  - trigger: ">CACOSEREEO"
+    replace: ">CACOSEREEO"
+    label: "Consulta: Serv exerc ext lotados na UORG"
+
+  - trigger: ">CAEMCTPPEC"
+    replace: ">CAEMCTPPEC"
+    label: "Consulta: Emite carta p/benef.da pecunia"
+
+  - trigger: ">ADCOVAGORG"
+    replace: ">ADCOVAGORG"
+    label: "Administração: Consulta vagas aprov.p/UORG"
+
+  - trigger: ">VAGABASE"
+    replace: ">VAGABASE"
+    label: "Tabela: Administra vagas cadastro base"
+
+  - trigger: ">CDAUPSCRIT"
+    replace: ">CDAUPSCRIT"
+    label: "Administração: Autor. nao criticar dados pens"
+
+  - trigger: ">TBCONSIG"
+    replace: ">TBCONSIG"
+    label: "Administração: Consignacoes"
+
+  - trigger: ">CDCOPSDABE"
+    replace: ">CDCOPSDABE"
+    label: "Consulta: Consulta dados do benefício"
+
+  - trigger: ">CACABLOQUE"
+    replace: ">CACABLOQUE"
+    label: "Consulta: Cancela bloqueio de concursado"
+
+  - trigger: ">CACOFERUOR"
+    replace: ">CACOFERUOR"
+    label: "Consulta: Consulta férias da UORG"
+
+  - trigger: ">CDCOPSINBE"
+    replace: ">CDCOPSINBE"
+    label: "Consulta: Consulta inst. de beneficiario"
+
+  - trigger: ">CDALPSINST"
+    replace: ">CDALPSINST"
+    label: "Consulta: Altera instituidor de pensão"
+
+  - trigger: ">TBCOFUNDL"
+    replace: ">TBCOFUNDL"
+    label: "Consulta: Transação"
+
+  - trigger: ">CDCOBENFVE"
+    replace: ">CDCOBENFVE"
+    label: "Administração: Consulta benefício i.r. a venc"
+
+  - trigger: ">CDANAUTCRI"
+    replace: ">CDANAUTCRI"
+    label: "Administração: Anula/enc. autoriz nao critica"
+
+  - trigger: ">CAPGRROGCE"
+    replace: ">CAPGRROGCE"
+    label: "Consulta: Prorroga cessão de servidor"
+
+  - trigger: ">DPCOSITBP"
+    replace: ">DPCOSITBP"
+    label: "Administração: Consulta situação do boletim de pessoal"
+
+  - trigger: ">CAEXLOCEXE"
+    replace: ">CAEXLOCEXE"
+    label: "Consulta: Exclui localização exercicio"
+
+  - trigger: ">CDALFUNCB"
+    replace: ">CDALFUNCB"
+    label: "Administração: Altera dados funcionais basico"
+
+  - trigger: ">CAALMOTIVO"
+    replace: ">CAALMOTIVO"
+    label: "Administração: Altera motivo do provento apos"
+
+  - trigger: ">CASLMOCAO"
+    replace: ">CASLMOCAO"
+    label: "Consulta: Tornar remoção sem efeito"
+
+  - trigger: ">GRCOSERTSS"
+    replace: ">GRCOSERTSS"
+    label: "Administração: Servidor p/tempo servico/sexo"
+
+  - trigger: ">CACAOPCREM"
+    replace: ">CACAOPCREM"
+    label: "Consulta: Cancela opção de remuneracao"
+
+  - trigger: ">DPEMBPCOGR"
+    replace: ">DPEMBPCOGR"
+    label: "Administração: Emite boletim de pessoal - cogrh"
+
+  - trigger: ">TBCOJORNAD"
+    replace: ">TBCOJORNAD"
+    label: "Tabela: Consulta jornada de trabalho"
+
+  - trigger: ">CAEDCSSHIS"
+    replace: ">CAEDCSSHIS"
+    label: "Consulta: cessão servidor c/DL histórico"
+
+  - trigger: ">DPDZBP"
+    replace: ">DPDZBP"
+    label: "Administração: Disponibilicacao do boletim de pessoal"
+
+  - trigger: ">CAIACONCUR"
+    replace: ">CAIACONCUR"
+    label: "Consulta: Inclui/altera convidado/curso"
+
+  - trigger: ">ATUASERV"
+    replace: ">ATUASERV"
+    label: "Administração: Atualiza informacoes servidor"
+
+  - trigger: ">CDCOCARGA"
+    replace: ">CDCOCARGA"
+    label: "Administração: Cons resultado carga de pensão"
+
+  - trigger: ">CALCEXERIN"
+    replace: ">CALCEXERIN"
+    label: "Consulta: Localizar exercicio interno"
+
+  - trigger: ">CACOESTATU"
+    replace: ">CACOESTATU"
+    label: "Consulta: Consulta estatística atualizac"
+
+  - trigger: ">DPPOBP"
+    replace: ">DPPOBP"
+    label: "Administração: Programar/reprogramar BP"
+
+  - trigger: ">CAEXTAS"
+    replace: ">CAEXTAS"
+    label: "Consulta: Exclui tempo anterior de serv"
+
+  - trigger: ">CAEMAPOSFU"
+    replace: ">CAEMAPOSFU"
+    label: "Consulta: Emite apostila"
+
+  - trigger: ">COTBSITUAC"
+    replace: ">COTBSITUAC"
+    label: "Administração: situação do servidor"
+
+  - trigger: ">CDCOUSOBCO"
+    replace: ">CDCOUSOBCO"
+    label: "Administração: Consulta uso banco e agência"
+
+  - trigger: ">COTBGRACE"
+    replace: ">COTBGRACE"
+    label: "Administração: gratificação de cargo/emprego"
+
+  - trigger: ">CAIFEXERC"
+    replace: ">CAIFEXERC"
+    label: "Consulta: Informa exercicio"
+
+  - trigger: ">CAVADEMIS"
+    replace: ">CAVADEMIS"
+    label: "Consulta: Vacancia por demissão"
+
+  - trigger: ">ATUASUPLMA"
+    replace: ">ATUASUPLMA"
+    label: "Administração: Atualiza ficha meses anter"
+
+  - trigger: ">CAEXFERIAS"
+    replace: ">CAEXFERIAS"
+    label: "Consulta: Exclui período de férias"
+
+  - trigger: ">ACAOJUDI"
+    replace: ">ACAOJUDI"
+    label: "Tabela: Acao judicial"
+
+  - trigger: ">POSGRA"
+    replace: ">POSGRA"
+    label: "Tabela: Pos-graduacao"
+
+  - trigger: ">CAEEINTGRS"
+    replace: ">CAEEINTGRS"
+    label: "Consulta: Executa integracao do servidor"
+
+  - trigger: ">CDCOINDFAR"
+    replace: ">CDCOINDFAR"
+    label: "Administração: Consulta ind. fardamento"
+
+  - trigger: ">CAEMAPRES"
+    replace: ">CAEMAPRES"
+    label: "Consulta: Emite documento apresentacao"
+
+  - trigger: ">CAALPORTNO"
+    replace: ">CAALPORTNO"
+    label: "Consulta: Altera portaria de nomeacao"
+
+  - trigger: ">CACOSERVFI"
+    replace: ">CACOSERVFI"
+    label: "Consulta: Servidor local.fisica na UORG"
+
+  - trigger: ">CONPFU"
+    replace: ">CONPFU"
+    label: "Consulta: Consulta prov.função/cc/CNE"
+
+  - trigger: ">CACDCAREGP"
+    replace: ">CACDCAREGP"
+    label: "Consulta: Cancela alt.reg.juridico PCA"
+
+  - trigger: ">CACOSERVRQ"
+    replace: ">CACOSERVRQ"
+    label: "Consulta: Consulta serv.s/cargo no orgao"
+
+  - trigger: ">CONTTCU"
+    replace: ">CONTTCU"
+    label: "Consulta: Controles para TCU"
+
+  - trigger: ">CAATHSTAPF"
+    replace: ">CAATHSTAPF"
+    label: "Administração: histórico aposentadoria função"
+
+  - trigger: ">DPDZBS"
+    replace: ">DPDZBS"
+    label: "Administração: Disponibilizacao de BS"
+
+  - trigger: ">CACOLOTPRO"
+    replace: ">CACOLOTPRO"
+    label: "Consulta: Lotacoes em procedimento"
+
+  - trigger: ">CAITGZLPA"
+    replace: ">CAITGZLPA"
+    label: "Consulta: Interrompe gozo de LPA"
+
+  - trigger: ">COTBRUBAUT"
+    replace: ">COTBRUBAUT"
+    label: "Administração: Aprop. rubrica calc. automat"
+
+  - trigger: ">CONSSERV"
+    replace: ">CONSSERV"
+    label: "Administração: Consulta informacoes servidor"
+
+  - trigger: ">CAEXSERVRE"
+    replace: ">CAEXSERVRE"
+    label: "Consulta: Exclui servidor proc. remoção"
+
+  - trigger: ">NATJUR"
+    replace: ">NATJUR"
+    label: "Tabela: Natureza juridica"
+
+  - trigger: ">CANOCNE"
+    replace: ">CANOCNE"
+    label: "Consulta: Nomeacao de CNE"
+
+  - trigger: ">CAEXCONPOR"
+    replace: ">CAEXCONPOR"
+    label: "Consulta: Exclui dados concursado"
+
+  - trigger: ">ADRMPRELOT"
+    replace: ">ADRMPRELOT"
+    label: "Administração: Remaneja vaga de lotacao na ua"
+
+  - trigger: ">CACAPROPOS"
+    replace: ">CACAPROPOS"
+    label: "Consulta: Cancela prorrogacao de posse"
+
+  - trigger: ">COTBFUNC"
+    replace: ">COTBFUNC"
+    label: "Administração: função"
+
+  - trigger: ">CACALIBRED"
+    replace: ">CACALIBRED"
+    label: "Consulta: Cancela liber. redist/lot AGU"
+
+  - trigger: ">CAVADIRFUN"
+    replace: ">CAVADIRFUN"
+    label: "Consulta: Vacancia direta função/cc"
+
+  - trigger: ">CODIVCAD"
+    replace: ">CODIVCAD"
+    label: "Administração: Consulta cadastro"
+
+  - trigger: ">ADRMPREFUN"
+    replace: ">ADRMPREFUN"
+    label: "Administração: Remaneja vaga de função p/UORG"
+
+  - trigger: ">CAIFUPAGCO"
+    replace: ">CAIFUPAGCO"
+    label: "Consulta: Informa UPAG controle da matr"
+
+  - trigger: ">CDCOCONTRD"
+    replace: ">CDCOCONTRD"
+    label: "Administração: Contrapartida a ser redistrib"
+
+  - trigger: ">GRPSADM317"
+    replace: ">GRPSADM317"
+    label: "Administração: Processo adm. 3,17% pensão"
+
+  - trigger: ">CDEXPSDABE"
+    replace: ">CDEXPSDABE"
+    label: "Consulta: Exclusão dos dados do benefício"
+
+  - trigger: ">LEGALTCU"
+    replace: ">LEGALTCU"
+    label: "Administração: Legalidade aposentadoria - TCU"
+
+  - trigger: ">CALMENANU"
+    replace: ">CALMENANU"
+    label: "Consulta: cálculo mensal de anuênio"
+
+  - trigger: ">PSINSPEN"
+    replace: ">PSINSPEN"
+    label: "Administração: Instituidor de pensão(ex-serv)"
+
+  - trigger: ">TBCOUFS"
+    replace: ">TBCOUFS"
+    label: "Tabela: Consulta unidades da federacao"
+
+  - trigger: ">PERDADIREI"
+    replace: ">PERDADIREI"
+    label: "Consulta: Perda de direito de férias"
+
+  - trigger: ">CDCOPSBEIN"
+    replace: ">CDCOPSBEIN"
+    label: "Consulta: Consulta benef. do instituidor"
+
+  - trigger: ">CDCOSERCON"
+    replace: ">CDCOSERCON"
+    label: "Administração: Serv.receb.por contrapartida"
+
+  - trigger: ">PROCDOCPUB"
+    replace: ">PROCDOCPUB"
+    label: "Administração: Processos/documentos/publicação"
+
+  - trigger: ">CAEMAPOUPA"
+    replace: ">CAEMAPOUPA"
+    label: "Administração: Emite aposentadorias por UPAG"
+
+  - trigger: ">COTBATIVFU"
+    replace: ">COTBATIVFU"
+    label: "Administração: Consulta atividade de função"
+
+  - trigger: ">CAIAESTEST"
+    replace: ">CAIAESTEST"
+    label: "Consulta: Inclui/altera estagiario estud"
+
+  - trigger: ">CDIFINTEC"
+    replace: ">CDIFINTEC"
+    label: "Administração: intenção licenca/red.jornada"
+
+  - trigger: ">CDCOPREALI"
+    replace: ">CDCOPREALI"
+    label: "Administração: Previsao compra prog. aliment"
+
+  - trigger: ">CAIFHISTPR"
+    replace: ">CAIFHISTPR"
+    label: "Administração: Informa hist. proventos após"
+
+  - trigger: ">GRCOLOTDIS"
+    replace: ">GRCOLOTDIS"
+    label: "Administração: Consulta lotacao distrib. p/UORG"
+
+  - trigger: ">CAINPOSHIS"
+    replace: ">CAINPOSHIS"
+    label: "Consulta: Inclui posicionamento historic"
+
+  - trigger: ">CANOPFUDIR"
+    replace: ">CANOPFUDIR"
+    label: "Consulta: Nomeacao/desig.func./cc direta"
+
+  - trigger: ">CDCOLIBCON"
+    replace: ">CDCOLIBCON"
+    label: "Administração: Serv.liberados p/contrapartida"
+
+  - trigger: ">CAPVPCAENQ"
+    replace: ">CAPVPCAENQ"
+    label: "Consulta: PCA por enquadramento"
+
+  - trigger: ">COTBNACION"
+    replace: ">COTBNACION"
+    label: "Administração: Nacionalidade"
+
+  - trigger: ">CDATALIMCO"
+    replace: ">CDATALIMCO"
+    label: "Administração: Atualiza prog. alim. coletivo"
+
+  - trigger: ">DPEXPRBP"
+    replace: ">DPEXPRBP"
+    label: "Administração: Excluir programacao boletim de pessoal"
+
+  - trigger: ">CAEMCOLPOS"
+    replace: ">CAEMCOLPOS"
+    label: "Consulta: Emite termo coletivo de posse"
+
+  - trigger: ">COTBESTCIV"
+    replace: ">COTBESTCIV"
+    label: "Administração: Estado civil"
+
+  - trigger: ">GRDEVPSS94"
+    replace: ">GRDEVPSS94"
+    label: "Administração: Devolucao do PSS 1994"
+
+  - trigger: ">FPEMPSSUPL"
+    replace: ">FPEMPSSUPL"
+    label: "Administração: relatórios folha supl. pens"
+
+  - trigger: ">ADCOVAPROF"
+    replace: ">ADCOVAPROF"
+    label: "Administração: Consulta vaga prof temp orgao"
+
+  - trigger: ">INCALTRH"
+    replace: ">INCALTRH"
+    label: "Consulta: inclusão/alteração de RH"
+
+  - trigger: ">PSINSGRA"
+    replace: ">PSINSGRA"
+    label: "Administração: Instituidor de pensão graciosa"
+
+  - trigger: ">CAIFPUBLIC"
+    replace: ">CAIFPUBLIC"
+    label: "Consulta: Informa publicação nomeacao"
+
+  - trigger: ">CAEXCONCLP"
+    replace: ">CAEXCONCLP"
+    label: "Consulta: Exclui concessão de LPA"
+
+  - trigger: ">CDATPSOCCA"
+    replace: ">CDATPSOCCA"
+    label: "Consulta: Atualizações de ocorrências"
+
+  - trigger: ">CAEXANMARC"
+    replace: ">CAEXANMARC"
+    label: "Consulta: Exclui anuênio antes do marco"
+
+  - trigger: ">CDATTITREC"
+    replace: ">CDATTITREC"
+    label: "Administração: Atualiza titulacao reconhecida"
+
+  - trigger: ">CAEXUPAGCO"
+    replace: ">CAEXUPAGCO"
+    label: "Consulta: Exclui UPAG controle da matr"
+
+  - trigger: ">EMITEFOLHA"
+    replace: ">EMITEFOLHA"
+    label: "Administração: Emite informacoes financeiras"
+
+  - trigger: ">CDINPSRLEG"
+    replace: ">CDINPSRLEG"
+    label: "Consulta: Inclusão do represent legal do benef. depensão"
+
+  - trigger: ">CAALDTPOSS"
+    replace: ">CAALDTPOSS"
+    label: "Consulta: Altera data posse"
+
+  - trigger: ">CAINCONSED"
+    replace: ">CAINCONSED"
+    label: "Consulta: Inclui concursado sem edital"
+
+  - trigger: ">GRCORENDEX"
+    replace: ">GRCORENDEX"
+    label: "Administração: Req. s/remuneracao extra-SIAPE"
+
+  - trigger: ">CDLIORGAO"
+    replace: ">CDLIORGAO"
+    label: "Administração: Libera para mudanca de orgao"
+
+  - trigger: ">DPALDLEXT"
+    replace: ">DPALDLEXT"
+    label: "Administração: Altera doc. legal externo"
+
+  - trigger: ">CAALDATPRO"
+    replace: ">CAALDATPRO"
+    label: "Administração: Altera datas do provento apos"
+
+  - trigger: ">ADCONVHAB"
+    replace: ">ADCONVHAB"
+    label: "SIAPE: Consulta habilitacoes usuarios"
+
+  - trigger: ">CACADESLIG"
+    replace: ">CACADESLIG"
+    label: "Consulta: Cancela desligamento"
+
+  - trigger: ">CATOSEMEFE"
+    replace: ">CATOSEMEFE"
+    label: "Consulta: Tornar sem efeito nomeacao"
+
+  - trigger: ">CAIACOLEVE"
+    replace: ">CAIACOLEVE"
+    label: "Consulta: Inclui/altera colab. eventual"
+
+  - trigger: ">COTBFITAUN"
+    replace: ">COTBFITAUN"
+    label: "Administração: Consulta banco/agência f.unica"
+
+  - trigger: ">CACOSERVLO"
+    replace: ">CACOSERVLO"
+    label: "Consulta: Servidores lotados na UORG"
+
+  - trigger: ">CACOTPINC"
+    replace: ">CACOTPINC"
+    label: "Consulta: Consulta tipo de incidencia"
+
+  - trigger: ">PCAHIST"
+    replace: ">PCAHIST"
+    label: "Consulta: PCA histórico"
+
+  - trigger: ">CONSFOLHA"
+    replace: ">CONSFOLHA"
+    label: "Administração: Consulta dados p/pagamento"
+
+  - trigger: ">TBCOROTCAL"
+    replace: ">TBCOROTCAL"
+    label: "Tabela: Consulta rotina de cálculo"
+
+  - trigger: ">CAPVREINTE"
+    replace: ">CAPVREINTE"
+    label: "Consulta: PCA por reintegração"
+
+  - trigger: ">ADLIREAJUS"
+    replace: ">ADLIREAJUS"
+    label: "Tabela: Libera reajuste"
+
+  - trigger: ">CDALPESBAS"
+    replace: ">CDALPESBAS"
+    label: "Administração: Altera dados pessoais basico"
+
+  - trigger: ">DIRF"
+    replace: ">DIRF"
+    label: "Administração: Decl. imposto renda ret. fonte"
+
+  - trigger: ">CAINEDITAL"
+    replace: ">CAINEDITAL"
+    label: "Consulta: Inclui edital homologacao"
+
+  - trigger: ">COTBAGENC"
+    replace: ">COTBAGENC"
+    label: "Administração: agência bancária"
+
+  - trigger: ">CAEMNOTFER"
+    replace: ">CAEMNOTFER"
+    label: "Consulta: Emite notificacao de férias"
+
+  - trigger: ">DEPARSIORG"
+    replace: ">DEPARSIORG"
+    label: "Tabela: De-para orgão/UORG com SIORG"
+
+  - trigger: ">PSBENEF"
+    replace: ">PSBENEF"
+    label: "Administração: Beneficiario de pensão"
+
+  - trigger: ">GRCOAPOPRO"
+    replace: ">GRCOAPOPRO"
+    label: "Administração: Aposentado p/proporcionalidade"
+
+  - trigger: ">CAINFUNTRA"
+    replace: ">CAINFUNTRA"
+    label: "Consulta: Informa transformacao função"
+
+  - trigger: ">CAACLCIND"
+    replace: ">CAACLCIND"
+    label: "Consulta: cálculo individual de anuênio"
+
+  - trigger: ">CDCOSERFER"
+    replace: ">CDCOSERFER"
+    label: "Administração: férias de servidores"
+
+  - trigger: ">CDATATISAU"
+    replace: ">CDATATISAU"
+    label: "Administração: Atualiza atividade de saude"
+
+  - trigger: ">CAEMFORCTR"
+    replace: ">CAEMFORCTR"
+    label: "Consulta: Forca trabalho"
+
+  - trigger: ">CDCOLICJOR"
+    replace: ">CDCOLICJOR"
+    label: "Administração: intenção licenca/red.jornada"
+
+  - trigger: ">CAPVRECOND"
+    replace: ">CAPVRECOND"
+    label: "Consulta: PCA por recondução"
+
+  - trigger: ">CAALTPRAZO"
+    replace: ">CAALTPRAZO"
+    label: "Consulta: Altera prazo para exercicio"
+
+  - trigger: ">GRPROCESSO"
+    replace: ">GRPROCESSO"
+    label: "Administração: Processos administrativos"
+
+  - trigger: ">CDREATIVID"
+    replace: ">CDREATIVID"
+    label: "Administração: Reverte a atividade"
+
+  - trigger: ">CAEMDOCUM"
+    replace: ">CAEMDOCUM"
+    label: "Administração: Emite documentacao de aposent"
+
+  - trigger: ">ALTSERV"
+    replace: ">ALTSERV"
+    label: "Consulta: alterações especif.do servidor"
+
+  - trigger: ">COTBNATJUR"
+    replace: ">COTBNATJUR"
+    label: "Administração: Natureza juridica"
+
+  - trigger: ">COTBUF"
+    replace: ">COTBUF"
+    label: "Administração: Unidade da federacao"
+
+  - trigger: ">CDATSITFUN"
+    replace: ">CDATSITFUN"
+    label: "Administração: Altera situação funcional"
+
+  - trigger: ">COTBOCORRE"
+    replace: ">COTBOCORRE"
+    label: "Administração: Ocorrencia"
+
+  - trigger: ">CAEXUORFIN"
+    replace: ">CAEXUORFIN"
+    label: "Consulta: Exclui UORG exerc financeiro"
+
+  - trigger: ">CDLIPSGRAC"
+    replace: ">CDLIPSGRAC"
+    label: "Consulta: Libera ins/benef.pens.graciosa/indeniz."
+
+  - trigger: ">CDCOPENTRA"
+    replace: ">CDCOPENTRA"
+    label: "Administração: Servidor pendente transferenc"
+
+  - trigger: ">CAALAPOSSE"
+    replace: ">CAALAPOSSE"
+    label: "Administração: Altera dados da aposentadoria"
+
+  - trigger: ">CDCOUSOORG"
+    replace: ">CDCOUSOORG"
+    label: "Administração: Uso dos orgaos 99991/2/3"
+
+  - trigger: ">RUBRICA"
+    replace: ">RUBRICA"
+    label: "Tabela: Dado financeiro"
+
+  - trigger: ">CDCOSERSEN"
+    replace: ">CDCOSERSEN"
+    label: "Administração: Servidore(s)vinculo(s)a sent"
+
+  - trigger: ">CAALUORLOC"
+    replace: ">CAALUORLOC"
+    label: "Consulta: Altera data UORG localiz.apo"
+
+  - trigger: ">CACOSEREEU"
+    replace: ">CACOSEREEU"
+    label: "Consulta: Serv.exerc ext lot. vinc UPAG"
+
+  - trigger: ">CACOAVERFU"
+    replace: ">CACOAVERFU"
+    label: "Consulta: Consultar as averbações de funções"
+
+  - trigger: ">CDALPSGRAC"
+    replace: ">CDALPSGRAC"
+    label: "Consulta: Altera inst. pensão graciosa/indeniz."
+
+  - trigger: ">ADALPRELOT"
+    replace: ">ADALPRELOT"
+    label: "Administração: Altera prev. lotacao na ua"
+
+  - trigger: ">TBCOSITPER"
+    replace: ">TBCOSITPER"
+    label: "Tabela: Consulta situações SIAPE perm"
+
+  - trigger: ">COTBNECESP"
+    replace: ">COTBNECESP"
+    label: "Administração: Consulta necessidades especiais"
+
+  - trigger: ">CAEFCONTRA"
+    replace: ">CAEFCONTRA"
+    label: "Consulta: Efetiva contrapartida redistr"
+
+  - trigger: ">CDCOSERABP"
+    replace: ">CDCOSERABP"
+    label: "Administração: Cons. serv. com abono perman"
+
+  - trigger: ">CAATPOSSE"
+    replace: ">CAATPOSSE"
+    label: "Consulta: Autoriza posse a outra UORG"
+
+  - trigger: ">CAINCONPOR"
+    replace: ">CAINCONPOR"
+    label: "Consulta: Inclui concursado portaria"
+
+  - trigger: ">CAPVPCAPOS"
+    replace: ">CAPVPCAPOS"
+    label: "Consulta: PCA por posse de concursado"
+
+  - trigger: ">CAALCONPOR"
+    replace: ">CAALCONPOR"
+    label: "Consulta: Altera dados concursado"
+
+  - trigger: ">CAALTDATRE"
+    replace: ">CAALTDATRE"
+    label: "Consulta: Altera data retorno de cedido"
+
+  - trigger: ">ADCOESTAT"
+    replace: ">ADCOESTAT"
+    label: "Folha: estatística mensal/anual"
+
+  - trigger: ">GRCOSERVUF"
+    replace: ">GRCOSERVUF"
+    label: "Administração: Quantitativo servidores p/UF"
+
+  - trigger: ">DIPLEG"
+    replace: ">DIPLEG"
+    label: "Tabela: Diploma legal"
+
+  - trigger: ">TBSIAPECAD"
+    replace: ">TBSIAPECAD"
+    label: "Administração: Tabelas SIAPECAD"
+
+  - trigger: ">DPCOBS"
+    replace: ">DPCOBS"
+    label: "Administração: Consulta BS dispolibilizado"
+
+  - trigger: ">CAVACNE"
+    replace: ">CAVACNE"
+    label: "Consulta: Vacancia CNE"
+
+  - trigger: ">GRCOSERFUN"
+    replace: ">GRCOSERFUN"
+    label: "Administração: Servidores p/cargo comissao"
+
+  - trigger: ">DPCOBSUPAG"
+    replace: ">DPCOBSUPAG"
+    label: "Administração: Consulta boletim de servico – UPAG"
+
+  - trigger: ">CAEXAPOS"
+    replace: ">CAEXAPOS"
+    label: "Administração: Exclui aposentadoria por erro"
+
+  - trigger: ">CAALOPCREM"
+    replace: ">CAALOPCREM"
+    label: "Consulta: Altera opção de remuneracao"
+
+  - trigger: ">DPLPBP"
+    replace: ">DPLPBP"
+    label: "Administração: Limpeza do boletim de pessoal"
+
+  - trigger: ">COTBUORGAC"
+    replace: ">COTBUORGAC"
+    label: "Administração: Consulta correl.UORG p/acumulo"
+
+  - trigger: ">CACAUTLOC"
+    replace: ">CACAUTLOC"
+    label: "Consulta: Cancela ult UORG localização"
+
+  - trigger: ">CAPVEXCEP"
+    replace: ">CAPVEXCEP"
+    label: "Consulta: Provimento excepcional"
+
+  - trigger: ">CDCOAUTCRI"
+    replace: ">CDCOAUTCRI"
+    label: "Administração: Cons autoriz nao criticar dado"
+
+  - trigger: ">FPCOMARGCO"
+    replace: ">FPCOMARGCO"
+    label: "Administração: Consulta margem consignavel"
+
+  - trigger: ">CATCREMOCA"
+    replace: ">CATCREMOCA"
+    label: "Consulta: Inicio de remoção"
+
+  - trigger: ">PROCESPEC"
+    replace: ">PROCESPEC"
+    label: "Administração: Processos especiais"
+
+  - trigger: ">COTBASSCAU"
+    replace: ">COTBASSCAU"
+    label: "Administração: Assunto cálculo automatico"
+
+  - trigger: ">CDEXFIMAT"
+    replace: ">CDEXFIMAT"
+    label: "Administração: Exclui matricula fisicamente"
+
+  - trigger: ">CAALPOSEXE"
+    replace: ">CAALPOSEXE"
+    label: "Consulta: Altera data limite posse/exerc"
+
+  - trigger: ">CAEXCONCUR"
+    replace: ">CAEXCONCUR"
+    label: "Consulta: Exclui concursado do edital"
+
+  - trigger: ">CDCOBENEF"
+    replace: ">CDCOBENEF"
+    label: "Administração: Cons. benefício vigente"
+
+  - trigger: ">ADIFLOTIDE"
+    replace: ">ADIFLOTIDE"
+    label: "Administração: Informa lotacao ideal na ua"
+
+  - trigger: ">CONSPENSIO"
+    replace: ">CONSPENSIO"
+    label: "Administração: Consulta inform. pensionista"
+
+  - trigger: ">CAPGORRPOS"
+    replace: ">CAPGORRPOS"
+    label: "Consulta: Prorroga posse"
+
+  - trigger: ">GRPASSIVO"
+    replace: ">GRPASSIVO"
+    label: "Administração: Passivo de ats"
+
+  - trigger: ">CAENUPAGCO"
+    replace: ">CAENUPAGCO"
+    label: "Consulta: Encerra UPAG controle da matr"
+
+  - trigger: ">CAALDADREQ"
+    replace: ">CAALDADREQ"
+    label: "Consulta: Altera dados de requisitado"
+
+  - trigger: ">CAEMPUPAG"
+    replace: ">CAEMPUPAG"
+    label: "Consulta: Emite pendencias por UPAG"
+
+  - trigger: ">CATRPOSIC"
+    replace: ">CATRPOSIC"
+    label: "Consulta: Transforma pos. em retificado"
+
+  - trigger: ">VAGADET"
+    replace: ">VAGADET"
+    label: "Tabela: Administra vagas cad.detalhado"
+
+  - trigger: ">GRPDV-MP"
+    replace: ">GRPDV-MP"
+    label: "Administração: Consulta dados pdv"
+
+  - trigger: ">ATUASUPLEM"
+    replace: ">ATUASUPLEM"
+    label: "Administração: Atualiza folha suplementar"
+
+  - trigger: ">EMITSUPLEM"
+    replace: ">EMITSUPLEM"
+    label: "Administração: relatórios folha suplementar"
+
+  - trigger: ">CAEMAVISO"
+    replace: ">CAEMAVISO"
+    label: "Consulta: Emite aviso entrada exercicio"
+
+  - trigger: ">COTBPENSAO"
+    replace: ">COTBPENSAO"
+    label: "Administração: Tipo de pensão"
+
+  - trigger: ">CDCOPSVINC"
+    replace: ">CDCOPSVINC"
+    label: "Consulta: Consultar a existência de vínculos funcionais"
+
+  - trigger: ">TBCONLEG"
+    replace: ">TBCONLEG"
+    label: "Administração: Constantes legais"
+
+  - trigger: ">CAINANMARC"
+    replace: ">CAINANMARC"
+    label: "Consulta: Inclui/informa anuênio marco"
+
+  - trigger: ">DPCOPROBS"
+    replace: ">DPCOPROBS"
+    label: "Administração: Consultar programacao de BS"
+
+  - trigger: ">CAAUFRULPA"
+    replace: ">CAAUFRULPA"
+    label: "Consulta: Autoriza fruicao de LPA"
+
+  - trigger: ">CDCOFITA"
+    replace: ">CDCOFITA"
+    label: "Administração: Cons processo fita - incl serv"
+
+  - trigger: ">ADFATURAM"
+    replace: ">ADFATURAM"
+    label: "Tabela: Informacoes para faturamento"
+
+  - trigger: ">CDALDADPES"
+    replace: ">CDALDADPES"
+    label: "Administração: Altera dados pessoais"
+
+  - trigger: ">CACAPUBLIC"
+    replace: ">CACAPUBLIC"
+    label: "Consulta: Cancela publicação de nomeacao"
+
+  - trigger: ">CDCOCDTVAG"
+    replace: ">CDCOCDTVAG"
+    label: "Administração: Consulta cdt com e sem cargo"
+
+  - trigger: ">COTBNSFUN"
+    replace: ">COTBNSFUN"
+    label: "Administração: Nivel salarial de função"
+
+  - trigger: ">CAPVPCAAPR"
+    replace: ">CAPVPCAAPR"
+    label: "Consulta: PCA por aproveitamento"
+
+  - trigger: ">CAENEXER"
+    replace: ">CAENEXER"
+    label: "Consulta: Encerra exercicio"
+
+  - trigger: ">CACOREDIST"
+    replace: ">CACOREDIST"
+    label: "Consulta: Cons. redistr/lot.carreira AGU"
+
+  - trigger: ">CACOFERPAG"
+    replace: ">CACOFERPAG"
+    label: "Consulta: Consulta férias - pagamento"
+
+  - trigger: ">CAATCANCMA"
+    replace: ">CAATCANCMA"
+    label: "Consulta: Cancela anuênio marco"
+
+  - trigger: ">COTBBANC"
+    replace: ">COTBBANC"
+    label: "Administração: Banco"
+
+  - trigger: ">CAEDCSSINT"
+    replace: ">CAEDCSSINT"
+    label: "Consulta: cessão servidor c/DL interno"
+
+  - trigger: ">TBCOENTSAI"
+    replace: ">TBCOENTSAI"
+    label: "Tabela: Consulta forma entrada e saida"
+
+  - trigger: ">CACOLOTVIG"
+    replace: ">CACOLOTVIG"
+    label: "Consulta: Servidores com lotacao vigente"
+
+  - trigger: ">COTBUPAGS"
+    replace: ">COTBUPAGS"
+    label: "Administração: Unidade pagadora"
+
+  - trigger: ">PSREPLEG"
+    replace: ">PSREPLEG"
+    label: "Administração: Representante legal"
+
+  - trigger: ">TBCOPAISES"
+    replace: ">TBCOPAISES"
+    label: "Tabela: Consulta tabela de paises"
+
+  - trigger: ">CAEM70PCAV"
+    replace: ">CAEM70PCAV"
+    label: "Administração: Rel.serv.70 anos c/PCA vigente"
+
+  - trigger: ">CDCOVINSEN"
+    replace: ">CDCOVINSEN"
+    label: "Administração: Sentenca(s)vincula(s)servidor"
+
+  - trigger: ">CAALULTROU"
+    replace: ">CAALULTROU"
+    label: "Administração: Cancela ultimo provento aposen"
+
+  - trigger: ">FOLHA"
+    replace: ">FOLHA"
+    label: "Administração: Folha de pagamentos gerencial – gerenciais pensão - atualiza cadastro pensionista"
+
+  - trigger: ">GRINFGEREN"
+    replace: ">GRINFGEREN"
+    label: "Administração: Informacoes gerenciais"
+
+  - trigger: ">ATUAPSSPLA"
+    replace: ">ATUAPSSPLA"
+    label: "Administração: Atualiza ficha pens. mes ant"
+
+  - trigger: ">CAEDCSSPTC"
+    replace: ">CAEDCSSPTC"
+    label: "Consulta: cessão servidor sem PTC"
+
+  - trigger: ">DPEXCDL"
+    replace: ">DPEXCDL"
+    label: "Administração: Exclui documento legal"
+
+  - trigger: ">MUNEXT"
+    replace: ">MUNEXT"
+    label: "Tabela: Municipio do exterior"
+
+  - trigger: ">FUNCOES"
+    replace: ">FUNCOES"
+    label: "Tabela: Estrutura de função"
+
+  - trigger: ">FUNLEGAL"
+    replace: ">FUNLEGAL"
+    label: "Tabela: Fundamento legal aposentadoria"
+
+  - trigger: ">CACOFERIAS"
+    replace: ">CACOFERIAS"
+    label: "Consulta: Consulta férias"
+
+  - trigger: ">ADHOMOLOGA"
+    replace: ">ADHOMOLOGA"
+    label: "Tabela: Homologacao da folha"
+
+  - trigger: ">GRCOREALSE"
+    replace: ">GRCOREALSE"
+    label: "Administração: Quadro real de servidores"
+
+  - trigger: ">CACAINGZLP"
+    replace: ">CACAINGZLP"
+    label: "Consulta: Cancela interrupcao gozo LPA"
+
+  - trigger: ">TBCOTIPINC"
+    replace: ">TBCOTIPINC"
+    label: "Tabela: Consulta tipo de incidencia"
+
+  - trigger: ">CDEXPSBENE"
+    replace: ">CDEXPSBENE"
+    label: "Consulta: Exclusão do beneficiário"
+
+  - trigger: ">ATUASUPLIN"
+    replace: ">ATUASUPLIN"
+    label: "Administração: Atualiza suplementar interna"
+
+  - trigger: ">COTBUORGP"
+    replace: ">COTBUORGP"
+    label: "Administração: UORG privilegiada no comunica"
+
+  - trigger: ">CACOPCAPFU"
+    replace: ">CACOPCAPFU"
+    label: "Consulta: Servidores c/PCA ou PFU UORG"
+
+  - trigger: ">CDINPSGRAC"
+    replace: ">CDINPSGRAC"
+    label: "Consulta: pensões graciosas ou indenizatórias"
+
+  - trigger: ">CAEDHTITVG"
+    replace: ">CAEDHTITVG"
+    label: "Consulta: histórico func/cc titular vig"
+
+  - trigger: ">COTBASSIRU"
+    replace: ">COTBASSIRU"
+    label: "Administração: Assunto p/incidencia rubrica"
+
+  - trigger: ">CAEMTRPOS"
+    replace: ">CAEMTRPOS"
+    label: "Consulta: Emite termo de posse/opção"
+
+  - trigger: ">CDMUDSEUOR"
+    replace: ">CDMUDSEUOR"
+    label: "Administração: Mudanca UORG servidor excluido"
+
+  - trigger: ">COTBCRHOR"
+    replace: ">COTBCRHOR"
+    label: "Administração: Crh do orgao"
+
+  - trigger: ">GRPSADM28"
+    replace: ">GRPSADM28"
+    label: "Administração: Processo adm. 28,86% pensão"
+
+  - trigger: ">PROADM"
+    replace: ">PROADM"
+    label: "Tabela: Processo administrativo"
+
+  - trigger: ">CDRTDEPEND"
+    replace: ">CDRTDEPEND"
+    label: "Administração: Reativa dependente"
+
+  - trigger: ">CDALFUNAPO"
+    replace: ">CDALFUNAPO"
+    label: "Administração: Altera dados func aposentado"
+
+  - trigger: ">ADAUTORIZA"
+    replace: ">ADAUTORIZA"
+    label: "Folha: Autoriza/desautoriza rub.folha"
+
+  - trigger: ">COTBAUXTRA"
+    replace: ">COTBAUXTRA"
+    label: "Administração: Cons valor auxilio transporte"
+
+  - trigger: ">CAALVAGA"
+    replace: ">CAALVAGA"
+    label: "Consulta: Altera vaga do servidor"
+
+  - trigger: ">CACATRAFUN"
+    replace: ">CACATRAFUN"
+    label: "Consulta: Cancela transformacao função"
+
+  - trigger: ">CAALCONCUR"
+    replace: ">CAALCONCUR"
+    label: "Consulta: Altera concursado no edital"
+
+  - trigger: ">TAS"
+    replace: ">TAS"
+    label: "Tabela: Tempo anterior de servico"
+
+  - trigger: ">ATUAPSSUPL"
+    replace: ">ATUAPSSUPL"
+    label: "Administração: Atualiza supl. pensionista"
+
+  - trigger: ">CDVISERSEN"
+    replace: ">CDVISERSEN"
+    label: "Administração: Vinculacao servidor a sentenca"
+
+  - trigger: ">CACOLPAHT"
+    replace: ">CACOLPAHT"
+    label: "Consulta: Consulta LPA do servidor"
+
+  - trigger: ">DPEMBP"
+    replace: ">DPEMBP"
+    label: "Administração: Emite boletim de pessoal disponibilizado"
+
+  - trigger: ">DPLPBS"
+    replace: ">DPLPBS"
+    label: "Administração: Limpeza de boletim de servico"
+
+  - trigger: ">CONTGESTAO"
+    replace: ">CONTGESTAO"
+    label: "Tabela: Controle gestao despesa mensal"
+
+  - trigger: ">CACASEMEFE"
+    replace: ">CACASEMEFE"
+    label: "Consulta: Cancela sem efeito nomeacao"
+
+  - trigger: ">DPCOSITBS"
+    replace: ">DPCOSITBS"
+    label: "Administração: Consulta situação do BS"
+
+  - trigger: ">SIAPECAD"
+    replace: ">SIAPECAD"
+    label: "Administração: Cadastro detalhado servidores"
+
+  - trigger: ">CAEXLOTERR"
+    replace: ">CAEXLOTERR"
+    label: "Consulta: Exclui lotacao por erro"
+
+  - trigger: ">COTBBENEFE"
+    replace: ">COTBBENEFE"
+    label: "Administração: benefícios para dependentes"
+
+  - trigger: ">CDCODVMAT"
+    replace: ">CDCODVMAT"
+    label: "Administração: Digito verificador matricula"
+
+  - trigger: ">CAEDHISTEX"
+    replace: ">CAEDHISTEX"
+    label: "Consulta: Inclui histórico de exercicio"
+
+  - trigger: ">ADAUTORIFO"
+    replace: ">ADAUTORIFO"
+    label: "Tabela: Autorizacoes para a folha"
+
+  - trigger: ">CDLCPSBENE"
+    replace: ">CDLCPSBENE"
+    label: "Consulta: Localiza beneficiario pensão"
+
+  - trigger: ">TBACAOJUDI"
+    replace: ">TBACAOJUDI"
+    label: "Administração: Acao judicial"
+
+  - trigger: ">CDEXPSINST"
+    replace: ">CDEXPSINST"
+    label: "Consulta: Exclui instituidor depensao"
+
+  - trigger: ">CACSLPAHT"
+    replace: ">CACSLPAHT"
+    label: "Consulta: concessão de LPA - automatica"
+
+  - trigger: ">COTBGRUNES"
+    replace: ">COTBGRUNES"
+    label: "Administração: Consulta grupo neces.especiais"
+
+  - trigger: ">CAPVSEMVA"
+    replace: ">CAPVSEMVA"
+    label: "Consulta: Provimento sem codigo de vaga"
+
+  - trigger: ">COTBNIVESC"
+    replace: ">COTBNIVESC"
+    label: "Administração: Nivel de escolaridade"
+
+  - trigger: ">CDCOATUACA"
+    replace: ">CDCOATUACA"
+    label: "Administração: Consulta atuacad"
+
+  - trigger: ">CAINCONCUR"
+    replace: ">CAINCONCUR"
+    label: "Consulta: Inclui concursado no edital"
+
+  - trigger: ">CDTFUPAG"
+    replace: ">CDTFUPAG"
+    label: "Administração: Transf serv p/UPAG 6 posicoes"
+
+  - trigger: ">TBCOESCOL"
+    replace: ">TBCOESCOL"
+    label: "Tabela: Consulta escolaridade"
+
+  - trigger: ">DPEXPRBS"
+    replace: ">DPEXPRBS"
+    label: "Administração: Excluir programacao de BS"
+
+  - trigger: ">ADMSGINS"
+    replace: ">ADMSGINS"
+    label: "Tabela: Mensagem instit. contracheque"
+
+  - trigger: ">GRPRADM317"
+    replace: ">GRPRADM317"
+    label: "Administração: Processo administrativo 3,17%"
+
+  - trigger: ">CAALUORFIN"
+    replace: ">CAALUORFIN"
+    label: "Consulta: Altera UORG exerc financeiro"
+
+  - trigger: ">COTBORGVI"
+    replace: ">COTBORGVI"
+    label: "Administração: Consulta orgaos vinculados"
+
+  - trigger: ">DPEMTRAPEN"
+    replace: ">DPEMTRAPEN"
+    label: "Administração: Relacao transações pendentes"
+
+  - trigger: ">CDEXPSRLEG"
+    replace: ">CDEXPSRLEG"
+    label: "Consulta: Exclui repr.legal beneficiario"
+
+  - trigger: ">COTBSISTFU"
+    replace: ">COTBSISTFU"
+    label: "Administração: Sistematica de função"
+
+  - trigger: ">TBCOUNIMON"
+    replace: ">TBCOUNIMON"
+    label: "Tabela: Consulta unidade monetaria"
+
+  - trigger: ">CDCOALIM"
+    replace: ">CDCOALIM"
+    label: "Administração: Incons.dados benef.pensão alim"
+
+  - trigger: ">CDTRSERV"
+    replace: ">CDTRSERV"
+    label: "Administração: Transf.serv.p/banco definitivo"
+
+  - trigger: ">CACAJORPCA"
+    replace: ">CACAJORPCA"
+    label: "Consulta: Cancela alt.jornada trab. PCA"
+
+  - trigger: ">CDCODEPCPF"
+    replace: ">CDCODEPCPF"
+    label: "Administração: Consulta dependentes sem CPF"
+
+  - trigger: ">ADLOG"
+    replace: ">ADLOG"
+    label: "Folha: Log de atualização de registro"
+
+  - trigger: ">DPEXBP"
+    replace: ">DPEXBP"
+    label: "Administração: Excluir boletim de pessoal"
+
+  - trigger: ">CDCOPSBENE"
+    replace: ">CDCOPSBENE"
+    label: "Consulta: Consulta beneficiario"
+
+  - trigger: ">CADCABECON"
+    replace: ">CADCABECON"
+    label: "Consulta: declaração p/abertura de conta"
+
+  - trigger: ">ORGAOUORG"
+    replace: ">ORGAOUORG"
+    label: "Tabela: Orgao/unidade organizacional"
+
+  - trigger: ">TBCOTITULA"
+    replace: ">TBCOTITULA"
+    label: "Tabela: Consulta tabela de titulacao"
+
+  - trigger: ">GRCOFUNAPR"
+    replace: ">GRCOFUNAPR"
+    label: "Administração: Cons. funções aprovadas orgao"
+
+  - trigger: ">ADHABTRANS"
+    replace: ">ADHABTRANS"
+    label: "Tabela: Habilitacoes e transações"
+
+  - trigger: ">CAALORGCE"
+    replace: ">CAALORGCE"
+    label: "Consulta: Altera orgao cessão servidor"
+
+  - trigger: ">CAEMINPOS"
+    replace: ">CAEMINPOS"
+    label: "Consulta: Emite termo individual posse"
+
+  - trigger: ">GRFINANC"
+    replace: ">GRFINANC"
+    label: "Administração: Financeiro"
+
+  - trigger: ">CAALNUMEDI"
+    replace: ">CAALNUMEDI"
+    label: "Consulta: Altera o número do edital"
+
+  - trigger: ">CAASSOCIAP"
+    replace: ">CAASSOCIAP"
+    label: "Consulta: Associa PTC a cessão existente"
+
+  - trigger: ">CAEDCESSEX"
+    replace: ">CAEDCESSEX"
+    label: "Consulta: cessão servidor c/DL externo"
+
+  - trigger: ">CDCOPROALI"
+    replace: ">CDCOPROALI"
+    label: "Administração: Dados programa de alimentacao"
+
+  - trigger: ">CAINPROGMA"
+    replace: ">CAINPROGMA"
+    label: "Consulta: Inclui progressao func. manual"
+
+  - trigger: ">COMUNICA"
+    replace: ">COMUNICA"
+    label: "Administração: Correio eletrônico consultas – consultas diá"
+
+  - trigger: ">CACONPTC"
+    replace: ">CACONPTC"
+    label: "Consulta: Consulta proc. tramit. cessão"
+
+  - trigger: ">CONTVINCU"
+    replace: ">CONTVINCU"
+    label: "Consulta: Provimentos outros vinculos"
+
+  - trigger: ">JORTRA"
+    replace: ">JORTRA"
+    label: "Tabela: Jornada de trabalho"
+
+  - trigger: ">COTBPOSGRA"
+    replace: ">COTBPOSGRA"
+    label: "Administração: Pos-graduacao"
+
+  - trigger: ">CAINHISEXE"
+    replace: ">CAINHISEXE"
+    label: "Consulta: Inclui histórico exerc.de PFU"
+
+  - trigger: ">CAEMAUTPRO"
+    replace: ">CAEMAUTPRO"
+    label: "Consulta: Emite autorizacao prorr. posse"
+
+  - trigger: ">CAEXRH"
+    replace: ">CAEXRH"
+    label: "Consulta: Exclui RH"
+
+  - trigger: ">CAALREGJUR"
+    replace: ">CAALREGJUR"
+    label: "Consulta: Alt reg jur 00 vindo da conver"
+
+  - trigger: ">CAALTERAPT"
+    replace: ">CAALTERAPT"
+    label: "Consulta: Altera PTC"
+
+  - trigger: ">GRPRADM28"
+    replace: ">GRPRADM28"
+    label: "Administração: Processo administrativo 28,86%"
+
+  - trigger: ">CACOSEREEP"
+    replace: ">CACOSEREEP"
+    label: "Consulta: Serv exerc ext lot vinc uapo"
+
+  - trigger: ">GRAUPARENT"
+    replace: ">GRAUPARENT"
+    label: "Tabela: Grau de parentesco-dependente"
+
+  - trigger: ">CACATRPECU"
+    replace: ">CACATRPECU"
+    label: "Consulta: Cancela transformacao pecunia"
+
+  - trigger: ">VANTGRAT"
+    replace: ">VANTGRAT"
+    label: "Tabela: Vantagem e gratificação"
+
+  - trigger: ">CAALCPFRH"
+    replace: ">CAALCPFRH"
+    label: "Consulta: Altera CPF do RH"
+
+  - trigger: ">SIAPENET"
+    replace: ">SIAPENET"
+    label: "Administração: transações restritas siapenet"
+
+  - trigger: ">CACOSERVEX"
+    replace: ">CACOSERVEX"
+    label: "Consulta: Servidores em exerc. na UORG"
+
+  - trigger: ">CACAPOSSE"
+    replace: ">CACAPOSSE"
+    label: "Consulta: Cancela autorizacao de posse"
+
+  - trigger: ">CAEM70ANOS"
+    replace: ">CAEM70ANOS"
+    label: "Administração: Servidores com 70 anos"
+
+  - trigger: ">COTBRUBCLS"
+    replace: ">COTBRUBCLS"
+    label: "Administração: Consulta rubrica p/clsf ctbl"
+
+  - trigger: ">CAINPOSRET"
+    replace: ">CAINPOSRET"
+    label: "Consulta: Inclui posicionam.retificado"
+
+  - trigger: ">CAALJORPCA"
+    replace: ">CAALJORPCA"
+    label: "Consulta: Altera jornada trabalho PCA"
+
+  - trigger: ">RIAS"
+    replace: ">RIAS"
+    label: "Administração: Diárias e passagens"
+
+  - trigger: ">GRDEVPSS99"
+    replace: ">GRDEVPSS99"
+    label: "Administração: Devolucao do PSS 1999"
+
+  - trigger: ">COTBGRAPAR"
+    replace: ">COTBGRAPAR"
+    label: "Administração: Grau de parentesco"
+
+  - trigger: ">CATRLPAPEC"
+    replace: ">CATRLPAPEC"
+    label: "Consulta: Transforma LPA em pecunia"
+
+  - trigger: ">GRDEVPSS03"
+    replace: ">GRDEVPSS03"
+    label: "Administração: Devol. PSS sobre função"
+
+  - trigger: ">CAPVPROMOC"
+    replace: ">CAPVPROMOC"
+    label: "Consulta: PCA por promoção"
+
+  - trigger: ">CDIEINDFAR"
+    replace: ">CDIEINDFAR"
+    label: "Administração: Inclui/excl ind.fardamento"
+
+  - trigger: ">CAEXGZLPA"
+    replace: ">CAEXGZLPA"
+    label: "Consulta: Exclui gozo de LPA"
+
+  - trigger: ">CAALEXECOL"
+    replace: ">CAALEXECOL"
+    label: "Consulta: Altera local. exerc. coletiva"
+
+  - trigger: ">GRCOSAUDE"
+    replace: ">GRCOSAUDE"
+    label: "Administração: Gerencial saude"
+
+  - trigger: ">COTBOSIAFI"
+    replace: ">COTBOSIAFI"
+    label: "Administração: Orgao SIAFI"
+
+  - trigger: ">ADCOPRELOT"
+    replace: ">ADCOPRELOT"
+    label: "Administração: Cons. previsao lotacao na ua"
+
+  - trigger: ">CARREXEREX"
+    replace: ">CARREXEREX"
+    label: "Consulta: Retorno servidor exerc.externo"
+
+  - trigger: ">CDALPSCART"
+    replace: ">CDALPSCART"
+    label: "Consulta: Alteração da data início da representação"
+
+  - trigger: ">CAALRFADAP"
+    replace: ">CAALRFADAP"
+    label: "Administração: Reforma adm.aposentado localiz"
+
+  - trigger: ">CDMUDSEORG"
+    replace: ">CDMUDSEORG"
+    label: "Administração: Mudanca serv. em orgao extinto"
+
+  - trigger: ">CAPVREADAP"
+    replace: ">CAPVREADAP"
+    label: "Consulta: PCA por readaptação"
+
+  - trigger: ">CDEXPSGRAC"
+    replace: ">CDEXPSGRAC"
+    label: "Consulta: Exclui inst. pensão graciosa/indeniz."
+
+  - trigger: ">COTBUORGS"
+    replace: ">COTBUORGS"
+    label: "Administração: Unidade organizacional"
+
+  - trigger: ">COTBJORTRA"
+    replace: ">COTBJORTRA"
+    label: "Administração: Jornada de trabalho"
+
+  - trigger: ">CADLREMOCA"
+    replace: ">CADLREMOCA"
+    label: "Consulta: Desligamento por remoção"
+
+  - trigger: ">CDALPSDARL"
+    replace: ">CDALPSDARL"
+    label: "Consulta: Altera dados pess. repr. legal"
+
+  - trigger: ">CACSHTLPA"
+    replace: ">CACSHTLPA"
+    label: "Consulta: concessão historica LPA manual"
+
+  - trigger: ">CAEXUORLOC"
+    replace: ">CAEXUORLOC"
+    label: "Consulta: Exclui UORG localização aposen"
+
+  - trigger: ">CDACPSGRAC"
+    replace: ">CDACPSGRAC"
+    label: "Consulta: Aceita inst/benef.pens.gracios/indeniz."
+
+  - trigger: ">REGJUR"
+    replace: ">REGJUR"
+    label: "Tabela: Regime juridico"
+
+  - trigger: ">CACOCONCUR"
+    replace: ">CACOCONCUR"
+    label: "Consulta: Consulta concursado/nomeado"
+
+  - trigger: ">DPCOPROBP"
+    replace: ">DPCOPROBP"
+    label: "Administração: Consultar programacao do BP"
+
+  - trigger: ">CAEXCLUIPT"
+    replace: ">CAEXCLUIPT"
+    label: "Consulta: Exclui PTC"
+
+  - trigger: ">CAIAINSEXT"
+    replace: ">CAIAINSEXT"
+    label: "Consulta: Inclui/altera instrut. externo"
+
+  - trigger: ">CDCOFERIAS"
+    replace: ">CDCOFERIAS"
+    label: "Administração: Consulta férias - pagamento"
+
+  - trigger: ">CAALEDITAL"
+    replace: ">CAALEDITAL"
+    label: "Consulta: Altera edital homologacao"
+
+  - trigger: ">CAEMSERTAS"
+    replace: ">CAEMSERTAS"
+    label: "Consulta: relatório servidores com TAS"
+
+  - trigger: ">CDCOPSGRAC"
+    replace: ">CDCOPSGRAC"
+    label: "Consulta: Consulta inst. pensão graciosa/indeniz."
+
+  - trigger: ">COTBCLACO"
+    replace: ">COTBCLACO"
+    label: "Administração: Classificacao contabil"
+
+  - trigger: ">CADSIAPE"
+    replace: ">CADSIAPE"
+    label: "Administração: Cadastro base de servidores"
+
+  - trigger: ">COTBHABILI"
+    replace: ">COTBHABILI"
+    label: "Administração: Habilitacao"
+
+  - trigger: ">CAMTMONPTC"
+    replace: ">CAMTMONPTC"
+    label: "Consulta: Monta PTC"
+
+  - trigger: ">ATUAPENSIO"
+    replace: ">ATUAPENSIO"
+    label: "Administração: Atualiza inform. pensionista"
+
+  - trigger: ">CAIFOBITRH"
+    replace: ">CAIFOBITRH"
+    label: "Consulta: Informa obito do RH"
+
+  - trigger: ">ADDIFUNAPR"
+    replace: ">ADDIFUNAPR"
+    label: "Administração: Distribui função aprovada UORG"
+
+  - trigger: ">DPEXCPENDL"
+    replace: ">DPEXCPENDL"
+    label: "Administração: Exclui pendencia public. de DL"
+
+  - trigger: ">ESTCIV"
+    replace: ">ESTCIV"
+    label: "Tabela: Estado civil"
+

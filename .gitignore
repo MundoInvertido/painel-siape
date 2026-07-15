@@ -1,0 +1,6 @@
+# Ignore temporary scratchpad files and developer logs
+scratch/
+*.log
+.gemini/
+.agents/
+check_html.*
