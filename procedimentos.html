@@ -1675,7 +1675,7 @@
             const isAdmin = localStorage.getItem("admin_session") === "true";
 
             // Show/hide Settings menu and admin-only nav items based on admin status
-            const settingsNavItem = document.querySelector('[onclick*="content-settings"], [onclick*="navigateTo(\'settings\')"]');
+            const settingsNavItem = document.querySelector('[onclick*="content-settings"], [onclick*="navigateTo(\'settings\')"], [onclick*="switchTab(\'settings\')"]');
             const addProcNavItem = document.querySelector('[onclick*="openAddModal"]');
             const addCatNavItem = document.querySelector('[onclick*="openCategoriesModal"]');
 
@@ -1725,27 +1725,46 @@
             }
 
             // Auto-load from Gist for EVERYONE (including admin)
-            // Works with public Gists without needing a token
+            // Works with public Gists without needing a token (using raw URL to bypass API rate limits)
             const gistToLoad = SITE_GIST_ID;
             if (gistToLoad) {
                 try {
-                    const token = localStorage.getItem("github_token");
-                    const headers = token ? { "Authorization": `Bearer ${token}` } : {};
-                    const res = await fetch(`https://api.github.com/gists/${gistToLoad}`, { headers });
+                    // Tenta obter os dados pela URL raw da CDN do GitHub (sem limite de taxa)
+                    const rawUrl = `https://gist.githubusercontent.com/raw/${gistToLoad}/procedures_data.json`;
+                    const res = await fetch(rawUrl);
                     if (res.ok) {
-                        const data = await res.json();
-                        const file = data.files["procedures_data.json"];
-                        if (file) {
-                            const parsed = JSON.parse(file.content);
-                            if (parsed.procedures && parsed.categories) {
-                                PROCEDURES = parsed.procedures;
-                                CATEGORIES = parsed.categories;
-                                localStorage.setItem("sgp_nuap_procedures", JSON.stringify(PROCEDURES));
-                                localStorage.setItem("sgp_nuap_categories", JSON.stringify(CATEGORIES));
-                                renderCategoryFilters();
-                                renderProcedures();
-                                if (isAdmin && document.getElementById("sync-status")) {
-                                    document.getElementById("sync-status").textContent = "Sincronizado";
+                        const parsed = await res.json();
+                        if (parsed.procedures && parsed.categories) {
+                            PROCEDURES = parsed.procedures;
+                            CATEGORIES = parsed.categories;
+                            localStorage.setItem("sgp_nuap_procedures", JSON.stringify(PROCEDURES));
+                            localStorage.setItem("sgp_nuap_categories", JSON.stringify(CATEGORIES));
+                            renderCategoryFilters();
+                            renderProcedures();
+                            if (isAdmin && document.getElementById("sync-status")) {
+                                document.getElementById("sync-status").textContent = "Sincronizado";
+                            }
+                        }
+                    } else {
+                        // Se falhar (ex: Gist privado que precisa de autenticação), faz fallback para a API oficial do GitHub
+                        const token = localStorage.getItem("github_token");
+                        const headers = token ? { "Authorization": `Bearer ${token}` } : {};
+                        const apiRes = await fetch(`https://api.github.com/gists/${gistToLoad}`, { headers });
+                        if (apiRes.ok) {
+                            const data = await apiRes.json();
+                            const file = data.files["procedures_data.json"];
+                            if (file) {
+                                const parsed = JSON.parse(file.content);
+                                if (parsed.procedures && parsed.categories) {
+                                    PROCEDURES = parsed.procedures;
+                                    CATEGORIES = parsed.categories;
+                                    localStorage.setItem("sgp_nuap_procedures", JSON.stringify(PROCEDURES));
+                                    localStorage.setItem("sgp_nuap_categories", JSON.stringify(CATEGORIES));
+                                    renderCategoryFilters();
+                                    renderProcedures();
+                                    if (isAdmin && document.getElementById("sync-status")) {
+                                        document.getElementById("sync-status").textContent = "Sincronizado";
+                                    }
                                 }
                             }
                         }
@@ -2128,6 +2147,18 @@
             return result;
         }
 
+        function xorDecrypt(hexStr, key) {
+            let result = "";
+            for (let i = 0; i < hexStr.length; i += 2) {
+                let hexByte = hexStr.substr(i, 2);
+                let byteVal = parseInt(hexByte, 16);
+                let keyCharVal = key.charCodeAt((i / 2) % key.length);
+                let decryptedVal = byteVal ^ keyCharVal;
+                result += String.fromCharCode(decryptedVal);
+            }
+            return result;
+        }
+
         async function submitAdminLogin() {
             try {
                 const email = document.getElementById("login-email").value.trim().toLowerCase();
@@ -2146,6 +2177,25 @@
                 const hashHex = sha256(password);
 
                 if (email === ADMIN_EMAIL.toLowerCase() && (hashHex === ADMIN_HASH || hashHex === "341c2c425a51fa8390a648366ab87e4cffbdd2b9a170785fa3aaeeea3074d300")) {
+                    try {
+                        const encryptedToken = "140F003139221E0A2E5F3A0A77540B4F4A0147042C0C462A30242D0D55557E40421D413C441B3409";
+                        const encryptedGistCmd = "165F475647514452025E5D5F56545354155146591053460454595C0F07090153";
+                        const encryptedGistProc = "460514561353445007090A5E57000655455F430C1654485106095A590B530603";
+
+                        const decryptedToken = xorDecrypt(encryptedToken, password);
+                        const decryptedGistCmd = xorDecrypt(encryptedGistCmd, password);
+                        const decryptedGistProc = xorDecrypt(encryptedGistProc, password);
+
+                        // Salva as credenciais no localStorage
+                        localStorage.setItem("github_token", decryptedToken);
+                        localStorage.setItem("github_gist_id", decryptedGistCmd);
+                        localStorage.setItem("github_gist_id_procedures", decryptedGistProc);
+                        localStorage.setItem("sync_method", "gist");
+                        localStorage.setItem("cloud_auto_sync", "true");
+                    } catch (e) {
+                        console.error("Erro ao decodificar credenciais de sincronização automática:", e);
+                    }
+
                     localStorage.setItem("admin_session", "true");
                     closeLoginModal();
                     showToast("✅ Login realizado! Recarregando...");
@@ -2698,11 +2748,18 @@
                 const gistId = localStorage.getItem("github_gist_id_procedures");
                 if (!gistId) return null;
                 try {
+                    // Tenta ler primeiro pela URL raw (sem limites de API)
+                    const rawUrl = `https://gist.githubusercontent.com/raw/${gistId}/procedures_data.json`;
+                    const res = await fetch(rawUrl);
+                    if (res.ok) {
+                        return await res.json();
+                    }
+                    // Fallback para API oficial
                     const headers = {};
                     if (token) headers["Authorization"] = `Bearer ${token}`;
-                    const res = await fetch(`https://api.github.com/gists/${gistId}`, { headers });
-                    if (res.ok) {
-                        const data = await res.json();
+                    const apiRes = await fetch(`https://api.github.com/gists/${gistId}`, { headers });
+                    if (apiRes.ok) {
+                        const data = await apiRes.json();
                         const file = data.files["procedures_data.json"];
                         if (file) {
                             return JSON.parse(file.content);
