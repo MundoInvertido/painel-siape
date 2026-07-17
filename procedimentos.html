@@ -584,6 +584,47 @@
             transform: translateX(0);
         }
 
+        /* Estilos específicos para o Modal de Procedimento Centralizado (Modo Foco) */
+        #procedure-panel, #add-modal, #categories-modal {
+            justify-content: center;
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+        }
+
+        #procedure-panel .panel-content {
+            height: auto;
+            max-height: 90vh;
+            width: 90%;
+            max-width: 850px;
+            border-radius: 1.25rem;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            transform: translateY(30px) scale(0.98);
+            opacity: 0;
+            transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease;
+            overflow: hidden;
+        }
+
+        #procedure-panel.open .panel-content {
+            transform: translateY(0) scale(1);
+            opacity: 1;
+        }
+
+        /* Estilos específicos para os Modais de Adicionar e Categorias */
+        #add-modal .panel-content, #categories-modal .panel-content {
+            transform: translateY(30px) scale(0.98);
+            opacity: 0;
+            transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+
+        #add-modal.open .panel-content, #categories-modal.open .panel-content {
+            transform: translateY(0) scale(1);
+            opacity: 1;
+        }
+
         /* Login Modal */
         .login-overlay {
             position: fixed;
@@ -1339,119 +1380,6 @@
         </div>
     </div>
 
-        <div class="procedures-grid" id="procedures-grid">
-            <!-- Dynamically populated -->
-        </div>
-
-    </div>
-
-    <!-- Slide drawer panel -->
-    <div class="panel-overlay" id="procedure-panel" onclick="closePanel(event)">
-        <div class="panel-content" onclick="event.stopPropagation()">
-            <div class="panel-header">
-                <h2 id="panel-title">Título do Procedimento</h2>
-                <div style="display: flex; gap: 0.5rem; align-items: center;">
-                    <button class="btn" id="edit-proc-btn" onclick="editCurrentProcedure()" style="padding: 0.35rem 0.75rem; font-size: 0.85rem; border-color: var(--accent); color: var(--accent);">
-                        ✏️ Editar
-                    </button>
-                    <button class="btn" id="delete-proc-btn" onclick="deleteProcedure(activeProcedureId)" style="padding: 0.35rem 0.75rem; font-size: 0.85rem; border-color: #dc2626; color: #dc2626;">
-                        🗑️ Excluir
-                    </button>
-                    <button class="close-btn" onclick="togglePanel(false)">&times;</button>
-                </div>
-            </div>
-            <div class="panel-body" id="panel-body">
-                <!-- Dynamically populated -->
-            </div>
-        </div>
-    </div>
-
-    <!-- Add Procedure Modal (clicking outside does NOT close) -->
-    <div class="panel-overlay" id="add-modal">
-        <div class="panel-content" style="max-height: 90vh; height: auto; align-self: center; border-radius: 0.5rem; max-width: 600px;" onclick="event.stopPropagation()">
-            <div class="panel-header">
-                <h2 id="modal-title">Adicionar Novo Procedimento</h2>
-                <button class="close-btn" onclick="closeAddModal()">&times;</button>
-            </div>
-            <div class="panel-body" style="padding: 1.5rem; overflow-y: auto;">
-                <div class="form-group">
-                    <label for="proc-category">Categoria</label>
-                    <select id="proc-category" class="form-control">
-                        <option value="Auxílios">Auxílios</option>
-                        <option value="Financeiro">Financeiro</option>
-                        <option value="Cadastro">Cadastro / Aposentadoria</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="proc-title">Título Principal (ex: Auxílio Creche)</label>
-                    <input type="text" id="proc-title" class="form-control" placeholder="ex: Auxílio Creche">
-                </div>
-                <div class="form-group">
-                    <label for="proc-subtitle">Subtítulo (ex: Cadastro de Dependente e Inclusão)</label>
-                    <input type="text" id="proc-subtitle" class="form-control" placeholder="ex: Cadastro de Dependente e Inclusão">
-                </div>
-                <div class="form-group">
-                    <label for="proc-desc">Descrição Curta</label>
-                    <textarea id="proc-desc" class="form-control" rows="2" placeholder="Breve resumo sobre o procedimento..."></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="proc-alert">Aviso de Atenção (Alerta Vermelho - Opcional)</label>
-                    <textarea id="proc-alert" class="form-control" rows="2" placeholder="Atenção: Aposentado não faz jus..."></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="proc-extrainfo">Informações Adicionais (Banner Âmbar - Opcional)</label>
-                    <textarea id="proc-extrainfo" class="form-control" rows="2" placeholder="Valor pago em 2024: R$ 500,00..."></textarea>
-                </div>
-                
-                <div style="margin-top: 1.5rem; margin-bottom: 0.5rem;">
-                    <label style="font-weight: 700; color: var(--accent); font-size: 0.95rem;">Etapas (Passo a Passo)</label>
-                </div>
-                <div id="steps-inputs-container">
-                    <!-- Dynamic step rows -->
-                </div>
-                <button type="button" class="add-step-btn" onclick="addNewStepInput()">+ Adicionar Etapa</button>
-
-                <div class="form-group" style="margin-top: 1.5rem;">
-                    <label for="proc-notes">Informações Complementares e Rubricas (Opcional - uma por linha)</label>
-                    <textarea id="proc-notes" class="form-control" rows="4" placeholder="Uma nota por linha. Dica: use tags <code>RUBRICA</code> para formatar. Ex: Rubrica principal: <code>00136</code>"></textarea>
-                </div>
-            </div>
-            <div class="panel-footer" style="padding: 1rem 1.5rem; display: flex; justify-content: flex-end; gap: 0.75rem; background-color: var(--bg-primary);">
-                <button class="btn" onclick="closeAddModal()">Cancelar</button>
-                <button class="btn btn-accent" onclick="saveNewProcedure()">Salvar Procedimento</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Manage Categories Modal -->
-    <div class="panel-overlay" id="categories-modal">
-        <div class="panel-content" style="max-height: 80vh; height: auto; align-self: center; border-radius: 0.5rem; max-width: 500px;" onclick="event.stopPropagation()">
-            <div class="panel-header">
-                <h2>Gerenciar Categorias</h2>
-                <button class="close-btn" onclick="closeCategoriesModal()">&times;</button>
-            </div>
-            <div class="panel-body" style="padding: 1.5rem; overflow-y: auto; display: flex; flex-direction: column; gap: 1rem;">
-                <p style="font-size: 0.85rem; color: var(--text-secondary);">
-                    Renomeie as categorias existentes ou clique em Excluir (lixeira). Procedimentos na categoria excluída serão movidos para "Sem Categoria".
-                </p>
-                <div id="categories-list-container" style="display: flex; flex-direction: column; gap: 0.75rem;">
-                    <!-- Categories list with rename inputs and delete buttons -->
-                </div>
-                
-                <div style="border-top: 1px solid var(--border-color); padding-top: 1rem; margin-top: 0.5rem;">
-                    <label style="font-size: 0.85rem; font-weight: 700; color: var(--text-secondary); display: block; margin-bottom: 0.35rem;">Nova Categoria</label>
-                    <div style="display: flex; gap: 0.5rem;">
-                        <input type="text" id="new-category-name" class="form-control" placeholder="Nome da categoria...">
-                        <button class="btn btn-accent" onclick="addCategory()">+ Adicionar</button>
-                    </div>
-                </div>
-            </div>
-            <div class="panel-footer" style="padding: 1rem 1.5rem; display: flex; justify-content: flex-end; gap: 0.75rem; background-color: var(--bg-primary);">
-                <button class="btn" onclick="closeCategoriesModal()">Cancelar</button>
-                <button class="btn btn-accent" onclick="saveCategories()">Salvar Alterações</button>
-            </div>
-        </div>
-    </div>
 
     <script>
         // Procedures database
