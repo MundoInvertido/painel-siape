@@ -980,6 +980,51 @@
         .switch input:checked + .slider:before {
             transform: translateX(22px);
         }
+
+        /* Barra de Ferramentas de Formatação (Editor de Etapas) */
+        .step-editor-toolbar {
+            display: flex;
+            gap: 0.25rem;
+            background-color: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-bottom: none;
+            border-radius: 0.375rem 0.375rem 0 0;
+            padding: 0.35rem;
+            align-items: center;
+        }
+
+        .step-editor-toolbar .tb-btn {
+            background: none;
+            border: 1px solid transparent;
+            color: var(--text-primary);
+            padding: 0.25rem 0.5rem;
+            font-size: 0.75rem;
+            border-radius: 0.25rem;
+            cursor: pointer;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.15s ease;
+        }
+
+        .step-editor-toolbar .tb-btn:hover {
+            background-color: var(--bg-secondary);
+            border-color: var(--border-color);
+            color: var(--accent);
+        }
+
+        .step-editor-toolbar .tb-divider {
+            width: 1px;
+            height: 1.1rem;
+            background-color: var(--border-color);
+            margin: 0 0.2rem;
+        }
+
+        /* Ajustes de estilo para a descrição da etapa no visualizador */
+        .step-description {
+            word-break: break-word;
+        }
     </style>
 </head>
 <body>
@@ -1869,7 +1914,7 @@
                     <div class="step-number">${idx + 1}</div>
                     <div class="step-details">
                         <div class="step-title">${step.title}</div>
-                        <div class="step-description">${step.desc}</div>
+                        <div class="step-description">${renderStepDescription(step.desc)}</div>
                     </div>
                 `;
                 body.appendChild(item);
@@ -2189,43 +2234,67 @@
                     <input type="text" class="form-control step-title-input" placeholder="ex: Acessar transação" value="${stepTitle}">
                 </div>
                 <div class="form-group">
-                    <label style="display: flex; justify-content: space-between; align-items: center; gap: 0.5rem;">
-                        <span>Descrição do Passo (HTML permitido)</span>
-                        <div style="display: flex; gap: 0.35rem;">
-                            <button type="button" class="btn" style="padding: 0.15rem 0.4rem; font-size: 0.75rem; font-weight: normal; border-color: var(--accent); color: var(--accent);" onclick="insertCodeHelper(this)">
-                                + Código
-                            </button>
-                            <button type="button" class="btn" style="padding: 0.15rem 0.4rem; font-size: 0.75rem; font-weight: normal; border-color: #10b981; color: #10b981;" onclick="insertImageHelper(this)">
-                                + Imagem
-                            </button>
-                        </div>
-                    </label>
-                    <textarea class="form-control step-desc-input" rows="2" placeholder="ex: Vá até a tela tal..." >${stepDesc}</textarea>
+                    <label>Descrição do Passo</label>
+                    <div class="step-editor-toolbar">
+                        <button type="button" class="tb-btn" style="font-weight: bold;" onclick="insertFormattingHelper(this.closest('.form-group').querySelector('textarea'), '**', '**', 'negrito')" title="Negrito (Ctrl+B)">B</button>
+                        <button type="button" class="tb-btn" style="font-style: italic;" onclick="insertFormattingHelper(this.closest('.form-group').querySelector('textarea'), '*', '*', 'itálico')" title="Itálico (Ctrl+I)">I</button>
+                        <button type="button" class="tb-btn" onclick="insertBulletHelper(this)" title="Marcador de Lista (•)">• Lista</button>
+                        <div class="tb-divider"></div>
+                        <button type="button" class="tb-btn" style="color: var(--accent); font-weight: 600;" onclick="insertCodeHelper(this)" title="Inserir Código Copiável">+ Código</button>
+                        <button type="button" class="tb-btn" style="color: #10b981; font-weight: 600;" onclick="insertImageHelper(this)" title="Inserir Imagem">+ Imagem</button>
+                    </div>
+                    <textarea class="form-control step-desc-input" rows="3" placeholder="Escreva a descrição do passo. Você pode usar quebras de linha e formatar em **negrito** ou *itálico*." style="border-top-left-radius: 0; border-top-right-radius: 0; border-top: none; border-color: var(--border-color);">${stepDesc}</textarea>
                 </div>
             `;
             container.appendChild(div);
         }
 
+        function insertFormattingHelper(textarea, before, after, defaultText = "") {
+            const startPos = textarea.selectionStart;
+            const endPos = textarea.selectionEnd;
+            const text = textarea.value;
+            const selectedText = text.substring(startPos, endPos) || defaultText;
+            const insertText = before + selectedText + after;
+            
+            textarea.value = text.substring(0, startPos) + insertText + text.substring(endPos);
+            textarea.focus();
+            
+            const newCursorPos = startPos + before.length + selectedText.length + after.length;
+            textarea.setSelectionRange(newCursorPos, newCursorPos);
+            textarea.dispatchEvent(new Event('input'));
+        }
+
+        function insertBulletHelper(buttonEl) {
+            const formGroup = buttonEl.closest(".form-group");
+            const textarea = formGroup.querySelector("textarea");
+            const startPos = textarea.selectionStart;
+            const text = textarea.value;
+            
+            const prefix = (startPos === 0 || text.charAt(startPos - 1) === '\n') ? '• ' : '\n• ';
+            
+            insertFormattingHelper(textarea, prefix, '', 'Item');
+        }
+
         function insertCodeHelper(buttonEl) {
             const formGroup = buttonEl.closest(".form-group");
             const textarea = formGroup.querySelector("textarea");
-            
-            const code = prompt("Qual código/comando deseja inserir? (Ex: >FPATMOVFIN ou 00136)");
-            if (!code) return;
-            
-            const insertText = `<code class="code-copy" onclick="copyText('${code}')">${code}</code>`;
-            
-            // Insert at cursor position
             const startPos = textarea.selectionStart;
             const endPos = textarea.selectionEnd;
             const text = textarea.value;
             
-            textarea.value = text.substring(0, startPos) + insertText + text.substring(endPos);
+            let code = text.substring(startPos, endPos);
+            if (!code) {
+                code = prompt("Qual código/comando deseja inserir? (Ex: >FPATMOVFIN ou 00136)");
+                if (!code) return;
+            }
             
-            // Refocus textarea and place cursor after inserted text
+            const insertText = `<code class="code-copy" onclick="copyText('${code}')">${code}</code>`;
+            
+            textarea.value = text.substring(0, startPos) + insertText + text.substring(endPos);
             textarea.focus();
             const newCursorPos = startPos + insertText.length;
             textarea.setSelectionRange(newCursorPos, newCursorPos);
+            textarea.dispatchEvent(new Event('input'));
         }
 
         function insertImageHelper(buttonEl) {
@@ -2253,6 +2322,26 @@
             textarea.focus();
             const newCursorPos = startPos + imgHtml.length;
             textarea.setSelectionRange(newCursorPos, newCursorPos);
+            textarea.dispatchEvent(new Event('input'));
+        }
+
+        function renderStepDescription(text) {
+            if (!text) return "";
+            
+            let html = text;
+            
+            // 1. Renderizar negrito: **texto** ou __texto__ -> <strong>texto</strong>
+            html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            html = html.replace(/__(.*?)__/g, '<strong>$1</strong>');
+            
+            // 2. Renderizar itálico: *texto* ou _texto_ -> <em>texto</em>
+            html = html.replace(/\*(.*?)\*/g, '<em>$1</em>');
+            html = html.replace(/\b_(.*?)_\b/g, '<em>$1</em>');
+            
+            // 3. Renderizar quebras de linha: \n -> <br>
+            html = html.replace(/\n/g, '<br>');
+            
+            return html;
         }
 
         function reorderSteps() {
