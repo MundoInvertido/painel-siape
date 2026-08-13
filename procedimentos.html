@@ -2314,8 +2314,8 @@
                 item.className = "step-item";
 
                 let appButtonHtml = "";
-                const appKey = (step.appLink === 'none') ? null : (step.appLink || getSuggestedApp(proc, step));
-                if (appKey && appKey !== 'none') {
+                const appKey = (step.appLink && step.appLink !== 'none') ? step.appLink : null;
+                if (appKey) {
                     const appMeta = getAppMetadata(appKey);
                     if (appMeta) {
                         appButtonHtml = `
@@ -2836,12 +2836,9 @@
         }
 
         function getSuggestedApp(proc, step) {
-            if (step.appLink === 'none') return null;
-            if (step.appLink) return step.appLink;
-            const text = (proc.title + ' ' + step.title + ' ' + (step.desc || '')).toLowerCase();
-            if (text.includes('substitui')) return 'substituicao';
-            if (text.includes('transporte') && (text.includes('dias') || text.includes('ponto') || text.includes('presença'))) return 'contador';
-            if (text.includes('devolução') || text.includes('erário') || text.includes('proporcional')) return 'calculadora';
+            if (step && step.appLink && step.appLink !== 'none') {
+                return step.appLink;
+            }
             return null;
         }
 
