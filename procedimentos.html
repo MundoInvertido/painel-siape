@@ -2057,53 +2057,20 @@
                 updateSyncStatusLabel();
             }
 
-            // Auto-load from Gist for EVERYONE (including admin)
-            // Works with public Gists without needing a token (using raw URL to bypass API rate limits)
-            const gistToLoad = SITE_GIST_ID;
+            const gistToLoad = localStorage.getItem("github_gist_id_unified") || 
+                               localStorage.getItem("github_gist_id_procedures") || 
+                               localStorage.getItem("github_gist_id");
             if (gistToLoad) {
                 try {
-                    // Tenta obter os dados pela URL raw da CDN do GitHub (sem limite de taxa)
-                    const rawUrl = `https://gist.githubusercontent.com/raw/${gistToLoad}/procedures_data.json`;
-                    const res = await fetch(rawUrl);
-                    if (res.ok) {
-                        const parsed = await res.json();
-                        if (parsed.procedures && parsed.categories) {
-                            PROCEDURES = parsed.procedures;
-                            CATEGORIES = parsed.categories;
-                            localStorage.setItem("sgp_nuap_procedures", JSON.stringify(PROCEDURES));
-                            localStorage.setItem("sgp_nuap_categories", JSON.stringify(CATEGORIES));
-                            renderCategoryFilters();
-                            renderProcedures();
-                            if (isAdmin && document.getElementById("sync-status")) {
-                                document.getElementById("sync-status").textContent = "Sincronizado";
-                            }
-                        }
-                    } else {
-                        // Se falhar (ex: Gist privado que precisa de autenticação), faz fallback para a API oficial do GitHub
-                        const token = localStorage.getItem("github_token");
-                        const headers = token ? { "Authorization": `Bearer ${token}` } : {};
-                        const apiRes = await fetch(`https://api.github.com/gists/${gistToLoad}`, { headers });
-                        if (apiRes.ok) {
-                            const data = await apiRes.json();
-                            const file = data.files["procedures_data.json"];
-                            if (file) {
-                                const parsed = JSON.parse(file.content);
-                                if (parsed.procedures && parsed.categories) {
-                                    PROCEDURES = parsed.procedures;
-                                    CATEGORIES = parsed.categories;
-                                    localStorage.setItem("sgp_nuap_procedures", JSON.stringify(PROCEDURES));
-                                    localStorage.setItem("sgp_nuap_categories", JSON.stringify(CATEGORIES));
-                                    renderCategoryFilters();
-                                    renderProcedures();
-                                    if (isAdmin && document.getElementById("sync-status")) {
-                                        document.getElementById("sync-status").textContent = "Sincronizado";
-                                    }
-                                }
-                            }
+                    const cloudData = await cloudGet();
+                    if (cloudData) {
+                        applyUnifiedCloudData(cloudData);
+                        if (isAdmin && document.getElementById("sync-status")) {
+                            document.getElementById("sync-status").textContent = "Sincronizado";
                         }
                     }
                 } catch (e) {
-                    console.warn("Não foi possível carregar da nuvem, usando dados locais.", e);
+                    console.warn("Não foi possível carregar dados da nuvem, usando dados locais.", e);
                 }
             }
         };
@@ -3479,8 +3446,11 @@
             const token = document.getElementById("github-token-input").value.trim();
             const gistId = document.getElementById("github-gist-id-input").value.trim();
             localStorage.setItem("github_token", token);
+            localStorage.setItem("github_gist_id_unified", gistId);
             localStorage.setItem("github_gist_id_procedures", gistId);
+            localStorage.setItem("github_gist_id", gistId);
             updateSyncStatusLabel();
+            showToast("Configurações do GitHub Gist salvas!");
         }
 
         async function setupGithubGist() {
@@ -3490,11 +3460,31 @@
                 return;
             }
 
-            let gistId = localStorage.getItem("github_gist_id_procedures");
-            document.getElementById("sync-status").textContent = "Criando Gist...";
+            let gistId = localStorage.getItem("github_gist_id_unified") || 
+                         localStorage.getItem("github_gist_id_procedures") || 
+                         localStorage.getItem("github_gist_id");
+            const statusEl = document.getElementById("sync-status");
+            if (statusEl) statusEl.textContent = "Criando Gist...";
+
+            let procs = [];
+            try { procs = typeof PROCEDURES !== 'undefined' ? PROCEDURES : JSON.parse(localStorage.getItem("sgp_nuap_procedures") || "[]"); } catch(e){}
+            let cats = [];
+            try { cats = typeof CATEGORIES !== 'undefined' ? CATEGORIES : JSON.parse(localStorage.getItem("sgp_nuap_categories") || "[]"); } catch(e){}
+            let yamlStr = "";
+            try { yamlStr = typeof rawYaml !== 'undefined' ? rawYaml : (localStorage.getItem("espanso_siape_yaml") || ""); } catch(e){}
+            let agend = [];
+            try { agend = typeof agendamentosList !== 'undefined' ? agendamentosList : JSON.parse(localStorage.getItem("espanso_agendamentos") || "[]"); } catch(e){}
+
+            const payload = {
+                procedures: procs,
+                categories: cats,
+                yaml: yamlStr,
+                agendamentos: agend,
+                updatedAt: new Date().toISOString()
+            };
+
             try {
                 if (!gistId) {
-                    // Create new Gist (PUBLIC so all visitors can read without a token)
                     const res = await fetch("https://api.github.com/gists", {
                         method: "POST",
                         headers: {
@@ -3502,11 +3492,17 @@
                             "Content-Type": "application/json"
                         },
                         body: JSON.stringify({
-                            description: "SGP-PA Procedures Sync Data",
+                            description: "SGP-PA & SIAPE Unified Cloud Data (Procedimentos, Comandos e Prazos)",
                             public: true,
                             files: {
+                                "siape_unified_data.json": {
+                                    "content": JSON.stringify(payload, null, 2)
+                                },
                                 "procedures_data.json": {
-                                    "content": JSON.stringify({ procedures: PROCEDURES, categories: CATEGORIES })
+                                    "content": JSON.stringify({ procedures: procs, categories: cats }, null, 2)
+                                },
+                                "comandos_data.json": {
+                                    "content": JSON.stringify({ yaml: yamlStr, agendamentos: agend }, null, 2)
                                 }
                             }
                         })
@@ -3514,60 +3510,115 @@
                     if (res.ok) {
                         const data = await res.json();
                         gistId = data.id;
+                        localStorage.setItem("github_gist_id_unified", gistId);
                         localStorage.setItem("github_gist_id_procedures", gistId);
-                        document.getElementById("github-gist-id-input").value = gistId;
+                        localStorage.setItem("github_gist_id", gistId);
+                        const inputEl = document.getElementById("github-gist-id-input");
+                        if (inputEl) inputEl.value = gistId;
                         updateSyncStatusLabel();
-                        showToast("Gist privado criado e vinculado com sucesso!");
+                        showToast("Gist unificado criado e vinculado com sucesso!");
                     } else {
                         const err = await res.json();
                         alert("Erro ao criar Gist: " + (err.message || res.statusText));
-                        document.getElementById("sync-status").textContent = "Erro ao criar Gist";
+                        if (statusEl) statusEl.textContent = "Erro ao criar Gist";
                     }
                 } else {
-                    // Just verify connection
                     const res = await fetch(`https://api.github.com/gists/${gistId}`, {
                         headers: { "Authorization": `Bearer ${token}` }
                     });
                     if (res.ok) {
-                        showToast("Gist existente vinculado e verificado!");
+                        showToast("Gist unificado vinculado e verificado!");
                         updateSyncStatusLabel();
                     } else {
                         alert("Gist não encontrado ou token inválido.");
-                        document.getElementById("sync-status").textContent = "Erro de vinculação";
+                        if (statusEl) statusEl.textContent = "Erro de vinculação";
                     }
                 }
             } catch (e) {
                 console.error(e);
-                document.getElementById("sync-status").textContent = "Erro de conexão";
+                if (statusEl) statusEl.textContent = "Erro de conexão";
             }
+        }
+
+        function applyUnifiedCloudData(parsed) {
+            if (!parsed) return false;
+            let updated = false;
+
+            if (parsed.procedures && Array.isArray(parsed.procedures)) {
+                if (typeof PROCEDURES !== 'undefined') PROCEDURES = parsed.procedures;
+                localStorage.setItem("sgp_nuap_procedures", JSON.stringify(parsed.procedures));
+                updated = true;
+            }
+            if (parsed.categories && Array.isArray(parsed.categories)) {
+                if (typeof CATEGORIES !== 'undefined') CATEGORIES = parsed.categories;
+                localStorage.setItem("sgp_nuap_categories", JSON.stringify(parsed.categories));
+                updated = true;
+            }
+            if (typeof parsed.yaml === 'string') {
+                if (typeof rawYaml !== 'undefined') rawYaml = parsed.yaml;
+                localStorage.setItem("espanso_siape_yaml", parsed.yaml);
+                const yamlInput = document.getElementById("yaml-input");
+                if (yamlInput) yamlInput.value = parsed.yaml;
+                updated = true;
+            }
+            if (parsed.agendamentos && Array.isArray(parsed.agendamentos)) {
+                if (typeof agendamentosList !== 'undefined') agendamentosList = parsed.agendamentos;
+                localStorage.setItem("espanso_agendamentos", JSON.stringify(parsed.agendamentos));
+                updated = true;
+            }
+
+            if (typeof renderCategoryFilters === 'function') renderCategoryFilters();
+            if (typeof renderProcedures === 'function') renderProcedures();
+            if (typeof reloadDatabase === 'function') reloadDatabase();
+            if (typeof renderAgendamentos === 'function') renderAgendamentos();
+            if (typeof updateMainPageAlerts === 'function') updateMainPageAlerts();
+            if (typeof updateStats === 'function') updateStats();
+
+            return updated;
         }
 
         async function cloudGet() {
             const method = localStorage.getItem("sync_method") || "gist";
             if (method === "gist") {
                 const token = localStorage.getItem("github_token");
-                const gistId = localStorage.getItem("github_gist_id_procedures");
+                const gistId = localStorage.getItem("github_gist_id_unified") || 
+                               localStorage.getItem("github_gist_id_procedures") || 
+                               localStorage.getItem("github_gist_id");
                 if (!gistId) return null;
                 try {
-                    // Tenta ler primeiro pela URL raw (sem limites de API)
-                    const rawUrl = `https://gist.githubusercontent.com/raw/${gistId}/procedures_data.json`;
-                    const res = await fetch(rawUrl);
+                    const rawUrl = `https://gist.githubusercontent.com/raw/${gistId}/siape_unified_data.json`;
+                    const res = await fetch(rawUrl + '?t=' + Date.now());
                     if (res.ok) {
                         return await res.json();
                     }
-                    // Fallback para API oficial
                     const headers = {};
                     if (token) headers["Authorization"] = `Bearer ${token}`;
                     const apiRes = await fetch(`https://api.github.com/gists/${gistId}`, { headers });
                     if (apiRes.ok) {
                         const data = await apiRes.json();
-                        const file = data.files["procedures_data.json"];
-                        if (file) {
-                            return JSON.parse(file.content);
+                        if (data.files["siape_unified_data.json"]) {
+                            return JSON.parse(data.files["siape_unified_data.json"].content);
+                        } else {
+                            const unified = {};
+                            if (data.files["procedures_data.json"]) {
+                                try {
+                                    const p = JSON.parse(data.files["procedures_data.json"].content);
+                                    unified.procedures = p.procedures;
+                                    unified.categories = p.categories;
+                                } catch(e){}
+                            }
+                            if (data.files["comandos_data.json"]) {
+                                try {
+                                    const c = JSON.parse(data.files["comandos_data.json"].content);
+                                    unified.yaml = c.yaml;
+                                    unified.agendamentos = c.agendamentos;
+                                } catch(e){}
+                            }
+                            return unified;
                         }
                     }
                 } catch (e) {
-                    console.error("Erro ao ler do Gist:", e);
+                    console.error("Erro ao carregar dados unificados do Gist:", e);
                 }
             } else {
                 const syncKey = localStorage.getItem("cloud_sync_key");
@@ -3585,10 +3636,33 @@
         }
 
         async function cloudPut(procedures, categories) {
+            let procs = procedures;
+            if (!procs) {
+                try { procs = typeof PROCEDURES !== 'undefined' ? PROCEDURES : JSON.parse(localStorage.getItem("sgp_nuap_procedures") || "[]"); } catch(e){}
+            }
+            let cats = categories;
+            if (!cats) {
+                try { cats = typeof CATEGORIES !== 'undefined' ? CATEGORIES : JSON.parse(localStorage.getItem("sgp_nuap_categories") || "[]"); } catch(e){}
+            }
+            let yamlStr = "";
+            try { yamlStr = typeof rawYaml !== 'undefined' ? rawYaml : (localStorage.getItem("espanso_siape_yaml") || ""); } catch(e){}
+            let agend = [];
+            try { agend = typeof agendamentosList !== 'undefined' ? agendamentosList : JSON.parse(localStorage.getItem("espanso_agendamentos") || "[]"); } catch(e){}
+
+            const payload = {
+                procedures: procs,
+                categories: cats,
+                yaml: yamlStr,
+                agendamentos: agend,
+                updatedAt: new Date().toISOString()
+            };
+
             const method = localStorage.getItem("sync_method") || "gist";
             if (method === "gist") {
                 const token = localStorage.getItem("github_token");
-                const gistId = localStorage.getItem("github_gist_id_procedures");
+                const gistId = localStorage.getItem("github_gist_id_unified") || 
+                               localStorage.getItem("github_gist_id_procedures") || 
+                               localStorage.getItem("github_gist_id");
                 if (!token || !gistId) return false;
                 try {
                     const res = await fetch(`https://api.github.com/gists/${gistId}`, {
@@ -3598,16 +3672,23 @@
                             "Content-Type": "application/json"
                         },
                         body: JSON.stringify({
+                            description: "SGP-PA & SIAPE Dados Unificados (Procedimentos, Comandos e Prazos)",
                             files: {
+                                "siape_unified_data.json": {
+                                    "content": JSON.stringify(payload, null, 2)
+                                },
                                 "procedures_data.json": {
-                                    "content": JSON.stringify({ procedures: procedures, categories: categories })
+                                    "content": JSON.stringify({ procedures: procs, categories: cats }, null, 2)
+                                },
+                                "comandos_data.json": {
+                                    "content": JSON.stringify({ yaml: yamlStr, agendamentos: agend }, null, 2)
                                 }
                             }
                         })
                     });
                     return res.ok;
                 } catch (e) {
-                    console.error("Erro ao salvar no Gist:", e);
+                    console.error("Erro ao salvar dados unificados no Gist:", e);
                 }
             } else {
                 const syncKey = localStorage.getItem("cloud_sync_key");
@@ -3618,7 +3699,7 @@
                         headers: {
                             "Content-Type": "application/json"
                         },
-                        body: JSON.stringify({ procedures: procedures, categories: categories })
+                        body: JSON.stringify(payload)
                     });
                     return res.ok;
                 } catch (e) {
@@ -3642,19 +3723,27 @@
 
         async function generateNewSyncKey() {
             document.getElementById("sync-status").textContent = "Criando chave...";
+            let procs = [];
+            try { procs = typeof PROCEDURES !== 'undefined' ? PROCEDURES : JSON.parse(localStorage.getItem("sgp_nuap_procedures") || "[]"); } catch(e){}
+            let cats = [];
+            try { cats = typeof CATEGORIES !== 'undefined' ? CATEGORIES : JSON.parse(localStorage.getItem("sgp_nuap_categories") || "[]"); } catch(e){}
+            let yamlStr = "";
+            try { yamlStr = typeof rawYaml !== 'undefined' ? rawYaml : (localStorage.getItem("espanso_siape_yaml") || ""); } catch(e){}
+            let agend = [];
+            try { agend = typeof agendamentosList !== 'undefined' ? agendamentosList : JSON.parse(localStorage.getItem("espanso_agendamentos") || "[]"); } catch(e){}
+
+            const payload = { procedures: procs, categories: cats, yaml: yamlStr, agendamentos: agend, updatedAt: new Date().toISOString() };
             try {
                 const res = await fetch("https://jsonblob.com/api/jsonBlob", {
                     method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({ procedures: PROCEDURES, categories: CATEGORIES })
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(payload)
                 });
                 if (res.ok) {
                     const location = res.headers.get("Location") || res.headers.get("location");
                     const newKey = location.split("/").pop();
                     updateSyncKey(newKey);
-                    showToast("Nova chave gerada! Guarde-a para sincronizar outros aparelhos.");
+                    showToast("Nova chave unificada gerada! Guarde-a para sincronizar outros aparelhos.");
                 } else {
                     document.getElementById("sync-status").textContent = "Erro ao registrar chave";
                 }
@@ -3673,7 +3762,7 @@
 
         async function syncUpload() {
             const method = localStorage.getItem("sync_method") || "gist";
-            const checkKey = method === "gist" ? localStorage.getItem("github_gist_id_procedures") : localStorage.getItem("cloud_sync_key");
+            const checkKey = method === "gist" ? (localStorage.getItem("github_gist_id_unified") || localStorage.getItem("github_gist_id_procedures") || localStorage.getItem("github_gist_id")) : localStorage.getItem("cloud_sync_key");
             if (!checkKey) return false;
             document.getElementById("sync-status").textContent = "Enviando...";
             const success = await cloudPut(PROCEDURES, CATEGORIES);
@@ -3689,50 +3778,48 @@
 
         async function syncNow() {
             const method = localStorage.getItem("sync_method") || "gist";
-            const checkKey = method === "gist" ? localStorage.getItem("github_gist_id_procedures") : localStorage.getItem("cloud_sync_key");
+            const checkKey = method === "gist" ? (localStorage.getItem("github_gist_id_unified") || localStorage.getItem("github_gist_id_procedures") || localStorage.getItem("github_gist_id")) : localStorage.getItem("cloud_sync_key");
             if (!checkKey) {
-                alert("Por favor, configure as chaves de sincronização primeiro.");
+                alert("Por favor, configure as chaves de sincronização nas Configurações primeiro.");
                 return;
             }
 
-            document.getElementById("sync-status").textContent = "Sincronizando...";
+            const statusEl = document.getElementById("sync-status");
+            if (statusEl) statusEl.textContent = "Sincronizando...";
 
             const cloudData = await cloudGet();
-            if (cloudData && cloudData.procedures && cloudData.categories) {
-                // Check if local data is "empty" (only default data, never edited)
-                const hasLocalData = !!localStorage.getItem("sgp_nuap_procedures");
+            if (cloudData && (cloudData.procedures || cloudData.yaml || cloudData.agendamentos)) {
+                const hasLocalData = !!(localStorage.getItem("sgp_nuap_procedures") || localStorage.getItem("espanso_siape_yaml"));
 
                 const doDownload = !hasLocalData || confirm(
-                    "Dados de fluxos salvos na nuvem foram detectados.\n\n" +
-                    "Clique OK para BAIXAR da nuvem (sobrescreve dados locais).\n" +
-                    "Clique Cancelar para ENVIAR dados locais para a nuvem."
+                    "Dados salvos na nuvem foram detectados (Procedimentos, Comandos e Prazos).\n\n" +
+                    "• Clique OK para BAIXAR da nuvem (atualiza tudo localmente).\n" +
+                    "• Clique Cancelar para ENVIAR seus dados locais para a nuvem."
                 );
 
                 if (doDownload) {
-                    try {
-                        PROCEDURES = cloudData.procedures;
-                        CATEGORIES = cloudData.categories;
-                        localStorage.setItem("sgp_nuap_procedures", JSON.stringify(PROCEDURES));
-                        localStorage.setItem("sgp_nuap_categories", JSON.stringify(CATEGORIES));
-                        renderCategoryFilters();
-                        renderProcedures();
-                        document.getElementById("sync-status").textContent = "Sincronizado!";
-                        showToast("✅ Dados baixados da nuvem com sucesso!");
+                    const success = applyUnifiedCloudData(cloudData);
+                    if (success) {
+                        if (statusEl) statusEl.textContent = "Sincronizado!";
+                        showToast("✅ Procedimentos, Comandos e Prazos sincronizados com sucesso!");
                         return;
-                    } catch (e) {
-                        console.error(e);
                     }
                 }
             } else if (!cloudData) {
-                document.getElementById("sync-status").textContent = "Sem dados na nuvem";
+                if (statusEl) statusEl.textContent = "Sem dados na nuvem";
                 showToast("Nenhum dado encontrado na nuvem. Enviando dados locais...");
             }
 
             const success = await syncUpload();
             if (success) {
-                alert("✅ Sincronização concluída com sucesso! Os dados foram enviados para a nuvem.");
+                if (statusEl) {
+                    const now = new Date().toLocaleTimeString();
+                    statusEl.textContent = `Salvo às ${now}`;
+                }
+                alert("✅ Sincronização Unificada concluída com sucesso!\n\nProcedimentos, Comandos e Prazos foram salvos na nuvem.");
             } else {
-                alert("❌ Falha na sincronização!\n\nNão foi possível salvar os dados na nuvem. Verifique se o seu Token do GitHub (PAT) e o ID do Gist estão configurados corretamente nas Configurações.");
+                if (statusEl) statusEl.textContent = "Erro ao salvar";
+                alert("❌ Falha na sincronização!\n\nNão foi possível salvar os dados na nuvem. Verifique seu Token do GitHub e ID do Gist nas Configurações.");
             }
         }
 
