@@ -2314,8 +2314,8 @@
                 item.className = "step-item";
 
                 let appButtonHtml = "";
-                const appKey = step.appLink || getSuggestedApp(proc, step);
-                if (appKey) {
+                const appKey = (step.appLink === 'none') ? null : (step.appLink || getSuggestedApp(proc, step));
+                if (appKey && appKey !== 'none') {
                     const appMeta = getAppMetadata(appKey);
                     if (appMeta) {
                         appButtonHtml = `
@@ -2836,6 +2836,7 @@
         }
 
         function getSuggestedApp(proc, step) {
+            if (step.appLink === 'none') return null;
             if (step.appLink) return step.appLink;
             const text = (proc.title + ' ' + step.title + ' ' + (step.desc || '')).toLowerCase();
             if (text.includes('substitui')) return 'substituicao';
@@ -2885,7 +2886,7 @@
                 <div class="form-group" style="margin-bottom: 0.5rem;">
                     <label>Vincular App de Suporte (Opcional)</label>
                     <select class="form-control step-applink-select">
-                        <option value="">Nenhum App</option>
+                        <option value="none" ${(!stepAppLink || stepAppLink === 'none') ? 'selected' : ''}>Nenhum App</option>
                         <option value="calculadora" ${stepAppLink === 'calculadora' ? 'selected' : ''}>🧮 Calculadora RH &amp; Geral</option>
                         <option value="contador" ${stepAppLink === 'contador' ? 'selected' : ''}>📅 Contador de Dias &amp; Prazos</option>
                         <option value="substituicao" ${stepAppLink === 'substituicao' ? 'selected' : ''}>📊 Calculadora de Substituição</option>
@@ -3186,10 +3187,9 @@
             stepDivs.forEach(div => {
                 const sTitle = div.querySelector(".step-title-input").value.trim();
                 const sDesc = div.querySelector(".step-desc-input").value.trim();
-                const sAppLink = div.querySelector(".step-applink-select") ? div.querySelector(".step-applink-select").value : "";
+                const sAppLink = div.querySelector(".step-applink-select") ? div.querySelector(".step-applink-select").value : "none";
                 if (sTitle && sDesc) {
-                    const stepObj = { title: sTitle, desc: sDesc };
-                    if (sAppLink) stepObj.appLink = sAppLink;
+                    const stepObj = { title: sTitle, desc: sDesc, appLink: sAppLink || "none" };
                     steps.push(stepObj);
                 }
             });
