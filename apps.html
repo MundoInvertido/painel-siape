@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aplicativos de Suporte — Central PRF</title>
+  <meta name="description" content="Central de aplicativos e ferramentas de suporte da PRF: Contador de Dias e Calculadora de Substituição.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-primary: #eef2f7;
+      --bg-secondary: #ffffff;
+      --bg-tertiary: #f8fafc;
+      --text-primary: #0f172a;
+      --text-secondary: #64748b;
+      --text-muted: #94a3b8;
+      --accent: #0057a8;
+      --accent-light: #1a7fd4;
+      --accent-hover: #004080;
+      --accent-glow: rgba(0, 87, 168, 0.12);
+      --danger: #dc2626;
+      --danger-glow: rgba(220, 38, 38, 0.12);
+      --success: #059669;
+      --border-color: #dde3ec;
+      --card-shadow: 0 1px 4px rgba(0, 0, 0, 0.06), 0 4px 16px rgba(0, 0, 0, 0.04);
+      --card-shadow-hover: 0 4px 12px rgba(0, 0, 0, 0.1), 0 12px 32px rgba(0, 0, 0, 0.06);
+      --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Courier New", monospace;
+      --font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      --radius-sm: 0.375rem;
+      --radius-md: 0.625rem;
+      --radius-lg: 0.875rem;
+
+      --sidebar-width: 260px;
+      --sidebar-bg: #ffffff;
+      --sidebar-border: #e2e8f0;
+      --sidebar-text: #475569;
+      --sidebar-active-bg: #eff6ff;
+      --sidebar-active-text: #0057a8;
+      --sidebar-icon-color: #94a3b8;
+
+      --header-bg: #0b1340;
+      --header-height: 54px;
+
+      --panel-header-bg: #eff6ff;
+      --panel-header-text: #1e4d8c;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.5;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Top Header */
+    .top-header {
+      background: linear-gradient(135deg, #0b1340 0%, #0e1a50 100%);
+      color: #ffffff;
+      height: var(--header-height);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 1.5rem;
+      box-shadow: 0 2px 16px rgba(0, 0, 0, 0.25);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .logo-prf {
+      font-family: 'Inter', sans-serif;
+      font-weight: 900;
+      color: #fbbf24;
+      font-size: 1.25rem;
+      letter-spacing: 0.06em;
+      line-height: 1;
+    }
+
+    .menu-icon {
+      display: flex;
+      align-items: center;
+      color: #ffffff;
+      cursor: pointer;
+    }
+
+    /* App Layout */
+    .app-layout {
+      display: flex;
+      min-height: calc(100vh - var(--header-height));
+    }
+
+    .sidebar {
+      width: var(--sidebar-width);
+      background-color: var(--sidebar-bg);
+      border-right: 1px solid var(--sidebar-border);
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+      position: sticky;
+      top: var(--header-height);
+      height: calc(100vh - var(--header-height));
+      overflow-y: auto;
+    }
+
+    .sidebar::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    .sidebar::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .sidebar::-webkit-scrollbar-thumb {
+      background: var(--border-color);
+      border-radius: 4px;
+    }
+
+    .sidebar-logo {
+      padding: 1.1rem 1.25rem;
+      border-bottom: 1px solid var(--sidebar-border);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .sidebar-logo-icon {
+      width: 2.25rem;
+      height: 2.25rem;
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%);
+      border-radius: 0.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      box-shadow: 0 2px 8px var(--accent-glow);
+    }
+
+    .sidebar-logo h1 {
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      letter-spacing: -0.01em;
+      line-height: 1.2;
+    }
+
+    .sidebar-logo p {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      font-weight: 500;
+      margin-top: 1px;
+    }
+
+    .sidebar-section-label {
+      font-size: 0.65rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+      padding: 0.75rem 1rem 0.25rem;
+    }
+
+    .sidebar-nav {
+      padding: 0.75rem 0.75rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.15rem;
+      flex-grow: 1;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 0.625rem;
+      padding: 0.6rem 0.875rem;
+      color: var(--sidebar-text);
+      text-decoration: none;
+      border-radius: var(--radius-md);
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      background: none;
+      text-align: left;
+      width: 100%;
+      transition: all 0.15s ease;
+    }
+
+    .nav-item .icon {
+      color: var(--sidebar-icon-color);
+      transition: color 0.15s ease;
+      flex-shrink: 0;
+    }
+
+    .nav-item:hover {
+      background-color: var(--sidebar-active-bg);
+      color: var(--sidebar-active-text);
+    }
+
+    .nav-item:hover .icon {
+      color: var(--accent);
+    }
+
+    .nav-item.active {
+      background-color: var(--sidebar-active-bg);
+      color: var(--sidebar-active-text);
+      font-weight: 700;
+      box-shadow: inset 3px 0 0 var(--accent);
+    }
+
+    .nav-item.active .icon {
+      color: var(--accent);
+    }
+
+    .nav-badge {
+      margin-left: auto;
+      background-color: var(--accent-glow);
+      color: var(--accent);
+      font-size: 0.65rem;
+      font-weight: 700;
+      padding: 0.1rem 0.4rem;
+      border-radius: 1rem;
+    }
+
+    .nav-divider {
+      margin: 0.5rem 0.75rem;
+      border: none;
+      border-top: 1px solid var(--sidebar-border);
+    }
+
+    .main-content {
+      flex-grow: 1;
+      padding: 1.5rem 2rem;
+      max-width: 1400px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+      overflow-x: hidden;
+    }
+
+    .card {
+      background-color: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--card-shadow);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .card-header {
+      padding: 1rem 1.5rem;
+      background-color: var(--bg-tertiary);
+      border-bottom: 1px solid var(--sidebar-border);
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    /* App Tab Navigation */
+    .app-tabs-nav {
+      display: flex;
+      gap: 0.5rem;
+      background-color: var(--bg-secondary);
+      padding: 0.5rem 0.5rem 0 0.5rem;
+      border-bottom: 1px solid var(--border-color);
+      overflow-x: auto;
+    }
+
+    .app-tab-btn {
+      padding: 0.65rem 1.25rem;
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--text-secondary);
+      background: none;
+      border: none;
+      border-bottom: 3px solid transparent;
+      border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      white-space: nowrap;
+      transition: all 0.15s ease;
+    }
+
+    .app-tab-btn:hover {
+      color: var(--accent);
+      background-color: var(--bg-tertiary);
+    }
+
+    .app-tab-btn.active {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+      background-color: var(--bg-tertiary);
+    }
+
+    /* Grid of App Cards */
+    .apps-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 1.25rem;
+      padding: 1.5rem;
+    }
+
+    .app-card {
+      background-color: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 1.25rem;
+      box-shadow: var(--card-shadow);
+      transition: all 0.2s ease;
+      position: relative;
+    }
+
+    .app-card:hover {
+      border-color: var(--accent);
+      box-shadow: var(--card-shadow-hover);
+      transform: translateY(-2px);
+    }
+
+    .app-card-icon {
+      width: 3rem;
+      height: 3rem;
+      border-radius: var(--radius-md);
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%);
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 12px var(--accent-glow);
+    }
+
+    .app-card h3 {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: var(--text-primary);
+    }
+
+    .app-card p {
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
+    .app-card-actions {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: auto;
+      border-top: 1px solid var(--border-color);
+      padding-top: 1rem;
+    }
+
+    .btn {
+      background-color: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      color: var(--text-primary);
+      padding: 0.5rem 1rem;
+      border-radius: var(--radius-md);
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      text-decoration: none;
+      transition: all 0.15s ease;
+    }
+
+    .btn:hover {
+      background-color: var(--bg-tertiary);
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .btn-accent {
+      background-color: var(--accent);
+      color: #ffffff !important;
+      border-color: var(--accent);
+    }
+
+    .btn-accent:hover {
+      background-color: var(--accent-hover);
+      box-shadow: 0 4px 12px var(--accent-glow);
+    }
+
+    .app-iframe-container {
+      width: 100%;
+      height: calc(100vh - 180px);
+      min-height: 680px;
+      border: none;
+      border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+      background-color: var(--bg-secondary);
+    }
+
+    .icon {
+      width: 1.2em;
+      height: 1.2em;
+      fill: currentColor;
+      display: inline-block;
+      vertical-align: middle;
+    }
+
+    .sidebar-overlay {
+      display: none;
+    }
+
+    @media (max-width: 900px) {
+      .app-layout {
+        flex-direction: column;
+      }
+
+      .sidebar {
+        position: fixed;
+        left: -280px;
+        top: var(--header-height);
+        width: 280px;
+        height: calc(100vh - var(--header-height));
+        z-index: 1001;
+        transition: left 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        box-shadow: 10px 0 15px -3px rgba(0, 0, 0, 0.1);
+      }
+
+      .sidebar.open {
+        left: 0;
+      }
+
+      .sidebar-overlay {
+        display: none;
+        position: fixed;
+        top: var(--header-height);
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.4);
+        z-index: 1000;
+      }
+
+      .sidebar-overlay.active {
+        display: block;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .main-content {
+        padding: 0.875rem 0.75rem;
+        gap: 1rem;
+      }
+
+      .top-header {
+        padding: 0 0.875rem;
+      }
+
+      .logo-prf {
+        font-size: 1.15rem !important;
+      }
+
+      .apps-grid {
+        grid-template-columns: 1fr;
+        padding: 1rem;
+        gap: 1rem;
+      }
+
+      .app-tab-btn {
+        padding: 0.65rem 0.875rem;
+        font-size: 0.82rem;
+      }
+
+      .app-iframe-container {
+        height: calc(100vh - 130px);
+        min-height: 520px;
+      }
+
+      .nav-item {
+        padding: 0.75rem 0.875rem;
+        font-size: 0.9rem;
+      }
+
+      .btn {
+        padding: 0.6rem 0.875rem;
+        min-height: 42px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Top Header Bar -->
+  <header class="top-header">
+    <div class="header-left">
+      <div class="menu-icon" onclick="toggleMobileSidebar(true)" style="cursor: pointer; margin-right: 0.25rem;">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+          <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z" />
+        </svg>
+      </div>
+      <span class="logo-prf">SGP-PA</span>
+      <span style="font-size: 0.8rem; color: rgba(255,255,255,0.7); font-weight: 500;">Central de Aplicativos de Suporte</span>
+    </div>
+  </header>
+
+  <!-- Sidebar Overlay Backdrop for Mobile -->
+  <div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleMobileSidebar(false)"></div>
+
+  <!-- App Main Layout -->
+  <div class="app-layout">
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+      <div class="sidebar-logo">
+        <div class="sidebar-logo-icon">
+          <svg viewBox="0 0 24 24" fill="white" width="18" height="18">
+            <path d="M4 8h4V4H4v4zm6 12h4v-4h-4v4zm-6 0h4v-4H4v4zm0-6h4v-4H4v4zm6 0h4v-4h-4v4zm6-10v4h4V4h-4zm-6 4h4V4h-4v4zm6 6h4v-4h-4v4zm0 6h4v-4h-4v4z" />
+          </svg>
+        </div>
+        <div>
+          <h1>Painel PRF</h1>
+        </div>
+      </div>
+      <nav class="sidebar-nav">
+        <span class="sidebar-section-label">Navegação</span>
+        <a href="index.html" class="nav-item">
+          <svg class="icon" viewBox="0 0 24 24">
+            <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
+          </svg>
+          Procedimentos
+        </a>
+        <a href="comandos.html" class="nav-item">
+          <svg class="icon" viewBox="0 0 24 24">
+            <path d="M19.14 12.94c.04-.3.06-.61.06-.94s-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6-3.6z" />
+          </svg>
+          Comandos
+        </a>
+        <a href="comandos.html?tab=agendamentos" class="nav-item">
+          <svg class="icon" viewBox="0 0 24 24">
+            <path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zm0-12H5V6h14v2zm-7 5h5v5h-5z" />
+          </svg>
+          Prazos
+        </a>
+        <a href="apps.html" class="nav-item active">
+          <svg class="icon" viewBox="0 0 24 24">
+            <path d="M4 8h4V4H4v4zm6 12h4v-4h-4v4zm-6 0h4v-4H4v4zm0-6h4v-4H4v4zm6 0h4v-4h-4v4zm6-10v4h4V4h-4zm-6 4h4V4h-4v4zm6 6h4v-4h-4v4zm0 6h4v-4h-4v4z" />
+          </svg>
+          Apps
+        </a>
+
+        <hr class="nav-divider">
+
+        <span class="sidebar-section-label">Ferramentas</span>
+        <button class="nav-item" onclick="switchAppTab('calculadora')">
+          <svg class="icon" viewBox="0 0 24 24">
+            <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z" />
+          </svg>
+          Calculadora RH &amp; Geral
+        </button>
+        <button class="nav-item" onclick="switchAppTab('contador')">
+          <svg class="icon" viewBox="0 0 24 24">
+            <path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zm0-12H5V6h14v2zm-7 5h5v5h-5z" />
+          </svg>
+          Contador de Dias &amp; Prazos
+        </button>
+        <button class="nav-item" onclick="switchAppTab('substituicao')">
+          <svg class="icon" viewBox="0 0 24 24">
+            <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z" />
+          </svg>
+          Calculadora de Substituição
+        </button>
+
+        <hr class="nav-divider">
+
+        <span class="sidebar-section-label">Sistema</span>
+        <a href="index.html?tab=settings" class="nav-item">
+          <svg class="icon" viewBox="0 0 24 24">
+            <path d="M19.43 12.98c.04-.32.07-.64.07-.98s-.03-.66-.07-.98l2.11-1.65c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.4-1.08-.73-1.69-.98l-.38-2.65C14.46 2.18 14.25 2 14 2h-4c-.25 0-.46.18-.49.42l-.38 2.65c-.61.25-1.17.59-1.69.98l-2.49-1c-.23-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64l2.11 1.65c-.04.32-.07.65-.07.98s.03.66.07.98l-2.11 1.65c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1c.52.4 1.08.73 1.69.98l.38 2.65c.03.24.24.42.49.42h4c.25 0 .46-.18.49-.42l.38-2.65c.61-.25 1.17-.59 1.69-.98l2.49 1c.23.09.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.65zM12 15.5c-1.93 0-3.5-1.57-3.5-3.5s1.57-3.5 3.5-3.5 3.5 1.57 3.5 3.5-1.57 3.5-3.5-3.5z" />
+          </svg>
+        </a>
+      </nav>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+
+      <div class="card">
+        <!-- Tab Bar -->
+        <div class="app-tabs-nav">
+          <button class="app-tab-btn active" id="tab-btn-overview" onclick="switchAppTab('overview')">
+            <svg class="icon" viewBox="0 0 24 24">
+              <path d="M4 8h4V4H4v4zm6 12h4v-4h-4v4zm-6 0h4v-4H4v4zm0-6h4v-4H4v4zm6 0h4v-4h-4v4zm6-10v4h4V4h-4zm-6 4h4V4h-4v4zm6 6h4v-4h-4v4zm0 6h4v-4h-4v4z" />
+            </svg>
+            Painel de Apps
+          </button>
+          <button class="app-tab-btn" id="tab-btn-calculadora" onclick="switchAppTab('calculadora')">
+            <svg class="icon" viewBox="0 0 24 24">
+              <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z" />
+            </svg>
+            Calculadora RH &amp; Geral
+          </button>
+          <button class="app-tab-btn" id="tab-btn-contador" onclick="switchAppTab('contador')">
+            <svg class="icon" viewBox="0 0 24 24">
+              <path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zm0-12H5V6h14v2zm-7 5h5v5h-5z" />
+            </svg>
+            Contador de Dias &amp; Prazos
+          </button>
+          <button class="app-tab-btn" id="tab-btn-substituicao" onclick="switchAppTab('substituicao')">
+            <svg class="icon" viewBox="0 0 24 24">
+              <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z" />
+            </svg>
+            Calculadora de Substituição
+          </button>
+        </div>
+
+        <!-- VIEW 1: OVERVIEW GRID -->
+        <div id="view-overview" class="apps-grid">
+
+          <!-- App Card 0: Calculadora RH & Geral -->
+          <div class="app-card">
+            <div style="display: flex; align-items: center; gap: 1rem;">
+              <div class="app-card-icon" style="background: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%);">
+                <svg class="icon" viewBox="0 0 24 24" style="width: 1.75rem; height: 1.75rem;">
+                  <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z" />
+                </svg>
+              </div>
+              <div>
+                <h3>Calculadora RH &amp; Geral</h3>
+                <span style="font-size: 0.75rem; font-weight: 700; color: var(--accent); text-transform: uppercase;">Multifuncional RH</span>
+              </div>
+            </div>
+            <p>Calculadora aritmética convencional combinada com cálculos especializados de RH: remuneração diária, proporcional de mês e devolução ao erário.</p>
+            <div class="app-card-actions">
+              <button class="btn btn-accent" style="flex: 1;" onclick="switchAppTab('calculadora')">
+                ▶️ Abrir Aplicativo
+              </button>
+              <a href="calculadora.html" target="_blank" class="btn" title="Abrir em Nova Aba">
+                ↗️ Nova Aba
+              </a>
+            </div>
+          </div>
+
+          <!-- App Card 1: Contador de Dias -->
+          <div class="app-card">
+            <div style="display: flex; align-items: center; gap: 1rem;">
+              <div class="app-card-icon">
+                <svg class="icon" viewBox="0 0 24 24" style="width: 1.75rem; height: 1.75rem;">
+                  <path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zm0-12H5V6h14v2zm-7 5h5v5h-5z" />
+                </svg>
+              </div>
+              <div>
+                <h3>Contador de Dias &amp; Prazos</h3>
+                <span style="font-size: 0.75rem; font-weight: 700; color: var(--accent); text-transform: uppercase;">Utilitário de Datas</span>
+              </div>
+            </div>
+            <p>Calculadora de dias úteis, acréscimo ou subtração de prazos, cálculo de diferença entre duas datas e consulta de feriados nacionais.</p>
+            <div class="app-card-actions">
+              <button class="btn btn-accent" style="flex: 1;" onclick="switchAppTab('contador')">
+                ▶️ Abrir Aplicativo
+              </button>
+              <a href="contador_de_dias.html" target="_blank" class="btn" title="Abrir em Nova Aba">
+                ↗️ Nova Aba
+              </a>
+            </div>
+          </div>
+
+          <!-- App Card 2: Calculadora de Substituição -->
+          <div class="app-card">
+            <div style="display: flex; align-items: center; gap: 1rem;">
+              <div class="app-card-icon" style="background: linear-gradient(135deg, #059669 0%, #10b981 100%);">
+                <svg class="icon" viewBox="0 0 24 24" style="width: 1.75rem; height: 1.75rem;">
+                  <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z" />
+                </svg>
+              </div>
+              <div>
+                <h3>Calculadora de Substituição</h3>
+                <span style="font-size: 0.75rem; font-weight: 700; color: #059669; text-transform: uppercase;">Gestão RH / SGP</span>
+              </div>
+            </div>
+            <p>Ferramenta aprimorada para cálculo proporcional de substituições de funções e cargos de chefia no âmbito do RH/SGP.</p>
+            <div class="app-card-actions">
+              <button class="btn btn-accent" style="flex: 1; background-color: #059669; border-color: #059669;" onclick="switchAppTab('substituicao')">
+                ▶️ Abrir Aplicativo
+              </button>
+              <a href="calculadora_substituicao_aprimorada.html" target="_blank" class="btn" title="Abrir em Nova Aba">
+                ↗️ Nova Aba
+              </a>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- VIEW 0: CALCULADORA RH & GERAL IFRAME -->
+        <div id="view-calculadora" style="display: none; width: 100%;">
+          <iframe src="calculadora.html" class="app-iframe-container" id="iframe-calculadora"></iframe>
+        </div>
+
+        <!-- VIEW 2: CONTADOR DE DIAS IFRAME -->
+        <div id="view-contador" style="display: none; width: 100%;">
+          <iframe src="contador_de_dias.html" class="app-iframe-container" id="iframe-contador"></iframe>
+        </div>
+
+        <!-- VIEW 3: CALCULADORA DE SUBSTITUIÇÃO IFRAME -->
+        <div id="view-substituicao" style="display: none; width: 100%;">
+          <iframe src="calculadora_substituicao_aprimorada.html" class="app-iframe-container" id="iframe-substituicao"></iframe>
+        </div>
+
+      </div>
+
+    </main>
+  </div>
+
+  <script>
+    function toggleMobileSidebar(show) {
+      const sidebar = document.querySelector(".sidebar");
+      const overlay = document.getElementById("sidebar-overlay");
+      if (sidebar) sidebar.classList.toggle("open", show);
+      if (overlay) overlay.classList.toggle("active", show);
+    }
+
+    function switchAppTab(tabName) {
+      // Hide all views
+      document.getElementById("view-overview").style.display = "none";
+      document.getElementById("view-calculadora").style.display = "none";
+      document.getElementById("view-contador").style.display = "none";
+      document.getElementById("view-substituicao").style.display = "none";
+
+      // Remove active from all buttons
+      document.getElementById("tab-btn-overview").classList.remove("active");
+      document.getElementById("tab-btn-calculadora").classList.remove("active");
+      document.getElementById("tab-btn-contador").classList.remove("active");
+      document.getElementById("tab-btn-substituicao").classList.remove("active");
+
+      // Show selected view
+      if (tabName === 'calculadora') {
+        document.getElementById("view-calculadora").style.display = "block";
+        document.getElementById("tab-btn-calculadora").classList.add("active");
+      } else if (tabName === 'contador') {
+        document.getElementById("view-contador").style.display = "block";
+        document.getElementById("tab-btn-contador").classList.add("active");
+      } else if (tabName === 'substituicao') {
+        document.getElementById("view-substituicao").style.display = "block";
+        document.getElementById("tab-btn-substituicao").classList.add("active");
+      } else {
+        document.getElementById("view-overview").style.display = "grid";
+        document.getElementById("tab-btn-overview").classList.add("active");
+      }
+
+      toggleMobileSidebar(false);
+    }
+
+    // Auto-select tab if query parameter present
+    window.onload = function () {
+      const urlParams = new URLSearchParams(window.location.search);
+      const appParam = urlParams.get('app');
+      if (appParam) {
+        switchAppTab(appParam);
+      }
+    };
+  </script>
+</body>
+
+</html>

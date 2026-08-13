@@ -1,0 +1,300 @@
+# espanso match file
+
+# For a complete introduction, visit the official docs at: https://espanso.org/docs/
+
+# You can use this file to define the base matches (aka snippets)
+# that will be available in every application when using espanso.
+
+# Matches are substitution rules: when you type the "trigger" string
+# it gets replaced by the "replace" string.
+
+# yaml-language-server: $schema=https://raw.githubusercontent.com/espanso/espanso/dev/schemas/match.schema.json
+
+matches:
+  # ===========================================================================
+  # 1. MÓDULO ATUAFOLHA - ATUALIZA DADOS PARA PAGAMENTO
+  # ===========================================================================
+
+  - trigger: ">FPATMSGORG"
+    replace: ">FPATMSGORG"
+    label: "Mensagem: Lança informativos nos contracheques de todos os servidores do Órgão"
+
+  - trigger: ">FPATMSGUPG"
+    replace: ">FPATMSGUPG"
+    label: "Mensagem: Lança informativos nos contracheques da unidade pagadora (UPAG) especifica"
+
+  - trigger: ">FPATREDREN"
+    replace: ">FPATREDREN"
+    label: "DIRF: Atualiza remuneração extra-SIAPE p/ comprovante de rendimentos e retenção na fonte"
+
+  - trigger: ">FPATREUPAG"
+    replace: ">FPATREUPAG"
+    label: "Relatório: Atualiza relatórios da folha a serem disponibilizados via SIAPENET"
+
+  - trigger: ">FPCOREUPAG"
+    replace: ">FPCOREUPAG"
+    label: "Relatório: Consulta os relatórios disponibilizados para a UPAG após processamento"
+
+  # ===========================================================================
+  # 2. MÓDULO ATUAPENSIO - INFORMAÇÕES DE PENSIONISTA
+  # ===========================================================================
+
+  - trigger: ">FPATPARPEN"
+    replace: ">FPATPARPEN"
+    label: "Pensão: Atualiza Parâmetros de cálculo automático de pensionistas"
+
+  - trigger: ">FPATPEQMPE"
+    replace: ">FPATPEQMPE"
+    label: "Pensão: Libera pagamento de pequena monta de pensionista"
+
+  - trigger: ">FPATPSCALC"
+    replace: ">FPATPSCALC"
+    label: "Pensão: Executa cálculo online do pagamento do pensionista para conferência"
+
+  - trigger: ">FPATPSCOTA"
+    replace: ">FPATPSCOTA"
+    label: "Pensão: Calcula a distribuição de cotas online entre os pensionistas"
+
+  - trigger: ">FPATPSMFIN"
+    replace: ">FPATPSMFIN"
+    label: "Pensão: Efetua acertos financeiros manuais (valores informados/parametrizados) de pensionistas"
+
+  - trigger: ">FPATREMEXP"
+    replace: ">FPATREMEXP"
+    label: "Pensão: Atualiza remuneração extra-SIAPE de pensionista para controle de teto"
+
+  - trigger: ">FPAT13PENS"
+    replace: ">FPAT13PENS"
+    label: "Pensão: Atualiza Gratificação Natalina e 13º salário de pensionista"
+
+  - trigger: ">FPCL13PENS"
+    replace: ">FPCL13PENS"
+    label: "Pensão: Executa cálculo da Gratificação Natalina de pensionista"
+
+  - trigger: ">FPSRPSPGTO"
+    replace: ">FPSRPSPGTO"
+    label: "Pensão: Comando para suspender ou restabelecer pagamento de pensionista na folha"
+
+  # ===========================================================================
+  # 3. MÓDULO ATUASERV - INFORMAÇÕES DE SERVIDOR
+  # ===========================================================================
+
+  - trigger: ">FPATMOVFIN"
+    replace: ">FPATMOVFIN"
+    label: "Folha: Movimentação financeira manual online para lançamentos na folha normal"
+
+  - trigger: ">FPATMOVIFIN"
+    replace: ">FPATMOVIFIN"
+    label: "Folha: Acesso direto à tela de movimentação financeira manual (valores/parametrizado)"
+
+  - trigger: ">FPATMOVRUB"
+    replace: ">FPATMOVRUB"
+    label: "Folha: Permite lançar rubrica de mesmo valor para lote de matrículas simultaneamente"
+
+  - trigger: ">FPATPARAM"
+    replace: ">FPATPARAM"
+    label: "Folha: Atualiza os parâmetros do cálculo automático (benefícios, cargo, férias)"
+
+  - trigger: ">FPATPEQMSE"
+    replace: ">FPATPEQMSE"
+    label: "Folha: Libera pagamento de pequena monta de servidor ativo ou aposentado"
+
+  - trigger: ">FPATRENDEX"
+    replace: ">FPATRENDEX"
+    label: "Folha: Atualiza rendimentos extra-SIAPE de servidor ativo/aposentado cedido"
+
+  - trigger: ">FPAT13SERV"
+    replace: ">FPAT13SERV"
+    label: "Folha: Atualiza Gratificação Natalina e 13º salário do servidor"
+
+  - trigger: ">FPCLPAGTO"
+    replace: ">FPCLPAGTO"
+    label: "Folha: Executa cálculo online do contracheque do servidor para conferência"
+
+  - trigger: ">FPCL12SERV"
+    replace: ">FPCL12SERV"
+    label: "Folha: Executa cálculo de Gratificação Natalina de servidor/aposentado"
+
+  # ===========================================================================
+  # 4. MÓDULO ATUASUPLIN - FOLHA SUPLEMENTAR INTERNA
+  # ===========================================================================
+
+  - trigger: ">FPCLPSUPIN"
+    replace: ">FPCLPSUPIN"
+    label: "Suplementar: Calcula suplementar interna para verificar os cálculos do pensionista"
+
+  - trigger: ">FPCLSUPLIN"
+    replace: ">FPCLSUPLIN"
+    label: "Suplementar: Calcula suplementar interna para verificar cálculos de ativo/aposentado"
+
+  - trigger: ">FPCOPSUPIN"
+    replace: ">FPCOPSUPIN"
+    label: "Suplementar: Consulta a ficha financeira da folha suplementar interna de pensionista"
+
+  - trigger: ">FPCOSUPLIN"
+    replace: ">FPCOSUPLIN"
+    label: "Suplementar: Consulta a ficha financeira da suplementar interna de ativo/aposentado"
+
+  - trigger: ">FPMOVPSUPI"
+    replace: ">FPMOVPSUPI"
+    label: "Suplementar: Movimentação financeira de pensionista na suplementar interna"
+
+  - trigger: ">FPMOVSUPIN"
+    replace: ">FPMOVSUPIN"
+    label: "Suplementar: Movimentação financeira de ativo/aposentado na suplementar interna"
+
+  # ===========================================================================
+  # 5. MÓDULOS DE CONSULTAS GERAIS DA FOLHA
+  # ===========================================================================
+
+  - trigger: ">FPCOMSGORG"
+    replace: ">FPCOMSGORG"
+    label: "Consulta: Informativos gerais incluídos pelo gestor do Órgão no contracheque"
+
+  - trigger: ">FPCOMSGUPA"
+    replace: ">FPCOMSGUPA"
+    label: "Consulta: Informativos da UPAG incluídos no contracheque dos servidores lotados"
+
+  - trigger: ">FPCOFICHAF"
+    replace: ">FPCOFICHAF"
+    label: "Consulta: Ficha financeira (contracheque) do servidor para determinado mês/ano"
+
+  - trigger: ">FPCORENDEX"
+    replace: ">FPCORENDEX"
+    label: "Consulta: Rendimentos extra-SIAPE informados para servidor ativo ou aposentado"
+
+  - trigger: ">FPCORUBEXC"
+    replace: ">FPCORUBEXC"
+    label: "Consulta: Rubricas excluídas da movimentação financeira do servidor em mês/ano"
+
+  - trigger: ">FPEXCLPAGC"
+    replace: ">FPEXCLPAGC"
+    label: "Consulta: Servidores com líquido negativo ou não calculados na UPAG (Pré-Homologação)"
+
+  - trigger: ">FPCOPSFICF"
+    replace: ">FPCOPSFICF"
+    label: "Consulta: Ficha financeira (contracheque) de pensionista civil em mês/ano"
+
+  - trigger: ">FPCOPSRUEX"
+    replace: ">FPCOPSRUEX"
+    label: "Consulta: Rubricas excluídas da movimentação de pensionista em mês/ano"
+
+  - trigger: ">FPEXPSPAGC"
+    replace: ">FPEXPSPAGC"
+    label: "Consulta: Pensionistas com líquido negativo ou não calculados na UPAG (Pré-Homologação)"
+
+  # ===========================================================================
+  # 6. Exercícios Anteriores E PROCESSO GERENCIAL
+  # ===========================================================================
+
+  - trigger: ">GRIAPROADM"
+    replace: ">GRIAPROADM"
+    label: "Exercícios Anteriores: Registra o número do processo administrativo de exercício anterior"
+
+  - trigger: ">GRINBENEF"
+    replace: ">GRINBENEF"
+    label: "Exercícios Anteriores: Inclui beneficiário, período e valor mensal no processo"
+
+  - trigger: ">GRAZPGTO"
+    replace: ">GRAZPGTO"
+    label: "Exercícios Anteriores: Autorização do processo de pagamento (GERENCIAL > GRPROCESSO)"
+
+  - trigger: ">GRDESBLQRH"
+    replace: ">GRDESBLQRH"
+    label: "Exercícios Anteriores: Desbloqueio do processo pelo dirigente de RH (valores < R$ 30.000)"
+
+  - trigger: ">GRDESBSPOA"
+    replace: ">GRDESBSPOA"
+    label: "Exercícios Anteriores: Desbloqueio do processo pela autoridade SPOA (valores > R$ 30.000)"
+
+  # ===========================================================================
+  # 7. TABELAS DO SISTEMA (TBCO / TBC)
+  # ===========================================================================
+
+  - trigger: ">TBCOAGEN"
+    replace: ">TBCOAGEN"
+    label: "Tabela: Consulta as agências bancárias cadastradas no sistema"
+
+  - trigger: ">TBCOASSAUT"
+    replace: ">TBCOASSAUT"
+    label: "Tabela: Consulta os assuntos de cálculo automáticos do sistema"
+
+  - trigger: ">TBCOASSPAR"
+    replace: ">TBCOASSPAR"
+    label: "Tabela: Consulta os assuntos de cálculo parametrizados pelos usuários"
+
+  - trigger: ">TBCOBANCO"
+    replace: ">TBCOBANCO"
+    label: "Tabela: Consulta os bancos conveniados e cadastrados no SIAPE"
+
+  - trigger: ">TBCOBENDEP"
+    replace: ">TBCOBENDEP"
+    label: "Tabela: Consulta benefícios permitidos por dependente, idade limite e parentesco"
+
+  - trigger: ">TBCOCEMP"
+    replace: ">TBCOCEMP"
+    label: "Tabela: Consulta informações relacionadas aos cargos e empregos das carreiras"
+
+  - trigger: ">TBCOCLEGDV"
+    replace: ">TBCOCLEGDV"
+    label: "Tabela: Constantes Legais - Valores de salário mínimo, teto constitucional e teto RGPS"
+
+  - trigger: ">TBCOCLEGIR"
+    replace: ">TBCOCLEGIR"
+    label: "Tabela: Constantes Legais - Tabela mensal vigente do imposto de renda (IR)"
+
+  - trigger: ">TBCOCLEGSS"
+    replace: ">TBCOCLEGSS"
+    label: "Tabela: Constantes Legais - Tabela de contribuição e alíquotas do INSS e PSS"
+
+  - trigger: ">TBCOFARBEN"
+    replace: ">TBCOFARBEN"
+    label: "Tabela: Constantes Legais - Fatores e índices de reajustes de proventos da Lei 10.887/04"
+
+  - trigger: ">TBCOFUNCAO"
+    replace: ">TBCOFUNCAO"
+    label: "Tabela: Consulta informações sobre funções gratificadas e cargos comissionados"
+
+  - trigger: ">TBCONIVCEM"
+    replace: ">TBCONIVCEM"
+    label: "Tabela: Consulta os níveis salariais e vencimento básico dos cargos/empregos"
+
+  - trigger: ">TBCONSFUNC"
+    replace: ">TBCONSFUNC"
+    label: "Tabela: Consulta os valores vigentes de funções comissionadas e DAS"
+
+  - trigger: ">TBCOORGAO"
+    replace: ">TBCOORGAO"
+    label: "Tabela: Consulta dados gerais do Órgão (CNPJ, regime jurídico, sigla)"
+
+  - trigger: ">TBCORUBRIC"
+    replace: ">TBCORUBRIC"
+    label: "Tabela: Consulta informações sobre as rubricas, incidências e regras da folha"
+
+  - trigger: ">TBCOSAUSUP"
+    replace: ">TBCOSAUSUP"
+    label: "Tabela: Valores da per capita de saúde suplementar de ativos/inativos/dependentes"
+
+  - trigger: ">TBCOSITUAC"
+    replace: ">TBCOSITUAC"
+    label: "Tabela: Consulta as diversas situações funcionais cadastradas no SIAPE"
+
+  - trigger: ">TBCOUORG"
+    replace: ">TBCOUORG"
+    label: "Tabela: Consulta dados das unidades organizacionais (UORG) do Órgão"
+
+  - trigger: ">TBCOUPAG"
+    replace: ">TBCOUPAG"
+    label: "Tabela: Consulta dados das unidades pagadoras (UPAG) e convênios de crédito"
+
+  - trigger: ">COTBCAPARA"
+    replace: ">COTBCAPARA"
+    label: "Tabela: Consulta os assuntos de cálculo parametrizados vinculados a rubricas"
+
+  # ===========================================================================
+  # 8. RUBRICAS FINANCEIRAS DO SISTEMA
+  # ===========================================================================
+
+  - trigger: "rub_00024"
+    replace: "00024"
+    label: "Rubrica: Lançamento de Substituição de Função"

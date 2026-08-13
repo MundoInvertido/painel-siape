@@ -1,0 +1,1037 @@
+<!-- INÍCIO: CALCULADORA DE PAGAMENTO DE SUBSTITUIÇÃO -->
+<div id="calc-subst-widget" class="calc-subst-wrapper">
+  <style>
+    /* =========================================================
+       CALCULADORA DE SUBSTITUIÇÃO — CAMADA VISUAL
+       A lógica JavaScript original foi preservada integralmente.
+       ========================================================= */
+
+    #calc-subst-widget {
+      --cs-primary: #0284c7;
+      --cs-primary-dark: #0369a1;
+      --cs-primary-soft: #e0f2fe;
+      --cs-accent: #d97706;
+      --cs-success: #166534;
+      --cs-success-bg: #dcfce7;
+      --cs-danger: #9f1239;
+      --cs-danger-bg: #ffe4e6;
+      --cs-text: #0f172a;
+      --cs-text-soft: #475569;
+      --cs-muted: #64748b;
+      --cs-border: #e2e8f0;
+      --cs-border-strong: #cbd5e1;
+      --cs-surface: #ffffff;
+      --cs-surface-soft: #f8fafc;
+      --cs-surface-alt: #f1f5f9;
+      --cs-radius: 14px;
+      --cs-shadow: 0 10px 30px rgba(15, 23, 42, .06);
+
+      width: 100%;
+      max-width: 1120px;
+      margin: 24px auto;
+      padding: 22px;
+      box-sizing: border-box;
+
+      font-family:
+        Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont,
+        "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+
+      color: var(--cs-text);
+      background:
+        linear-gradient(180deg, #ffffff 0%, var(--cs-surface-soft) 100%);
+      border: 1px solid var(--cs-border);
+      border-radius: 18px;
+      box-shadow: var(--cs-shadow);
+      line-height: 1.45;
+    }
+
+    #calc-subst-widget,
+    #calc-subst-widget * {
+      box-sizing: border-box;
+    }
+
+    #calc-subst-widget button,
+    #calc-subst-widget input {
+      font: inherit;
+    }
+
+    /* Cabeçalho */
+    .calc-subst-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding-bottom: 16px;
+      margin-bottom: 18px;
+      border-bottom: 1px solid var(--cs-border);
+    }
+
+    .calc-subst-title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .calc-subst-icon {
+      flex: 0 0 42px;
+      width: 42px;
+      height: 42px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      color: #fff;
+      background: linear-gradient(135deg, var(--cs-primary), var(--cs-primary-dark));
+      border-radius: 11px;
+      box-shadow: 0 5px 14px rgba(2, 132, 199, .20);
+    }
+
+    .calc-subst-h2 {
+      margin: 0;
+      color: var(--cs-text);
+      font-size: 17px;
+      line-height: 1.2;
+      font-weight: 750;
+      letter-spacing: -.01em;
+    }
+
+    .calc-subst-p {
+      margin: 4px 0 0;
+      color: var(--cs-muted);
+      font-size: 11px;
+      line-height: 1.4;
+    }
+
+    .calc-subst-btn-reset {
+      flex: 0 0 auto;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 34px;
+      padding: 7px 13px;
+      color: #334155;
+      background: var(--cs-surface-alt);
+      border: 1px solid var(--cs-border);
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 650;
+      cursor: pointer;
+      transition: .18s ease;
+    }
+
+    .calc-subst-btn-reset:hover {
+      background: #e2e8f0;
+      border-color: var(--cs-border-strong);
+      transform: translateY(-1px);
+    }
+
+    .calc-subst-btn-reset:active {
+      transform: translateY(0);
+    }
+
+    /* Estrutura */
+    .calc-subst-grid {
+      display: grid;
+      grid-template-columns: minmax(260px, 320px) minmax(0, 1fr);
+      gap: 18px;
+      align-items: start;
+    }
+
+    .calc-subst-form {
+      position: sticky;
+      top: 16px;
+      padding: 17px;
+      background: rgba(255,255,255,.94);
+      border: 1px solid var(--cs-border);
+      border-radius: var(--cs-radius);
+      box-shadow: 0 5px 18px rgba(15,23,42,.035);
+    }
+
+    .calc-subst-field {
+      margin-bottom: 14px;
+    }
+
+    .calc-subst-label {
+      display: block;
+      margin-bottom: 6px;
+      color: #334155;
+      font-size: 11px;
+      line-height: 1.3;
+      font-weight: 700;
+    }
+
+    .calc-subst-input {
+      width: 100%;
+      min-height: 38px;
+      padding: 8px 10px;
+      color: var(--cs-text);
+      background: #fff;
+      border: 1px solid var(--cs-border-strong);
+      border-radius: 8px;
+      outline: none;
+      font-size: 13px;
+      transition: border-color .18s ease, box-shadow .18s ease, background .18s ease;
+    }
+
+    .calc-subst-input:hover {
+      border-color: #94a3b8;
+    }
+
+    .calc-subst-input:focus {
+      border-color: var(--cs-primary);
+      box-shadow: 0 0 0 3px rgba(2,132,199,.14);
+      background: #fff;
+    }
+
+    .calc-subst-row-2 {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    /* Toggle */
+    .calc-subst-toggle-box {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      margin-top: 8px;
+      padding: 12px;
+      background: var(--cs-surface-alt);
+      border: 1px solid var(--cs-border);
+      border-radius: 10px;
+    }
+
+    .calc-subst-toggle-text {
+      color: #1e293b;
+      font-size: 11px;
+      line-height: 1.35;
+      font-weight: 700;
+    }
+
+    .calc-subst-switch {
+      position: relative;
+      display: inline-block;
+      flex: 0 0 auto;
+      width: 40px;
+      height: 23px;
+    }
+
+    .calc-subst-switch input {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      opacity: 0;
+    }
+
+    .calc-subst-slider {
+      position: absolute;
+      inset: 0;
+      cursor: pointer;
+      background: #cbd5e1;
+      border-radius: 999px;
+      transition: .22s ease;
+      box-shadow: inset 0 0 0 1px rgba(15,23,42,.05);
+    }
+
+    .calc-subst-slider:before {
+      position: absolute;
+      content: "";
+      width: 17px;
+      height: 17px;
+      left: 3px;
+      top: 3px;
+      background: #fff;
+      border-radius: 50%;
+      box-shadow: 0 2px 5px rgba(15,23,42,.18);
+      transition: .22s ease;
+    }
+
+    #calc-subst-widget input:checked + .calc-subst-slider {
+      background: var(--cs-accent);
+    }
+
+    #calc-subst-widget input:checked + .calc-subst-slider:before {
+      transform: translateX(17px);
+    }
+
+    #calc-subst-widget input:focus-visible + .calc-subst-slider {
+      outline: 3px solid rgba(2,132,199,.22);
+      outline-offset: 2px;
+    }
+
+    /* Cards de resultado */
+    .calc-subst-cards {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .calc-subst-card {
+      min-width: 0;
+      padding: 13px;
+      text-align: left;
+      background: var(--cs-surface);
+      border: 1px solid var(--cs-border);
+      border-radius: 11px;
+      box-shadow: 0 3px 12px rgba(15,23,42,.025);
+    }
+
+    .calc-subst-card:nth-child(3) {
+      border-color: #bae6fd;
+      background: linear-gradient(180deg, #ffffff 0%, #f0f9ff 100%);
+    }
+
+    .calc-subst-card-lbl {
+      display: block;
+      color: var(--cs-muted);
+      font-size: 9px;
+      line-height: 1.25;
+      font-weight: 800;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+    }
+
+    .calc-subst-card:nth-child(3) .calc-subst-card-lbl {
+      color: var(--cs-primary-dark);
+    }
+
+    .calc-subst-card-val {
+      margin-top: 5px;
+      color: var(--cs-text);
+      font-size: 17px;
+      line-height: 1.2;
+      font-weight: 750;
+      word-break: break-word;
+    }
+
+    .calc-subst-card-highlight {
+      color: var(--cs-primary-dark);
+    }
+
+    /* Painel de Subtotais por Mês */
+    .calc-subst-month-breakdown {
+      margin-bottom: 12px;
+      padding: 10px 14px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(15,23,42,.02);
+    }
+
+    .calc-subst-mb-title {
+      font-size: 10px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      color: #475569;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .calc-subst-mb-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      padding: 4px 0;
+      border-bottom: 1px dashed #e2e8f0;
+    }
+
+    .calc-subst-mb-item:last-child {
+      border-bottom: none;
+    }
+
+    .calc-subst-mb-item .mb-label {
+      color: #334155;
+      font-weight: 600;
+    }
+
+    .calc-subst-mb-item .mb-val {
+      color: var(--cs-primary-dark);
+      font-weight: 700;
+    }
+
+    /* Elementos Copiáveis por Clique */
+    .cs-copyable {
+      cursor: pointer;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+    .cs-copyable:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(15,23,42,0.08);
+    }
+    .cs-copyable-val {
+      cursor: pointer;
+      padding: 2px 8px;
+      border-radius: 6px;
+      background: #f1f5f9;
+      border: 1px solid #cbd5e1;
+      transition: background 0.15s ease, color 0.15s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .cs-copyable-val:hover {
+      background: #e2e8f0;
+      color: var(--cs-accent);
+      border-color: var(--cs-accent);
+    }
+
+    /* Tabela */
+    .calc-subst-table-box {
+      overflow: hidden;
+      background: var(--cs-surface);
+      border: 1px solid var(--cs-border);
+      border-radius: 11px;
+      box-shadow: 0 3px 12px rgba(15,23,42,.025);
+    }
+
+    .calc-subst-table-scroll {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .calc-subst-table {
+      width: 100%;
+      min-width: 560px;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 11px;
+    }
+
+    .calc-subst-table th {
+      padding: 9px 10px;
+      color: #475569;
+      background: var(--cs-surface-alt);
+      border-bottom: 1px solid var(--cs-border);
+      font-size: 10px;
+      font-weight: 750;
+      white-space: nowrap;
+    }
+
+    .calc-subst-table td {
+      padding: 9px 10px;
+      border-bottom: 1px solid #f1f5f9;
+      vertical-align: middle;
+    }
+
+    .calc-subst-table tbody tr:last-child td {
+      border-bottom: 0;
+    }
+
+    .calc-subst-table tbody tr:hover {
+      background: #f8fafc !important;
+    }
+
+    .calc-subst-tag-yes,
+    .calc-subst-tag-no {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 34px;
+      padding: 3px 7px;
+      border-radius: 999px;
+      font-size: 9px;
+      line-height: 1.2;
+      font-weight: 800;
+      letter-spacing: .02em;
+    }
+
+    .calc-subst-tag-yes {
+      color: var(--cs-success);
+      background: var(--cs-success-bg);
+    }
+
+    .calc-subst-tag-no {
+      color: var(--cs-danger);
+      background: var(--cs-danger-bg);
+    }
+
+    /* Memória de cálculo */
+    .calc-subst-memo-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 14px;
+      margin-bottom: 6px;
+      color: #475569;
+      font-size: 11px;
+      font-weight: 750;
+    }
+
+    .calc-subst-copy-btn {
+      padding: 3px 0;
+      color: var(--cs-primary);
+      background: none;
+      border: 0;
+      font-size: 11px;
+      font-weight: 750;
+      cursor: pointer;
+      transition: color .18s ease;
+    }
+
+    .calc-subst-copy-btn:hover {
+      color: var(--cs-primary-dark);
+      text-decoration: underline;
+    }
+
+    .calc-subst-memo {
+      overflow-x: auto;
+      margin-top: 0;
+      padding: 14px;
+      color: #e2e8f0;
+      background: #0f172a;
+      border: 1px solid #1e293b;
+      border-radius: 10px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      font-size: 10.5px;
+      line-height: 1.65;
+      white-space: pre-line;
+    }
+
+    /* Responsividade */
+    @media (max-width: 767px) {
+      #calc-subst-widget {
+        margin: 10px auto;
+        padding: 14px;
+        border-radius: 14px;
+      }
+
+      .calc-subst-header {
+        align-items: flex-start;
+        gap: 10px;
+        padding-bottom: 13px;
+        margin-bottom: 14px;
+      }
+
+      .calc-subst-icon {
+        flex-basis: 38px;
+        width: 38px;
+        height: 38px;
+      }
+
+      .calc-subst-h2 {
+        font-size: 15px;
+      }
+
+      .calc-subst-p {
+        font-size: 10px;
+      }
+
+      .calc-subst-grid {
+        grid-template-columns: 1fr;
+        gap: 14px;
+      }
+
+      .calc-subst-form {
+        position: static;
+        padding: 14px;
+      }
+
+      .calc-subst-cards {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .calc-subst-card:nth-child(3) {
+        grid-column: 1 / -1;
+      }
+    }
+
+    @media (max-width: 460px) {
+      .calc-subst-header {
+        flex-direction: column;
+      }
+
+      .calc-subst-btn-reset {
+        width: 100%;
+      }
+
+      .calc-subst-row-2 {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+
+      .calc-subst-cards {
+        grid-template-columns: 1fr;
+      }
+
+      .calc-subst-card:nth-child(3) {
+        grid-column: auto;
+      }
+
+      .calc-subst-table {
+        min-width: 520px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      #calc-subst-widget *,
+      #calc-subst-widget *::before,
+      #calc-subst-widget *::after {
+        transition: none !important;
+        scroll-behavior: auto !important;
+      }
+    }
+  </style>
+
+  <div class="calc-subst-header">
+    <div class="calc-subst-title">
+      <div class="calc-subst-icon" aria-hidden="true">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="4" y="2" width="16" height="20" rx="2"></rect>
+          <line x1="8" y1="6" x2="16" y2="6"></line>
+          <line x1="16" y1="14" x2="16" y2="18"></line>
+          <path d="M8 10h.01M12 10h.01M16 10h.01M8 14h.01M12 14h.01M8 18h.01M12 18h.01"></path>
+        </svg>
+      </div>
+      <div>
+        <h2 class="calc-subst-h2">Calculadora de Substituição</h2>
+        <p class="calc-subst-p">Cálculo proporcional baseado nos dias reais do mês</p>
+      </div>
+    </div>
+
+    <button type="button" class="calc-subst-btn-reset" onclick="CS_ResetForm()" aria-label="Limpar todos os campos">
+      Limpar
+    </button>
+  </div>
+
+  <div class="calc-subst-grid">
+    <!-- Formulário -->
+    <div class="calc-subst-form">
+      <div class="calc-subst-field">
+        <label class="calc-subst-label" for="cs_remuneration">Remuneração do Titular (R$)</label>
+        <input
+          type="text"
+          id="cs_remuneration"
+          class="calc-subst-input"
+          value="1.553,73"
+          onblur="CS_FormatRemuneration()"
+          oninput="CS_Calculate()"
+          placeholder="1.553,73"
+          inputmode="decimal"
+          autocomplete="off"
+        />
+      </div>
+
+      <div class="calc-subst-row-2 calc-subst-field">
+        <div>
+          <label class="calc-subst-label" for="cs_startDate">Data Inicial</label>
+          <input type="date" id="cs_startDate" class="calc-subst-input" value="2024-07-15" onchange="CS_OnStartChange()" />
+        </div>
+
+        <div>
+          <label class="calc-subst-label" for="cs_endDate">Data Final</label>
+          <input type="date" id="cs_endDate" class="calc-subst-input" value="2024-07-20" onchange="CS_OnEndChange()" />
+        </div>
+      </div>
+
+      <div class="calc-subst-field">
+        <label class="calc-subst-label" for="cs_absenceEndDate">Término Afastamento Titular</label>
+        <input type="date" id="cs_absenceEndDate" class="calc-subst-input" value="2024-07-20" onchange="CS_Calculate()" />
+      </div>
+
+      <div class="calc-subst-toggle-box">
+        <span class="calc-subst-toggle-text">Folgou no último dia útil?</span>
+
+        <label class="calc-subst-switch" aria-label="Folgou no último dia útil">
+          <input type="checkbox" id="cs_dayOff" onchange="CS_Calculate()">
+          <span class="calc-subst-slider"></span>
+        </label>
+      </div>
+    </div>
+
+    <!-- Resultados -->
+    <div>
+      <div class="calc-subst-cards">
+        <div class="calc-subst-card cs-copyable" onclick="CS_CopyValue(document.getElementById('cs_out_days').innerText)" title="Clique para copiar os dias devidos">
+          <span class="calc-subst-card-lbl">Dias Devidos 📋</span>
+          <div class="calc-subst-card-val" id="cs_out_days">6 / 6</div>
+        </div>
+
+        <div class="calc-subst-card cs-copyable" onclick="CS_CopyValue(document.getElementById('cs_out_daily').innerText)" title="Clique para copiar o valor da diária">
+          <span class="calc-subst-card-lbl">Valor Diária 📋</span>
+          <div class="calc-subst-card-val" id="cs_out_daily" style="font-size:13px;">R$ 50,12</div>
+        </div>
+
+        <div class="calc-subst-card cs-copyable" onclick="CS_CopyValue(document.getElementById('cs_out_total').innerText)" title="Clique para copiar o total a pagar">
+          <span class="calc-subst-card-lbl">Total a Pagar 📋</span>
+          <div class="calc-subst-card-val calc-subst-card-highlight" id="cs_out_total">R$ 300,72</div>
+        </div>
+      </div>
+
+      <!-- Painel de Subtotais por Mês -->
+      <div id="cs_month_breakdown_card" class="calc-subst-month-breakdown" style="display: none;">
+        <div class="calc-subst-mb-title">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+            <line x1="16" y1="2" x2="16" y2="6"></line>
+            <line x1="8" y1="2" x2="8" y2="6"></line>
+            <line x1="3" y1="10" x2="21" y2="10"></line>
+          </svg>
+          Subtotais Discriminados por Mês
+        </div>
+        <div id="cs_month_breakdown_list"></div>
+      </div>
+
+      <div class="calc-subst-table-box">
+        <div class="calc-subst-table-scroll">
+          <table class="calc-subst-table">
+            <thead>
+              <tr>
+                <th>Data</th>
+                <th>Tipo</th>
+                <th style="text-align:center;">Paga?</th>
+                <th>Justificativa</th>
+              </tr>
+            </thead>
+            <tbody id="cs_table_body"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="calc-subst-memo-title">
+        <span>Memória de Cálculo (Processo Administrativo)</span>
+        <button type="button" class="calc-subst-copy-btn" onclick="CS_CopyText()">Copiar Texto</button>
+      </div>
+
+      <div class="calc-subst-memo" id="cs_out_memo"></div>
+    </div>
+  </div>
+
+<script>
+    function CS_ParseBrl(val) {
+      if (!val) return 0;
+      var s = String(val).trim();
+      if (s.indexOf(',') !== -1) s = s.replace(/\./g, '').replace(',', '.');
+      var num = parseFloat(s);
+      return isNaN(num) ? 0 : num;
+    }
+
+    function CS_FormatBrl(val) {
+      return (val || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+    }
+
+    function CS_FormatRemuneration() {
+      var inp = document.getElementById('cs_remuneration');
+      var num = CS_ParseBrl(inp.value);
+      if (num > 0) {
+        inp.value = num.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      }
+      CS_Calculate();
+    }
+
+    function CS_OnStartChange() {
+      var s = document.getElementById('cs_startDate').value;
+      var e = document.getElementById('cs_endDate');
+      if (s) {
+        var sYear = parseInt(s.split('-')[0]);
+        if (sYear >= 1900 && sYear <= 2100) {
+          if (!e.value || e.value < s) e.value = s;
+          CS_OnEndChange();
+          return;
+        }
+      }
+      CS_Calculate();
+    }
+
+    function CS_OnEndChange() {
+      var e = document.getElementById('cs_endDate').value;
+      var a = document.getElementById('cs_absenceEndDate');
+      if (e) {
+        var eYear = parseInt(e.split('-')[0]);
+        if (eYear >= 1900 && eYear <= 2100) {
+          if (!a.value || a.value < e) a.value = e;
+        }
+      }
+      CS_Calculate();
+    }
+
+    function CS_ResetForm() {
+      document.getElementById('cs_remuneration').value = '';
+      document.getElementById('cs_startDate').value = '';
+      document.getElementById('cs_endDate').value = '';
+      document.getElementById('cs_absenceEndDate').value = '';
+      document.getElementById('cs_dayOff').checked = false;
+      CS_Calculate();
+    }
+
+    function CS_Calculate() {
+      var remVal = CS_ParseBrl(document.getElementById('cs_remuneration').value);
+      var startStr = document.getElementById('cs_startDate').value;
+      var endStr = document.getElementById('cs_endDate').value;
+      var absenceStr = document.getElementById('cs_absenceEndDate').value || endStr;
+      var dayOff = document.getElementById('cs_dayOff').checked;
+
+      var tbody = document.getElementById('cs_table_body');
+      var outDays = document.getElementById('cs_out_days');
+      var outDaily = document.getElementById('cs_out_daily');
+      var outTotal = document.getElementById('cs_out_total');
+      var outMemo = document.getElementById('cs_out_memo');
+
+      if (!startStr || !endStr) {
+        tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding: 16px; color:#94a3b8;">Informe as datas para calcular.</td></tr>';
+        outDays.innerText = '0 / 0';
+        outDaily.innerText = 'R$ 0,00';
+        outTotal.innerText = 'R$ 0,00';
+        outMemo.innerText = 'Aguardando parâmetros...';
+        return;
+      }
+
+      var start = new Date(startStr + 'T00:00:00');
+      var end = new Date(endStr + 'T00:00:00');
+      var absenceEnd = new Date(absenceStr + 'T00:00:00');
+
+      var startYear = start.getFullYear();
+      var endYear = end.getFullYear();
+
+      // Validação de intervalo de anos para evitar loops gigantes e congelamento do navegador
+      if (isNaN(startYear) || isNaN(endYear) || startYear < 1900 || endYear > 2100 || start > end) {
+        tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding: 16px; color:#94a3b8;">Data inicial deve ser menor ou igual à data final (Anos entre 1900 e 2100).</td></tr>';
+        outDays.innerText = '0 / 0';
+        outDaily.innerText = 'R$ 0,00';
+        outTotal.innerText = 'R$ 0,00';
+        outMemo.innerText = 'Por favor, selecione um período de datas válido.';
+        return;
+      }
+
+      var diffMs = end - start;
+      var diffDays = diffMs / (1000 * 60 * 60 * 24) + 1;
+
+      if (diffDays > 3650) { // Trava de segurança para no máximo 10 anos
+        tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding: 16px; color:#dc2626;">Intervalo de cálculo muito longo (máximo 10 anos por período).</td></tr>';
+        outDays.innerText = '0 / 0';
+        outDaily.innerText = 'R$ 0,00';
+        outTotal.innerText = 'R$ 0,00';
+        outMemo.innerText = 'Por favor, selecione um intervalo menor que 10 anos.';
+        return;
+      }
+
+      var year = start.getFullYear();
+      var month = start.getMonth() + 1;
+      var daysInMonth = new Date(year, month, 0).getDate();
+
+      var dayList = [];
+      var curr = new Date(start);
+      var maxIterations = 3650;
+      var iterCount = 0;
+
+      while (curr <= end && iterCount < maxIterations) {
+        iterCount++;
+        var w = curr.getDay();
+        var isWknd = (w === 0 || w === 6);
+        dayList.push({
+          dateObj: new Date(curr),
+          dateFmt: curr.toLocaleDateString('pt-BR'),
+          isWeekend: isWknd,
+          isIncluded: false,
+          reason: ''
+        });
+        curr.setDate(curr.getDate() + 1);
+      }
+
+      var leadingEnd = -1;
+      for (var i = 0; i < dayList.length; i++) {
+        if (dayList[i].isWeekend) leadingEnd = i; else break;
+      }
+
+      for (var i = 0; i <= leadingEnd; i++) {
+        dayList[i].reason = 'Início em dia não útil (Não computado)';
+      }
+
+      for (var i = leadingEnd + 1; i < dayList.length; i++) {
+        var d = dayList[i];
+        if (!d.isWeekend) {
+          d.isIncluded = true;
+          d.reason = 'Dia útil de efetivo exercício';
+        } else {
+          var isAtEnd = (i === dayList.length - 1) || dayList.slice(i + 1).every(function(x) { return x.isWeekend; });
+          if (isAtEnd) {
+            if (dayOff) {
+              d.isIncluded = false;
+              d.reason = 'Não computado (Folgou no último dia útil)';
+            } else if (d.dateObj <= absenceEnd) {
+              d.isIncluded = true;
+              d.reason = 'Computado (Exercício contínuo e titular afastado)';
+            } else {
+              d.isIncluded = false;
+              d.reason = 'Não computado (Fora do afastamento do titular)';
+            }
+          } else {
+            d.isIncluded = true;
+            d.reason = 'Fim de semana intermediário';
+          }
+        }
+      }
+
+      var eligibleCount = 0;
+      var totalAmount = 0;
+      var monthBreakdown = {};
+
+      dayList.forEach(function(d) {
+        var dYear = d.dateObj.getFullYear();
+        var dMonth = d.dateObj.getMonth() + 1;
+        var daysInDMonth = new Date(dYear, dMonth, 0).getDate();
+        d.daysInMonth = daysInDMonth;
+        d.monthKey = (dMonth < 10 ? '0' + dMonth : dMonth) + '/' + dYear;
+        d.dailyRate = remVal > 0 ? (remVal / daysInDMonth) : 0;
+
+        if (d.isIncluded) {
+          eligibleCount++;
+          totalAmount += d.dailyRate;
+
+          if (!monthBreakdown[d.monthKey]) {
+            monthBreakdown[d.monthKey] = {
+              monthKey: d.monthKey,
+              daysInMonth: d.daysInMonth,
+              dailyRate: d.dailyRate,
+              count: 0,
+              subtotal: 0
+            };
+          }
+          monthBreakdown[d.monthKey].count += 1;
+          monthBreakdown[d.monthKey].subtotal += d.dailyRate;
+        }
+      });
+
+      outDays.innerText = eligibleCount + ' / ' + dayList.length;
+
+      var monthKeys = Object.keys(monthBreakdown);
+      if (monthKeys.length === 1) {
+        outDaily.innerText = CS_FormatBrl(monthBreakdown[monthKeys[0]].dailyRate) + ' / dia';
+      } else if (monthKeys.length > 1) {
+        var ratesStr = monthKeys.map(function(k) {
+          return CS_FormatBrl(monthBreakdown[k].dailyRate) + ' (' + k.slice(0, 2) + ')';
+        }).join(' | ');
+        outDaily.innerText = ratesStr;
+      } else {
+        outDaily.innerText = 'R$ 0,00';
+      }
+
+      outTotal.innerText = CS_FormatBrl(totalAmount);
+
+      // Renderiza o painel visual com o subtotais de cada mês
+      var mbContainer = document.getElementById("cs_month_breakdown_card");
+      var mbList = document.getElementById("cs_month_breakdown_list");
+      if (mbContainer && mbList) {
+        if (monthKeys.length > 0) {
+          mbContainer.style.display = "block";
+          var mbHtml = "";
+          monthKeys.forEach(function(mKey) {
+            var mb = monthBreakdown[mKey];
+            var valFormatted = CS_FormatBrl(mb.subtotal);
+            mbHtml += '<div class="calc-subst-mb-item">';
+            mbHtml += '  <span class="mb-label">Mês ' + mKey + ' (' + mb.count + ' dia(s) devidos × ' + CS_FormatBrl(mb.dailyRate) + ')</span>';
+            mbHtml += '  <span class="mb-val cs-copyable-val" onclick="CS_CopyValue(\'' + valFormatted + '\')" title="Clique para copiar ' + valFormatted + '">' + valFormatted + ' 📋</span>';
+            mbHtml += '</div>';
+          });
+          if (monthKeys.length > 1) {
+            var totalFormatted = CS_FormatBrl(totalAmount);
+            mbHtml += '<div class="calc-subst-mb-item" style="border-top: 1.5px solid #cbd5e1; margin-top: 4px; padding-top: 6px;">';
+            mbHtml += '  <span class="mb-label" style="font-weight: 800; color: var(--cs-primary-dark);">TOTAL ACUMULADO GERAL</span>';
+            mbHtml += '  <span class="mb-val cs-copyable-val" onclick="CS_CopyValue(\'' + totalFormatted + '\')" title="Clique para copiar ' + totalFormatted + '" style="font-size: 13px; font-weight: 800; color: var(--cs-primary-dark);">' + totalFormatted + ' 📋</span>';
+            mbHtml += '</div>';
+          }
+          mbList.innerHTML = mbHtml;
+        } else {
+          mbContainer.style.display = "none";
+        }
+      }
+
+      var html = '';
+      for (var j = 0; j < dayList.length; j++) {
+        var item = dayList[j];
+        var rateInfo = ' (Divisor: ' + item.daysInMonth + 'd - ' + CS_FormatBrl(item.dailyRate) + '/dia)';
+        html += '<tr style="' + (item.isIncluded ? '' : 'background:#f8fafc; color:#64748b;') + '">';
+        html += '<td style="font-weight:600;">' + item.dateFmt + '</td>';
+        html += '<td>' + (item.isWeekend ? 'Fim de Semana' : 'Dia Útil') + '</td>';
+        html += '<td style="text-align:center;">' + (item.isIncluded ? '<span class="calc-subst-tag-yes">SIM</span>' : '<span class="calc-subst-tag-no">NÃO</span>') + '</td>';
+        html += '<td style="font-size:10px;">' + item.reason + (item.isIncluded ? rateInfo : '') + '</td>';
+        html += '</tr>';
+      }
+      tbody.innerHTML = html;
+
+      var memoLines = [];
+      memoLines.push('MEMÓRIA DE CÁLCULO DE SUBSTITUIÇÃO');
+      memoLines.push('- Remuneração Titular: ' + CS_FormatBrl(remVal));
+      memoLines.push('- Período: ' + start.toLocaleDateString('pt-BR') + ' a ' + end.toLocaleDateString('pt-BR') + ' (' + dayList.length + ' dias no total)');
+      memoLines.push('- Folgou no último dia útil: ' + (dayOff ? 'SIM' : 'NÃO'));
+      memoLines.push('--------------------------------------------------');
+      memoLines.push('DETALHAMENTO POR MÊS E DIAS REAIS (DIVISOR PROPORCIONAL):');
+
+      if (monthKeys.length === 0) {
+        memoLines.push('• Nenhum dia útil computado no período.');
+      } else {
+        monthKeys.forEach(function(mKey) {
+          var mb = monthBreakdown[mKey];
+          memoLines.push('• Mês ' + mKey + ' (Divisor: ' + mb.daysInMonth + ' dias reais): ' + mb.count + ' dia(s) × ' + CS_FormatBrl(mb.dailyRate) + ' = ' + CS_FormatBrl(mb.subtotal));
+        });
+      }
+
+      memoLines.push('--------------------------------------------------');
+      memoLines.push('- DIAS COMPUTADOS DEVIDOS: ' + eligibleCount + ' DIA(S)');
+      memoLines.push('- VALOR TOTAL DEVIDO: ' + CS_FormatBrl(totalAmount));
+
+      outMemo.innerText = memoLines.join('\n');
+    }
+
+    function CS_CopyValue(valStr) {
+      if (!valStr) return;
+      var text = valStr.trim();
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(function() {
+          CS_ShowToast('Copiado: ' + text);
+        }).catch(function() {
+          CS_FallbackCopy(text);
+        });
+      } else {
+        CS_FallbackCopy(text);
+      }
+    }
+
+    function CS_FallbackCopy(text) {
+      var ta = document.createElement('textarea');
+      ta.value = text;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      CS_ShowToast('Copiado: ' + text);
+    }
+
+    function CS_ShowToast(msg) {
+      var toast = document.getElementById('cs_toast');
+      if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'cs_toast';
+        toast.style.cssText = 'position: fixed; bottom: 24px; right: 24px; background: #0f172a; color: #ffffff; padding: 10px 18px; border-radius: 8px; font-size: 13px; font-weight: 700; z-index: 99999; box-shadow: 0 4px 14px rgba(0,0,0,0.2); transition: opacity 0.25s ease, transform 0.25s ease; opacity: 0; transform: translateY(10px); pointer-events: none;';
+        document.body.appendChild(toast);
+      }
+      toast.innerText = msg;
+      toast.style.opacity = '1';
+      toast.style.transform = 'translateY(0)';
+      clearTimeout(window.csToastTimer);
+      window.csToastTimer = setTimeout(function() {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateY(10px)';
+      }, 2200);
+    }
+
+    function CS_CopyText() {
+      var text = document.getElementById('cs_out_memo').innerText;
+      if (!text) return;
+      CS_CopyValue(text);
+    }
+
+    // Inicializa o cálculo na abertura
+    document.addEventListener('DOMContentLoaded', function() { CS_Calculate(); });
+    setTimeout(CS_Calculate, 300);
+  </script>
+</div>
+<!-- FIM: CALCULADORA DE PAGAMENTO DE SUBSTITUIÇÃO -->

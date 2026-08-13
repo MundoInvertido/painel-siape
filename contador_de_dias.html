@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="h-full bg-slate-50">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contador de Dias & Calculadora de Datas</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            500: '#0284c7',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Smooth custom styling */
+        body { font-family: 'Inter', sans-serif; }
+        .tab-btn.active {
+            border-bottom: 3px solid #0284c7;
+            color: #0284c7;
+            font-weight: 600;
+        }
+        /* Custom scrollbars */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+    </style>
+</head>
+<body class="h-full flex flex-col text-slate-800 antialiased selection:bg-sky-500 selection:text-white">
+
+    <!-- Header Navbar -->
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-sky-600 to-indigo-600 flex items-center justify-center text-white shadow-md shadow-sky-200">
+                    <i class="fa-solid fa-calendar-days text-xl"></i>
+                </div>
+                <div>
+                    <h1 class="font-bold text-lg leading-tight text-slate-900">Data & Dias</h1>
+                    <p class="text-xs text-slate-500">Calculadora de Dias Úteis e Prazos</p>
+                </div>
+            </div>
+
+            <div class="flex items-center space-x-2">
+                <button id="todayQuickBtn" onclick="setTodayDate()" class="hidden sm:inline-flex items-center space-x-1.5 px-3 py-1.5 text-xs font-medium text-sky-700 bg-sky-50 hover:bg-sky-100 rounded-lg transition-colors border border-sky-200">
+                    <i class="fa-regular fa-clock"></i>
+                    <span>Hoje: <span id="currentDateHeader">--/--/----</span></span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+        
+        <!-- Navigation Tabs -->
+        <div class="flex border-b border-slate-200 mb-6 space-x-8 overflow-x-auto">
+            <button onclick="switchTab('addDays')" id="tab-addDays" class="tab-btn active pb-3 text-sm font-medium whitespace-nowrap transition-colors flex items-center gap-2">
+                <i class="fa-solid fa-plus-minus text-sky-600"></i>
+                Somar / Subtrair Dias
+            </button>
+            <button onclick="switchTab('diffDays')" id="tab-diffDays" class="tab-btn pb-3 text-sm font-medium text-slate-500 hover:text-slate-700 whitespace-nowrap transition-colors flex items-center gap-2">
+                <i class="fa-solid fa-arrow-right-arrow-left text-slate-400"></i>
+                Diferença Entre Datas
+            </button>
+            <button onclick="switchTab('holidaysList')" id="tab-holidaysList" class="tab-btn pb-3 text-sm font-medium text-slate-500 hover:text-slate-700 whitespace-nowrap transition-colors flex items-center gap-2">
+                <i class="fa-solid fa-umbrella-beach text-slate-400"></i>
+                Feriados Nacionais
+            </button>
+        </div>
+
+        <!-- TAB 1: ADD / SUBTRACT DAYS -->
+        <section id="panel-addDays" class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            
+            <!-- Left Side Inputs Form -->
+            <div class="lg:col-span-5 bg-white p-5 sm:p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between">
+                <div class="space-y-5">
+                    <div>
+                        <label for="startDate" class="block text-sm font-semibold text-slate-700 mb-1.5">
+                            Data Inicial <span class="text-rose-500">*</span>
+                        </label>
+                        <div class="relative">
+                            <input type="date" id="startDate" class="w-full pl-10 pr-3 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-slate-800 focus:bg-white focus:ring-2 focus:ring-sky-500 focus:border-sky-500 font-medium transition-all" />
+                            <i class="fa-regular fa-calendar absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"></i>
+                        </div>
+                        <div class="flex gap-2 mt-2">
+                            <button onclick="setQuickStartDate(0)" class="text-xs px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-md transition-colors">Hoje</button>
+                            <button onclick="setQuickStartDate(1)" class="text-xs px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-md transition-colors">Amanhã</button>
+                            <button onclick="setQuickStartDate(-1)" class="text-xs px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-md transition-colors">Ontem</button>
+                        </div>
+                    </div>
+
+                    <!-- Operation Type & Days Input -->
+                    <div>
+                        <div class="flex items-center justify-between mb-1.5">
+                            <label for="daysCount" class="block text-sm font-semibold text-slate-700">
+                                Quantidade de Dias <span class="text-rose-500">*</span>
+                            </label>
+                            <div class="flex items-center bg-slate-100 p-0.5 rounded-lg text-xs font-medium">
+                                <button type="button" id="btnOperationAdd" onclick="setOperation('add')" class="px-2.5 py-1 rounded-md bg-white text-sky-700 shadow-sm transition-all">
+                                    <i class="fa-solid fa-plus text-[10px] mr-1"></i>Adicionar
+                                </button>
+                                <button type="button" id="btnOperationSub" onclick="setOperation('sub')" class="px-2.5 py-1 rounded-md text-slate-600 hover:text-slate-900 transition-all">
+                                    <i class="fa-solid fa-minus text-[10px] mr-1"></i>Subtrair
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="relative">
+                            <input type="number" id="daysCount" min="0" max="36500" value="15" placeholder="Ex: 30" class="w-full pl-10 pr-12 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-slate-800 font-semibold focus:bg-white focus:ring-2 focus:ring-sky-500 focus:border-sky-500 transition-all" />
+                            <i class="fa-solid fa-hashtag absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"></i>
+                            <span class="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-medium text-slate-400 pointer-events-none">dias</span>
+                        </div>
+                        
+                        <!-- Quick Day Presets -->
+                        <div class="flex flex-wrap gap-1.5 mt-2">
+                            <button onclick="setDaysPreset(5)" class="text-xs px-2 py-1 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-md">5d</button>
+                            <button onclick="setDaysPreset(7)" class="text-xs px-2 py-1 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-md">7d (1 sem)</button>
+                            <button onclick="setDaysPreset(15)" class="text-xs px-2 py-1 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-md">15d</button>
+                            <button onclick="setDaysPreset(30)" class="text-xs px-2 py-1 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-md">30d</button>
+                            <button onclick="setDaysPreset(60)" class="text-xs px-2 py-1 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-md">60d</button>
+                            <button onclick="setDaysPreset(90)" class="text-xs px-2 py-1 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-md">90d</button>
+                            <button onclick="setDaysPreset(180)" class="text-xs px-2 py-1 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-md">6 meses</button>
+                            <button onclick="setDaysPreset(365)" class="text-xs px-2 py-1 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-md">1 ano</button>
+                        </div>
+                    </div>
+
+                    <hr class="border-slate-100 my-4" />
+
+                    <!-- Options Switch Toggles -->
+                    <div class="space-y-4">
+                        <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400">Opções de Cálculo</h3>
+                        
+                        <!-- Option 1: Business Days Only -->
+                        <label class="flex items-start justify-between cursor-pointer group">
+                            <div class="pr-3">
+                                <span class="text-sm font-semibold text-slate-800 group-hover:text-sky-600 transition-colors flex items-center gap-1.5">
+                                    <i class="fa-solid fa-briefcase text-slate-400 text-xs"></i>
+                                    Somente Dias Úteis
+                                </span>
+                                <p class="text-xs text-slate-500 mt-0.5">Ignora finais de semana (Sáb/Dom) e feriados nacionais no prazo.</p>
+                            </div>
+                            <input type="checkbox" id="onlyWorkdays" class="sr-only peer" onchange="calculateAddDays()">
+                            <div class="relative w-11 h-6 bg-slate-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-sky-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-sky-600"></div>
+                        </label>
+
+                        <!-- Option 2: Include Start Date -->
+                        <label class="flex items-start justify-between cursor-pointer group">
+                            <div class="pr-3">
+                                <span class="text-sm font-semibold text-slate-800 group-hover:text-sky-600 transition-colors flex items-center gap-1.5">
+                                    <i class="fa-solid fa-play text-slate-400 text-xs"></i>
+                                    Incluir Data de Início
+                                </span>
+                                <p class="text-xs text-slate-500 mt-0.5">A data inicial conta como o Dia 1 do período calculativo.</p>
+                            </div>
+                            <input type="checkbox" id="includeStartDate" class="sr-only peer" onchange="calculateAddDays()">
+                            <div class="relative w-11 h-6 bg-slate-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-sky-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-sky-600"></div>
+                        </label>
+
+                        <!-- Option 3: Consider Brazilian Holidays -->
+                        <label class="flex items-start justify-between cursor-pointer group">
+                            <div class="pr-3">
+                                <span class="text-sm font-semibold text-slate-800 group-hover:text-sky-600 transition-colors flex items-center gap-1.5">
+                                    <i class="fa-solid fa-flag text-slate-400 text-xs"></i>
+                                    Considerar Feriados Nacionais (BR)
+                                </span>
+                                <p class="text-xs text-slate-500 mt-0.5">Desconta os feriados oficiais do Brasil ao contar dias úteis.</p>
+                            </div>
+                            <input type="checkbox" id="includeHolidays" checked class="sr-only peer" onchange="calculateAddDays()">
+                            <div class="relative w-11 h-6 bg-slate-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-sky-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-sky-600"></div>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="mt-6">
+                    <button onclick="calculateAddDays()" class="w-full py-3 bg-sky-600 hover:bg-sky-700 active:bg-sky-800 text-white font-semibold rounded-xl shadow-md shadow-sky-200 transition-all flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-calculator"></i>
+                        <span>Calcular Data Final</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Right Side Results Display -->
+            <div class="lg:col-span-7 space-y-6">
+                <!-- Result Hero Card -->
+                <div class="bg-gradient-to-br from-slate-900 via-slate-800 to-sky-950 text-white p-6 sm:p-8 rounded-2xl shadow-xl relative overflow-hidden">
+                    <div class="absolute top-0 right-0 -mr-12 -mt-12 w-48 h-48 bg-sky-500/10 rounded-full blur-2xl pointer-events-none"></div>
+
+                    <div class="flex items-center justify-between mb-4">
+                        <span id="resultBadge" class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-sky-500/20 text-sky-300 border border-sky-400/30">
+                            <i class="fa-solid fa-flag-checkered mr-1.5"></i> Data Resultado
+                        </span>
+                        <button onclick="copyResultToClipboard()" id="copyResultBtn" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-1.5 rounded-lg transition-colors border border-slate-700 flex items-center gap-1.5">
+                            <i class="fa-regular fa-copy"></i>
+                            <span>Copiar</span>
+                        </button>
+                    </div>
+
+                    <p class="text-slate-400 text-sm font-medium mb-1" id="resultLabelText">A data final correspondente será:</p>
+                    <div class="flex items-baseline gap-3 my-2">
+                        <h2 id="finalDateDisplay" class="text-3xl sm:text-4xl md:text-5xl font-extrabold text-white tracking-tight">--/--/----</h2>
+                    </div>
+                    <p id="finalDayOfWeekDisplay" class="text-sky-300 font-medium text-base sm:text-lg capitalize mb-6">----------------</p>
+
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-4 border-t border-slate-700/60 text-xs">
+                        <div class="bg-slate-800/60 p-2.5 rounded-xl border border-slate-700/40">
+                            <span class="text-slate-400 block">Total Corridos</span>
+                            <span id="statTotalDays" class="text-sm sm:text-base font-bold text-white">0 dias</span>
+                        </div>
+                        <div class="bg-slate-800/60 p-2.5 rounded-xl border border-slate-700/40">
+                            <span class="text-slate-400 block">Dias Úteis</span>
+                            <span id="statWorkDays" class="text-sm sm:text-base font-bold text-emerald-400">0 dias</span>
+                        </div>
+                        <div class="bg-slate-800/60 p-2.5 rounded-xl border border-slate-700/40">
+                            <span class="text-slate-400 block">Fins de Semana</span>
+                            <span id="statWeekendDays" class="text-sm sm:text-base font-bold text-amber-400">0 dias</span>
+                        </div>
+                        <div class="bg-slate-800/60 p-2.5 rounded-xl border border-slate-700/40">
+                            <span class="text-slate-400 block">Feriados Nacionais</span>
+                            <span id="statHolidays" class="text-sm sm:text-base font-bold text-rose-400">0 feriados</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Timeline Preview & Explanation Card -->
+                <div class="bg-white p-5 sm:p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+                    <h3 class="font-bold text-slate-800 text-base flex items-center gap-2">
+                        <i class="fa-solid fa-circle-info text-sky-600"></i>
+                        Resumo do Período
+                    </h3>
+                    <div id="addSummaryExplanation" class="text-sm text-slate-600 leading-relaxed bg-slate-50 p-4 rounded-xl border border-slate-100">
+                        Preencha os campos para visualizar o cálculo detalhado.
+                    </div>
+
+                    <!-- List of Holidays Encountered (If Any) -->
+                    <div id="encounteredHolidaysContainer" class="hidden">
+                        <h4 class="text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Feriados durante o período:</h4>
+                        <ul id="encounteredHolidaysList" class="space-y-1.5 text-xs text-slate-700">
+                            <!-- JS inserted -->
+                        </ul>
+                    </div>
+
+                    <!-- Action toolbar -->
+                    <div class="pt-2 flex flex-wrap gap-2">
+                        <button onclick="downloadICS()" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-2 rounded-lg font-medium transition-colors flex items-center gap-1.5">
+                            <i class="fa-regular fa-calendar-plus text-sky-600"></i>
+                            Adicionar ao Calendário (.ics)
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 2: DIFFERENCE BETWEEN TWO DATES -->
+        <section id="panel-diffDays" class="hidden grid-cols-1 lg:grid-cols-12 gap-6">
+            <div class="lg:col-span-5 bg-white p-5 sm:p-6 rounded-2xl border border-slate-200 shadow-sm space-y-5">
+                <div>
+                    <label for="diffStartDate" class="block text-sm font-semibold text-slate-700 mb-1.5">Data Inicial</label>
+                    <input type="date" id="diffStartDate" class="w-full px-3 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-slate-800 font-medium focus:bg-white focus:ring-2 focus:ring-sky-500 focus:border-sky-500 transition-all" />
+                </div>
+
+                <div>
+                    <label for="diffEndDate" class="block text-sm font-semibold text-slate-700 mb-1.5">Data Final</label>
+                    <input type="date" id="diffEndDate" class="w-full px-3 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-slate-800 font-medium focus:bg-white focus:ring-2 focus:ring-sky-500 focus:border-sky-500 transition-all" />
+                </div>
+
+                <hr class="border-slate-100 my-2" />
+
+                <!-- Difference Options -->
+                <div class="space-y-3">
+                    <label class="flex items-center justify-between cursor-pointer">
+                        <span class="text-sm font-medium text-slate-700">Incluir Data Inicial no Cálculo</span>
+                        <input type="checkbox" id="diffIncludeStart" class="w-4 h-4 text-sky-600 rounded border-slate-300 focus:ring-sky-500" onchange="calculateDiffDays()">
+                    </label>
+                    <label class="flex items-center justify-between cursor-pointer">
+                        <span class="text-sm font-medium text-slate-700">Considerar Feriados do Brasil</span>
+                        <input type="checkbox" id="diffIncludeHolidays" checked class="w-4 h-4 text-sky-600 rounded border-slate-300 focus:ring-sky-500" onchange="calculateDiffDays()">
+                    </label>
+                </div>
+
+                <button onclick="calculateDiffDays()" class="w-full py-3 bg-sky-600 hover:bg-sky-700 text-white font-semibold rounded-xl shadow-md transition-all flex items-center justify-center gap-2 mt-4">
+                    <i class="fa-solid fa-arrow-right-arrow-left"></i>
+                    <span>Calcular Intervalo</span>
+                </button>
+            </div>
+
+            <!-- Diff Results -->
+            <div class="lg:col-span-7 space-y-6">
+                <div class="bg-gradient-to-br from-slate-900 via-slate-800 to-sky-950 text-white p-6 sm:p-8 rounded-2xl shadow-xl">
+                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-sky-500/20 text-sky-300 border border-sky-400/30 mb-3">
+                        <i class="fa-solid fa-stopwatch mr-1.5"></i> Intervalo Encontrado
+                    </span>
+                    <h3 class="text-slate-300 text-sm font-medium">Diferença Total:</h3>
+                    <div class="flex items-baseline gap-2 my-2">
+                        <span id="diffTotalDaysBig" class="text-4xl sm:text-5xl font-extrabold text-white">0</span>
+                        <span class="text-xl font-medium text-sky-300">dias corridos</span>
+                    </div>
+                    <p id="diffFormattedString" class="text-slate-300 text-sm font-medium">Equivalente a 0 semanas e 0 dias</p>
+
+                    <div class="grid grid-cols-3 gap-3 mt-6 pt-4 border-t border-slate-700/60 text-xs">
+                        <div class="bg-slate-800/60 p-3 rounded-xl border border-slate-700/40">
+                            <span class="text-slate-400 block mb-1">Dias Úteis</span>
+                            <span id="diffWorkDays" class="text-lg font-bold text-emerald-400">0</span>
+                        </div>
+                        <div class="bg-slate-800/60 p-3 rounded-xl border border-slate-700/40">
+                            <span class="text-slate-400 block mb-1">Finais de Semana</span>
+                            <span id="diffWeekendDays" class="text-lg font-bold text-amber-400">0</span>
+                        </div>
+                        <div class="bg-slate-800/60 p-3 rounded-xl border border-slate-700/40">
+                            <span class="text-slate-400 block mb-1">Feriados</span>
+                            <span id="diffHolidays" class="text-lg font-bold text-rose-400">0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+                    <h3 class="font-bold text-slate-800 text-base">Detalhamento por Unidades de Tempo</h3>
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
+                        <div class="p-3 bg-slate-50 rounded-xl border border-slate-100">
+                            <span id="diffHours" class="block font-bold text-lg text-slate-800">0</span>
+                            <span class="text-xs text-slate-500">Horas</span>
+                        </div>
+                        <div class="p-3 bg-slate-50 rounded-xl border border-slate-100">
+                            <span id="diffWeeks" class="block font-bold text-lg text-slate-800">0</span>
+                            <span class="text-xs text-slate-500">Semanas</span>
+                        </div>
+                        <div class="p-3 bg-slate-50 rounded-xl border border-slate-100">
+                            <span id="diffMonths" class="block font-bold text-lg text-slate-800">0</span>
+                            <span class="text-xs text-slate-500">Meses (aprox)</span>
+                        </div>
+                        <div class="p-3 bg-slate-50 rounded-xl border border-slate-100">
+                            <span id="diffYears" class="block font-bold text-lg text-slate-800">0</span>
+                            <span class="text-xs text-slate-500">Anos (aprox)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 3: HOLIDAYS LIST -->
+        <section id="panel-holidaysList" class="hidden space-y-6">
+            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+                    <div>
+                        <h3 class="font-bold text-slate-900 text-lg">Feriados Nacionais do Brasil</h3>
+                        <p class="text-slate-500 text-sm">Lista de feriados oficiais fixos e móveis considerados nos cálculos.</p>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <label for="holidayYearSelect" class="text-sm font-semibold text-slate-700">Ano:</label>
+                        <select id="holidayYearSelect" onchange="renderHolidaysTable()" class="bg-slate-50 border border-slate-300 rounded-xl px-3 py-1.5 text-sm font-medium focus:ring-2 focus:ring-sky-500">
+                            <!-- JS populated -->
+                        </select>
+                    </div>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-sm text-slate-700">
+                        <thead class="bg-slate-50 text-slate-500 font-semibold uppercase text-xs">
+                            <tr>
+                                <th class="px-4 py-3 rounded-l-lg">Data</th>
+                                <th class="px-4 py-3">Dia da Semana</th>
+                                <th class="px-4 py-3">Nome do Feriado</th>
+                                <th class="px-4 py-3 rounded-r-lg">Tipo</th>
+                            </tr>
+                        </thead>
+                        <tbody id="holidaysTableBody" class="divide-y divide-slate-100">
+                            <!-- JS inserted -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-5 right-5 bg-slate-900 text-white px-4 py-3 rounded-xl shadow-2xl transition-all duration-300 transform translate-y-20 opacity-0 flex items-center gap-3 z-50 pointer-events-none">
+        <i class="fa-solid fa-circle-check text-emerald-400 text-lg"></i>
+        <span id="toastMessage" class="text-sm font-medium">Notificação</span>
+    </div>
+
+    <script>
+        let currentOperation = 'add'; // 'add' or 'sub'
+        
+        // Month names in Portuguese
+        const monthNames = [
+            'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
+            'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
+        ];
+
+        // Day of week names in Portuguese
+        const weekDayNames = [
+            'Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-feira',
+            'Quinta-feira', 'Sexta-feira', 'Sábado'
+        ];
+
+        /**
+         * Calculates Easter Sunday for a given year using Meeus/Jones/Butcher algorithm
+         */
+        function getEasterDate(year) {
+            const a = year % 19;
+            const b = Math.floor(year / 100);
+            const c = year % 100;
+            const d = Math.floor(b / 4);
+            const e = b % 4;
+            const f = Math.floor((b + 8) / 25);
+            const g = Math.floor((b - f + 1) / 3);
+            const h = (19 * a + b - d - g + 15) % 30;
+            const i = Math.floor(c / 4);
+            const k = c % 4;
+            const l = (32 + 2 * e + 2 * i - h - k) % 7;
+            const m = Math.floor((a + 11 * h + 22 * l) / 451);
+            const month = Math.floor((h + l - 7 * m + 114) / 31); // 3 = Mar, 4 = Apr
+            const day = ((h + l - 7 * m + 114) % 31) + 1;
+            return new Date(year, month - 1, day);
+        }
+
+        /**
+         * Returns list of national holidays in Brazil for a specific year
+         */
+        function getBrazilianHolidays(year) {
+            const holidays = [
+                { date: `${year}-01-01`, name: "Confraternização Universal", type: "Fixo" },
+                { date: `${year}-04-21`, name: "Tiradentes", type: "Fixo" },
+                { date: `${year}-05-01`, name: "Dia do Trabalho", type: "Fixo" },
+                { date: `${year}-09-07`, name: "Independência do Brasil", type: "Fixo" },
+                { date: `${year}-10-12`, name: "Nossa Senhora Aparecida", type: "Fixo" },
+                { date: `${year}-11-02`, name: "Finados", type: "Fixo" },
+                { date: `${year}-11-15`, name: "Proclamação da República", type: "Fixo" },
+                { date: `${year}-11-20`, name: "Dia da Consciência Negra", type: "Fixo" },
+                { date: `${year}-12-25`, name: "Natal", type: "Fixo" }
+            ];
+
+            // Floating Holidays based on Easter
+            const easter = getEasterDate(year);
+
+            // Carnaval: Tuesday 47 days before Easter
+            const carnaval = new Date(easter);
+            carnaval.setDate(easter.getDate() - 47);
+            holidays.push({ date: formatDateToISO(carnaval), name: "Carnaval", type: "Móvel" });
+
+            // Sexta-feira Santa: 2 days before Easter
+            const GoodFriday = new Date(easter);
+            GoodFriday.setDate(easter.getDate() - 2);
+            holidays.push({ date: formatDateToISO(GoodFriday), name: "Sexta-feira Santa", type: "Móvel" });
+
+            // Páscoa
+            holidays.push({ date: formatDateToISO(easter), name: "Páscoa", type: "Móvel" });
+
+            // Corpus Christi: 60 days after Easter
+            const corpusChristi = new Date(easter);
+            corpusChristi.setDate(easter.getDate() + 60);
+            holidays.push({ date: formatDateToISO(corpusChristi), name: "Corpus Christi", type: "Móvel" });
+
+            // Sort holidays by date
+            return holidays.sort((a, b) => a.date.localeCompare(b.date));
+        }
+
+        function formatDateToISO(date) {
+            const y = date.getFullYear();
+            const m = String(date.getMonth() + 1).padStart(2, '0');
+            const d = String(date.getDate()).padStart(2, '0');
+            return `${y}-${m}-${d}`;
+        }
+
+        function parseISODate(dateStr) {
+            if (!dateStr) return new Date();
+            const [y, m, d] = dateStr.split('-').map(Number);
+            return new Date(y, m - 1, d);
+        }
+
+        function formatDateBR(date) {
+            const d = String(date.getDate()).padStart(2, '0');
+            const m = String(date.getMonth() + 1).padStart(2, '0');
+            const y = date.getFullYear();
+            return `${d}/${m}/${y}`;
+        }
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById('tab-' + tabId).classList.add('active');
+
+            document.getElementById('panel-addDays').classList.add('hidden');
+            document.getElementById('panel-addDays').classList.remove('grid');
+            document.getElementById('panel-diffDays').classList.add('hidden');
+            document.getElementById('panel-diffDays').classList.remove('grid');
+            document.getElementById('panel-holidaysList').classList.add('hidden');
+
+            const targetPanel = document.getElementById('panel-' + tabId);
+            if (tabId === 'holidaysList') {
+                targetPanel.classList.remove('hidden');
+                renderHolidaysTable();
+            } else {
+                targetPanel.classList.remove('hidden');
+                targetPanel.classList.add('grid');
+            }
+        }
+
+        function setOperation(op) {
+            currentOperation = op;
+            const btnAdd = document.getElementById('btnOperationAdd');
+            const btnSub = document.getElementById('btnOperationSub');
+
+            if (op === 'add') {
+                btnAdd.className = "px-2.5 py-1 rounded-md bg-white text-sky-700 shadow-sm transition-all font-semibold";
+                btnSub.className = "px-2.5 py-1 rounded-md text-slate-600 hover:text-slate-900 transition-all font-medium";
+            } else {
+                btnSub.className = "px-2.5 py-1 rounded-md bg-white text-sky-700 shadow-sm transition-all font-semibold";
+                btnAdd.className = "px-2.5 py-1 rounded-md text-slate-600 hover:text-slate-900 transition-all font-medium";
+            }
+
+            calculateAddDays();
+        }
+
+        function setTodayDate() {
+            const today = new Date();
+            const iso = formatDateToISO(today);
+            document.getElementById('startDate').value = iso;
+            document.getElementById('diffStartDate').value = iso;
+            calculateAddDays();
+        }
+
+        function setQuickStartDate(offsetDays) {
+            const d = new Date();
+            d.setDate(d.getDate() + offsetDays);
+            document.getElementById('startDate').value = formatDateToISO(d);
+            calculateAddDays();
+        }
+
+        function setDaysPreset(days) {
+            document.getElementById('daysCount').value = days;
+            calculateAddDays();
+        }
+
+        function calculateAddDays() {
+            const startDateVal = document.getElementById('startDate').value;
+            const daysInput = parseInt(document.getElementById('daysCount').value, 10);
+            const onlyWorkdays = document.getElementById('onlyWorkdays').checked;
+            const includeStart = document.getElementById('includeStartDate').checked;
+            const includeHolidays = document.getElementById('includeHolidays').checked;
+
+            if (!startDateVal || isNaN(daysInput) || daysInput < 0) {
+                return;
+            }
+
+            if (daysInput === 0) {
+                const currentDate = parseISODate(startDateVal);
+                document.getElementById('finalDateDisplay').innerText = formatDateBR(currentDate);
+                document.getElementById('finalDayOfWeekDisplay').innerText = weekDayNames[currentDate.getDay()];
+                document.getElementById('statTotalDays').innerText = "0 dias";
+                document.getElementById('statWorkDays').innerText = "0 dias";
+                document.getElementById('statWeekendDays').innerText = "0 dias";
+                document.getElementById('statHolidays').innerText = "0 feriado(s)";
+                return;
+            }
+
+            let currentDate = parseISODate(startDateVal);
+            const startCopy = new Date(currentDate);
+            const targetDays = daysInput;
+            
+            let daysAdded = 0;
+            let totalCalendarDays = 0;
+            let workDaysCount = 0;
+            let weekendDaysCount = 0;
+            let holidaysCount = 0;
+            
+            const encounteredHolidays = [];
+            const isSub = (currentOperation === 'sub');
+            const step = isSub ? -1 : 1;
+
+            // Se NÃO incluir a data de início, avança 1 dia antes de iniciar a contagem
+            if (!includeStart) {
+                currentDate.setDate(currentDate.getDate() + step);
+                totalCalendarDays = 1;
+            } else {
+                totalCalendarDays = 0;
+            }
+
+            while (daysAdded < targetDays) {
+                const dayOfWeek = currentDate.getDay();
+                const isWeekend = (dayOfWeek === 0 || dayOfWeek === 6);
+
+                const currentISO = formatDateToISO(currentDate);
+                const yearHolidays = includeHolidays ? getBrazilianHolidays(currentDate.getFullYear()) : [];
+                const holidayMatch = yearHolidays.find(h => h.date === currentISO);
+
+                let isValidDay = true;
+                if (onlyWorkdays) {
+                    if (isWeekend || holidayMatch) {
+                        isValidDay = false;
+                    }
+                }
+
+                if (isWeekend) weekendDaysCount++;
+                if (holidayMatch) {
+                    holidaysCount++;
+                    if (!encounteredHolidays.some(h => h.date === formatDateBR(currentDate))) {
+                        encounteredHolidays.push({ date: formatDateBR(currentDate), name: holidayMatch.name });
+                    }
+                }
+                if (!isWeekend && !holidayMatch) workDaysCount++;
+
+                if (isValidDay) {
+                    daysAdded++;
+                }
+
+                if (daysAdded < targetDays) {
+                    currentDate.setDate(currentDate.getDate() + step);
+                    totalCalendarDays++;
+                }
+            }
+
+            // Update UI elements
+            document.getElementById('finalDateDisplay').innerText = formatDateBR(currentDate);
+            document.getElementById('finalDayOfWeekDisplay').innerText = weekDayNames[currentDate.getDay()];
+
+            document.getElementById('statTotalDays').innerText = `${totalCalendarDays} dias`;
+            document.getElementById('statWorkDays').innerText = `${workDaysCount} dias`;
+            document.getElementById('statWeekendDays').innerText = `${weekendDaysCount} dias`;
+            document.getElementById('statHolidays').innerText = `${holidaysCount} feriado(s)`;
+
+            document.getElementById('resultLabelText').innerText = isSub 
+                ? `A data correspondente ${daysInput} dias atrás:` 
+                : `A data final após ${daysInput} dias:`;
+
+            // Explanation summary string
+            let summaryHTML = `Começando em <strong>${formatDateBR(startCopy)} (${weekDayNames[startCopy.getDay()]})</strong>, `;
+            if (isSub) {
+                summaryHTML += `subtraindo <strong>${daysInput} ${onlyWorkdays ? 'dias úteis' : 'dias'}</strong> `;
+            } else {
+                summaryHTML += `adicionando <strong>${daysInput} ${onlyWorkdays ? 'dias úteis' : 'dias'}</strong> `;
+            }
+
+            if (includeStart) summaryHTML += `(incluindo o dia inicial no cálculo), `;
+            summaryHTML += `chegamos a <strong>${formatDateBR(currentDate)} (${weekDayNames[currentDate.getDay()]})</strong>. `;
+            summaryHTML += `O período total abrange <strong>${totalCalendarDays} dias corridos</strong>.`;
+
+            document.getElementById('addSummaryExplanation').innerHTML = summaryHTML;
+
+            // Render encountered holidays list
+            const holContainer = document.getElementById('encounteredHolidaysContainer');
+            const holList = document.getElementById('encounteredHolidaysList');
+            if (encounteredHolidays.length > 0 && includeHolidays) {
+                holContainer.classList.remove('hidden');
+                holList.innerHTML = encounteredHolidays.map(h => `
+                    <li class="flex items-center gap-2 text-rose-700 bg-rose-50 px-2.5 py-1.5 rounded-lg border border-rose-100">
+                        <i class="fa-solid fa-umbrella-beach text-rose-500"></i>
+                        <span class="font-semibold">${h.date}</span> — <span>${h.name}</span>
+                    </li>
+                `).join('');
+            } else {
+                holContainer.classList.add('hidden');
+            }
+        }
+
+        function calculateDiffDays() {
+            const startVal = document.getElementById('diffStartDate').value;
+            const endVal = document.getElementById('diffEndDate').value;
+            const includeStart = document.getElementById('diffIncludeStart').checked;
+            const includeHolidays = document.getElementById('diffIncludeHolidays').checked;
+
+            if (!startVal || !endVal) return;
+
+            let startDate = parseISODate(startVal);
+            let endDate = parseISODate(endVal);
+
+            // Swap if end date is earlier than start date
+            let isReversed = false;
+            if (endDate < startDate) {
+                const temp = startDate;
+                startDate = endDate;
+                endDate = temp;
+                isReversed = true;
+            }
+
+            let curr = new Date(startDate);
+            let totalDays = 0;
+            let workDays = 0;
+            let weekendDays = 0;
+            let holidaysCount = 0;
+
+            if (includeStart) {
+                curr.setDate(curr.getDate() - 1);
+            }
+
+            while (curr < endDate) {
+                curr.setDate(curr.getDate() + 1);
+                totalDays++;
+
+                const dayOfWeek = curr.getDay();
+                const isWeekend = (dayOfWeek === 0 || dayOfWeek === 6);
+
+                const currentISO = formatDateToISO(curr);
+                const yearHolidays = includeHolidays ? getBrazilianHolidays(curr.getFullYear()) : [];
+                const isHoliday = yearHolidays.some(h => h.date === currentISO);
+
+                if (isWeekend) weekendDays++;
+                if (isHoliday) holidaysCount++;
+                if (!isWeekend && !isHoliday) workDays++;
+            }
+
+            // Calculations breakdown
+            const weeks = Math.floor(totalDays / 7);
+            const remainingDays = totalDays % 7;
+            const hours = totalDays * 24;
+            const approxMonths = (totalDays / 30.4375).toFixed(1);
+            const approxYears = (totalDays / 365.25).toFixed(2);
+
+            document.getElementById('diffTotalDaysBig').innerText = totalDays;
+            document.getElementById('diffWorkDays').innerText = workDays;
+            document.getElementById('diffWeekendDays').innerText = weekendDays;
+            document.getElementById('diffHolidays').innerText = holidaysCount;
+
+            document.getElementById('diffFormattedString').innerText = `Equivalente a ${weeks} semana(s) e ${remainingDays} dia(s)${isReversed ? ' (período invertido)' : ''}`;
+
+            document.getElementById('diffHours').innerText = hours.toLocaleString('pt-BR');
+            document.getElementById('diffWeeks').innerText = weeks;
+            document.getElementById('diffMonths').innerText = approxMonths;
+            document.getElementById('diffYears').innerText = approxYears;
+        }
+
+        function renderHolidaysTable() {
+            const yearSelect = document.getElementById('holidayYearSelect');
+            const selectedYear = parseInt(yearSelect.value, 10);
+            const holidays = getBrazilianHolidays(selectedYear);
+            const tbody = document.getElementById('holidaysTableBody');
+
+            tbody.innerHTML = holidays.map(h => {
+                const dateObj = parseISODate(h.date);
+                const isWeekend = (dateObj.getDay() === 0 || dateObj.getDay() === 6);
+                return `
+                    <tr class="hover:bg-slate-50/80 transition-colors">
+                        <td class="px-4 py-3 font-semibold text-slate-800">${formatDateBR(dateObj)}</td>
+                        <td class="px-4 py-3 text-slate-600 font-medium ${isWeekend ? 'text-amber-600 font-semibold' : ''}">
+                            ${weekDayNames[dateObj.getDay()]} ${isWeekend ? '<span class="text-[10px] bg-amber-100 text-amber-800 px-1.5 py-0.5 rounded ml-1">Fim de Semana</span>' : ''}
+                        </td>
+                        <td class="px-4 py-3 font-medium text-slate-800">${h.name}</td>
+                        <td class="px-4 py-3">
+                            <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${h.type === 'Fixo' ? 'bg-slate-100 text-slate-700' : 'bg-sky-100 text-sky-800'}">
+                                ${h.type}
+                            </span>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function copyResultToClipboard() {
+            const dateStr = document.getElementById('finalDateDisplay').innerText;
+            const weekDay = document.getElementById('finalDayOfWeekDisplay').innerText;
+            const textToCopy = `Data Final: ${dateStr} (${weekDay})`;
+
+            // ExecCommand compatibility
+            const el = document.createElement('textarea');
+            el.value = textToCopy;
+            document.body.appendChild(el);
+            el.select();
+            document.execCommand('copy');
+            document.body.removeChild(el);
+
+            showToast('Data copiada para a área de transferência!');
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastMessage').innerText = message;
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            toast.classList.add('translate-y-0', 'opacity-100');
+
+            setTimeout(() => {
+                toast.classList.remove('translate-y-0', 'opacity-100');
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3000);
+        }
+
+        function downloadICS() {
+            const finalDateStr = document.getElementById('finalDateDisplay').innerText;
+            if (finalDateStr.includes('-')) return;
+
+            const [d, m, y] = finalDateStr.split('/');
+            const formattedDateISO = `${y}${m}${d}`;
+
+            const icsContent = 
+`BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Calculadora de Datas//PT-BR
+BEGIN:VEVENT
+SUMMARY:Prazo Final / Data Limite
+DTSTART;VALUE=DATE:${formattedDateISO}
+DTEND;VALUE=DATE:${formattedDateISO}
+DESCRIPTION:Lembrete de data final calculado pelo App Contador de Dias.
+END:VEVENT
+END:VCALENDAR`;
+
+            const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `evento_prazo_${formattedDateISO}.ics`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+
+            showToast('Arquivo de calendário (.ics) baixado!');
+        }
+
+        window.onload = function() {
+            // Set Header Date
+            const today = new Date();
+            document.getElementById('currentDateHeader').innerText = formatDateBR(today);
+
+            // Populate Year Select Box for Holidays Tab
+            const yearSelect = document.getElementById('holidayYearSelect');
+            const currentYear = today.getFullYear();
+            for (let y = currentYear - 5; y <= currentYear + 10; y++) {
+                const opt = document.createElement('option');
+                opt.value = y;
+                opt.innerText = y;
+                if (y === currentYear) opt.selected = true;
+                yearSelect.appendChild(opt);
+            }
+
+            // Set Initial Dates
+            const todayISO = formatDateToISO(today);
+            document.getElementById('startDate').value = todayISO;
+            document.getElementById('diffStartDate').value = todayISO;
+
+            const targetDiff = new Date();
+            targetDiff.setDate(targetDiff.getDate() + 30);
+            document.getElementById('diffEndDate').value = formatDateToISO(targetDiff);
+
+            // Bind live inputs
+            document.getElementById('startDate').addEventListener('change', calculateAddDays);
+            document.getElementById('daysCount').addEventListener('input', calculateAddDays);
+            document.getElementById('diffStartDate').addEventListener('change', calculateDiffDays);
+            document.getElementById('diffEndDate').addEventListener('change', calculateDiffDays);
+
+            // Initial calculations
+            calculateAddDays();
+            calculateDiffDays();
+        };
+    </script>
+</body>
+</html>

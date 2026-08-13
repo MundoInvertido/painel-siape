@@ -1,34 +1,51 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Procedimentos SGP/NUAP - Central de Comandos PRF</title>
+    <title>Procedimentos SGP-PA — Central PRF</title>
+    <meta name="description" content="Central de procedimentos mapeados do SGP-PA da PRF. Consulte fluxos, etapas e comandos do SIAPE.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-primary: #f3f4f6;
+            --bg-primary: #eef2f7;
             --bg-secondary: #ffffff;
-            --bg-tertiary: #f9fafb;
-            --text-primary: #111827;
-            --text-secondary: #4b5563;
-            --accent: #005691;
-            --accent-hover: #004471;
-            --accent-glow: rgba(0, 86, 145, 0.1);
+            --bg-tertiary: #f8fafc;
+            --text-primary: #0f172a;
+            --text-secondary: #64748b;
+            --text-muted: #94a3b8;
+            --accent: #0057a8;
+            --accent-light: #1a7fd4;
+            --accent-hover: #004080;
+            --accent-glow: rgba(0, 87, 168, 0.12);
             --danger: #dc2626;
-            --border-color: #cbd5e1;
-            --card-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
+            --danger-glow: rgba(220, 38, 38, 0.12);
+            --success: #059669;
+            --border-color: #dde3ec;
+            --card-shadow: 0 1px 4px rgba(0, 0, 0, 0.06), 0 4px 16px rgba(0, 0, 0, 0.04);
             --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-            --font-sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            
+            --font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            --radius-sm: 0.375rem;
+            --radius-md: 0.625rem;
+            --radius-lg: 0.875rem;
+
+            --sidebar-width: 260px;
             --sidebar-bg: #ffffff;
-            --sidebar-border: #e5e7eb;
-            --sidebar-text: #374151;
-            --sidebar-active-bg: #f3f4f6;
-            --sidebar-active-text: #111827;
-            
-            --panel-header-bg: #d9eaf2;
-            --panel-header-text: #1a5678;
-            --metric-red: #d92d20;
+            --sidebar-border: #e2e8f0;
+            --sidebar-text: #475569;
+            --sidebar-active-bg: #eff6ff;
+            --sidebar-active-text: #0057a8;
+            --sidebar-icon-color: #94a3b8;
+
+            --header-bg: #0b1340;
+            --header-height: 54px;
+
+            --panel-header-bg: #eff6ff;
+            --panel-header-text: #1e4d8c;
+            --metric-red: #dc2626;
         }
 
         [data-theme="dark"] {
@@ -43,13 +60,13 @@
             --danger: #ef4444;
             --border-color: #243572;
             --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
-            
+
             --sidebar-bg: #111a3c;
             --sidebar-border: #243572;
             --sidebar-text: #9aa8d6;
             --sidebar-active-bg: #1c2754;
             --sidebar-active-text: #f8fafc;
-            
+
             --panel-header-bg: #1c2754;
             --panel-header-text: #f59e0b;
             --metric-red: #ef4444;
@@ -81,7 +98,7 @@
             padding: 0 1.5rem;
             font-size: 0.9rem;
             font-weight: 500;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             position: sticky;
             top: 0;
             z-index: 1000;
@@ -140,7 +157,7 @@
         }
 
         .sidebar {
-            width: 280px;
+            width: var(--sidebar-width);
             background-color: var(--sidebar-bg);
             border-right: 1px solid var(--sidebar-border);
             display: flex;
@@ -152,52 +169,84 @@
             overflow-y: auto;
         }
 
+        .sidebar::-webkit-scrollbar { width: 4px; }
+        .sidebar::-webkit-scrollbar-track { background: transparent; }
+        .sidebar::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 4px; }
+
         .sidebar-logo {
-            padding: 1.5rem;
+            padding: 1.1rem 1.25rem;
             border-bottom: 1px solid var(--sidebar-border);
             display: flex;
             align-items: center;
             gap: 0.75rem;
-            color: var(--accent);
+        }
+
+        .sidebar-logo-icon {
+            width: 2.25rem;
+            height: 2.25rem;
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%);
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            box-shadow: 0 2px 8px var(--accent-glow);
         }
 
         .sidebar-logo h1 {
-            font-size: 1.15rem;
+            font-size: 0.95rem;
             font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 0.05rem;
+            color: var(--text-primary);
+            letter-spacing: -0.01em;
             line-height: 1.2;
         }
 
         .sidebar-logo p {
-            font-size: 0.75rem;
-            color: var(--text-secondary);
+            font-size: 0.7rem;
+            color: var(--text-muted);
             font-weight: 500;
+            margin-top: 1px;
+        }
+
+        .sidebar-section-label {
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-muted);
+            padding: 0.75rem 1rem 0.25rem;
         }
 
         .sidebar-nav {
-            padding: 1rem;
+            padding: 0.75rem 0.75rem;
             display: flex;
             flex-direction: column;
-            gap: 0.25rem;
+            gap: 0.15rem;
             flex-grow: 1;
         }
 
         .nav-item {
             display: flex;
             align-items: center;
-            gap: 0.75rem;
-            padding: 0.75rem 1rem;
+            gap: 0.625rem;
+            padding: 0.6rem 0.875rem;
             color: var(--sidebar-text);
             text-decoration: none;
-            border-radius: 0.375rem;
-            font-size: 0.9rem;
+            border-radius: var(--radius-md);
+            font-size: 0.875rem;
             font-weight: 600;
             cursor: pointer;
             border: none;
             background: none;
             text-align: left;
             width: 100%;
+            transition: all 0.15s ease;
+        }
+
+        .nav-item .icon {
+            color: var(--sidebar-icon-color);
+            transition: color 0.15s ease;
+            flex-shrink: 0;
         }
 
         .nav-item:hover {
@@ -205,17 +254,34 @@
             color: var(--sidebar-active-text);
         }
 
+        .nav-item:hover .icon {
+            color: var(--accent);
+        }
+
         .nav-item.active {
             background-color: var(--sidebar-active-bg);
             color: var(--sidebar-active-text);
-            border-left: 4px solid var(--accent);
-            border-top-left-radius: 0;
-            border-bottom-left-radius: 0;
-            padding-left: 0.75rem;
+            font-weight: 700;
+            box-shadow: inset 3px 0 0 var(--accent);
+        }
+
+        .nav-item.active .icon {
+            color: var(--accent);
+        }
+
+        .nav-badge {
+            margin-left: auto;
+            background-color: var(--accent-glow);
+            color: var(--accent);
+            font-size: 0.65rem;
+            font-weight: 700;
+            padding: 0.1rem 0.4rem;
+            border-radius: 1rem;
+            letter-spacing: 0.02em;
         }
 
         .nav-divider {
-            margin: 1rem 0;
+            margin: 0.5rem 0.75rem;
             border: none;
             border-top: 1px solid var(--sidebar-border);
         }
@@ -330,13 +396,16 @@
             .form-grid {
                 grid-template-columns: 1fr;
             }
+
             .metrics-grid {
                 grid-template-columns: 1fr;
                 gap: 1rem;
             }
+
             .app-layout {
                 flex-direction: column;
             }
+
             .sidebar {
                 position: fixed;
                 left: -280px;
@@ -347,9 +416,11 @@
                 transition: left 0.3s cubic-bezier(0.16, 1, 0.3, 1);
                 box-shadow: 10px 0 15px -3px rgba(0, 0, 0, 0.1);
             }
+
             .sidebar.open {
                 left: 0;
             }
+
             .sidebar-overlay {
                 display: none;
                 position: fixed;
@@ -360,8 +431,67 @@
                 background: rgba(0, 0, 0, 0.4);
                 z-index: 1000;
             }
+
             .sidebar-overlay.active {
                 display: block;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .main-content {
+                padding: 0.875rem 0.75rem;
+                gap: 1rem;
+            }
+
+            .top-header {
+                padding: 0 0.875rem;
+            }
+
+            .logo-prf {
+                font-size: 1.15rem !important;
+            }
+
+            .procedures-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            #procedure-panel .panel-content {
+                width: 96%;
+                max-height: 94vh;
+                border-radius: 0.75rem;
+            }
+
+            .panel-header {
+                padding: 1rem;
+            }
+
+            .panel-header h2 {
+                font-size: 1.05rem;
+            }
+
+            .panel-body {
+                padding: 1rem;
+                gap: 1rem;
+            }
+
+            .nav-item {
+                padding: 0.75rem 0.875rem; /* Maior área de toque para celular */
+                font-size: 0.9rem;
+            }
+
+            .btn {
+                padding: 0.6rem 0.875rem;
+                min-height: 42px; /* Touch target ideal */
+            }
+
+            .metrics-grid {
+                padding: 1rem;
+                gap: 0.875rem;
+            }
+
+            .metric-value-red, .metric-value-text {
+                font-size: 1.5rem;
             }
         }
 
@@ -377,7 +507,9 @@
             color: var(--text-secondary);
         }
 
-        .form-control, select, textarea {
+        .form-control,
+        select,
+        textarea {
             width: 100%;
             background-color: var(--bg-secondary);
             border: 1px solid var(--border-color);
@@ -388,7 +520,9 @@
             outline: none;
         }
 
-        .form-control:focus, select:focus, textarea:focus {
+        .form-control:focus,
+        select:focus,
+        textarea:focus {
             border-color: var(--accent);
             box-shadow: 0 0 0 3px var(--accent-glow);
         }
@@ -555,7 +689,8 @@
             background-color: rgba(0, 0, 0, 0.5);
             display: flex;
             align-items: center;
-            justify-content: flex-end; /* Drawer style */
+            justify-content: flex-end;
+            /* Drawer style */
             z-index: 100;
             opacity: 0;
             pointer-events: none;
@@ -585,7 +720,9 @@
         }
 
         /* Estilos específicos para o Modal de Procedimento Centralizado (Modo Foco) */
-        #procedure-panel, #add-modal, #categories-modal {
+        #procedure-panel,
+        #add-modal,
+        #categories-modal {
             justify-content: center;
             backdrop-filter: blur(6px);
             -webkit-backdrop-filter: blur(6px);
@@ -611,7 +748,8 @@
         }
 
         /* Estilos específicos para os Modais de Adicionar e Categorias */
-        #add-modal .panel-content, #categories-modal .panel-content {
+        #add-modal .panel-content,
+        #categories-modal .panel-content {
             transform: translateY(30px) scale(0.98);
             opacity: 0;
             transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease;
@@ -620,7 +758,8 @@
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
         }
 
-        #add-modal.open .panel-content, #categories-modal.open .panel-content {
+        #add-modal.open .panel-content,
+        #categories-modal.open .panel-content {
             transform: translateY(0) scale(1);
             opacity: 1;
         }
@@ -628,7 +767,10 @@
         /* Login Modal */
         .login-overlay {
             position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
             background: rgba(0, 0, 0, 0.6);
             display: flex;
             align-items: center;
@@ -638,10 +780,12 @@
             pointer-events: none;
             transition: opacity 0.25s ease;
         }
+
         .login-overlay.open {
             opacity: 1;
             pointer-events: auto;
         }
+
         .login-box {
             background: var(--bg-secondary);
             border: 2px solid var(--accent);
@@ -652,25 +796,29 @@
             display: flex;
             flex-direction: column;
             gap: 1.25rem;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
             transform: scale(0.95);
             transition: transform 0.25s ease;
         }
+
         .login-overlay.open .login-box {
             transform: scale(1);
         }
+
         .login-box h2 {
             font-size: 1.2rem;
             font-weight: 800;
             color: var(--accent);
             text-align: center;
         }
+
         .login-box .login-sub {
             font-size: 0.82rem;
             color: var(--text-secondary);
             text-align: center;
             margin-top: -0.75rem;
         }
+
         .login-box input {
             width: 100%;
             padding: 0.65rem 0.85rem;
@@ -681,10 +829,12 @@
             font-size: 0.9rem;
             outline: none;
         }
+
         .login-box input:focus {
             border-color: var(--accent);
             box-shadow: 0 0 0 3px var(--accent-glow);
         }
+
         .login-error {
             color: #dc2626;
             font-size: 0.82rem;
@@ -800,13 +950,15 @@
         .proc-step-img {
             transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease, border-color 0.25s ease;
         }
+
         .proc-step-img:hover {
             transform: scale(1.02);
-            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
             border-color: var(--accent) !important;
         }
 
-        .step-description code, .notes-section code {
+        .step-description code,
+        .notes-section code {
             font-family: var(--font-mono);
             background-color: var(--bg-secondary);
             color: var(--accent);
@@ -963,9 +1115,10 @@
             background-color: var(--accent-glow);
         }
 
-        .switch input:checked + .slider {
+        .switch input:checked+.slider {
             background-color: var(--accent);
         }
+
         .slider:before {
             position: absolute;
             content: "";
@@ -977,7 +1130,8 @@
             transition: .4s;
             border-radius: 50%;
         }
-        .switch input:checked + .slider:before {
+
+        .switch input:checked+.slider:before {
             transform: translateX(22px);
         }
 
@@ -991,7 +1145,8 @@
             border-radius: 0.375rem 0.375rem 0 0;
             padding: 0.35rem;
             align-items: center;
-            flex-wrap: wrap; /* Permite que os botões quebrem linha se necessário */
+            flex-wrap: wrap;
+            /* Permite que os botões quebrem linha se necessário */
         }
 
         .step-editor-toolbar .tb-btn {
@@ -1073,13 +1228,15 @@
             padding-left: 0;
         }
 
-        .markdown-ul .markdown-ul, .markdown-ol .markdown-ul {
+        .markdown-ul .markdown-ul,
+        .markdown-ol .markdown-ul {
             list-style-type: circle;
             margin-top: 0.25rem;
             margin-bottom: 0.25rem;
         }
 
-        .markdown-ul .markdown-ul .markdown-ul, .markdown-ol .markdown-ul .markdown-ul {
+        .markdown-ul .markdown-ul .markdown-ul,
+        .markdown-ol .markdown-ul .markdown-ul {
             list-style-type: square;
         }
 
@@ -1094,12 +1251,15 @@
         }
     </style>
 </head>
+
 <body>
 
     <!-- Notification Toast -->
     <div id="toast" class="toast">
         <svg class="icon" viewBox="0 0 20 20" style="margin-right: 0.25rem;">
-            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+            <path fill-rule="evenodd"
+                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                clip-rule="evenodd" />
         </svg>
         <span id="toast-message">Copiado com sucesso!</span>
     </div>
@@ -1107,18 +1267,20 @@
     <!-- Top Header Bar matching Screenshot -->
     <header class="top-header">
         <div class="header-left">
-            <span class="logo-prf" style="font-size: 1.5rem;">SGP/NUAP</span>
+            <span class="logo-prf" style="font-size: 1.5rem;">SGP-PA</span>
             <div class="menu-icon" onclick="toggleMobileSidebar(true)" style="cursor: pointer;">
                 <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
-                    <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+                    <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z" />
                 </svg>
             </div>
         </div>
         <div class="header-right" style="display: flex; align-items: center; gap: 1rem;">
-            <button class="btn" id="header-admin-login" onclick="adminLogin()" style="background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); color: #fff; padding: 0.35rem 0.8rem; font-size: 0.82rem; cursor: pointer; border-radius: 0.25rem;">
+            <button class="btn" id="header-admin-login" onclick="adminLogin()"
+                style="background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); color: #fff; padding: 0.35rem 0.8rem; font-size: 0.82rem; cursor: pointer; border-radius: 0.25rem;">
                 🔐 Login Admin
             </button>
-            <button class="btn" id="header-admin-logout" onclick="adminLogout()" style="background: #dc2626; border: none; color: #fff; padding: 0.35rem 0.8rem; font-size: 0.82rem; cursor: pointer; border-radius: 0.25rem; display: none;">
+            <button class="btn" id="header-admin-logout" onclick="adminLogout()"
+                style="background: #dc2626; border: none; color: #fff; padding: 0.35rem 0.8rem; font-size: 0.82rem; cursor: pointer; border-radius: 0.25rem; display: none;">
                 🚪 Sair do Admin
             </button>
         </div>
@@ -1132,84 +1294,97 @@
         <!-- Sidebar Navigation -->
         <aside class="sidebar">
             <div class="sidebar-logo">
-                <svg class="icon" viewBox="0 0 24 24" style="color: var(--accent); width: 1.8rem; height: 1.8rem;">
-                    <path d="M12 2L2 22h20L12 2zm0 3.99L19.53 19H4.47L12 5.99zM13 16h-2v2h2v-2zm0-6h-2v4h2v-4z"/>
-                </svg>
+                <div class="sidebar-logo-icon">
+                    <svg viewBox="0 0 24 24" fill="white" width="18" height="18">
+                        <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z" />
+                    </svg>
+                </div>
                 <div>
                     <h1>Painel PRF</h1>
-                    <p>Comandos & Atalhos SIAPE</p>
+                    <p>SGP-PA · Procedimentos</p>
                 </div>
             </div>
             <nav class="sidebar-nav">
-                <a href="index.html" class="nav-item">
-                    <svg class="icon" viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
-                    Início
+                <span class="sidebar-section-label">Navegação</span>
+                <a href="index.html" class="nav-item active" id="nav-procedures-home">
+                    <svg class="icon" viewBox="0 0 24 24">
+                        <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
+                    </svg>
+                    Procedimentos
                 </a>
-                <a href="index.html?filter=SIAPE" class="nav-item">
-                    <svg class="icon" viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94s-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
-                    Comandos SIAPE
+                <a href="comandos.html" class="nav-item" id="nav-commands-link">
+                    <svg class="icon" viewBox="0 0 24 24">
+                        <path d="M19.14 12.94c.04-.3.06-.61.06-.94s-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6-3.6z" />
+                    </svg>
+                    Comandos
                 </a>
-                <a href="index.html?filter=RUB" class="nav-item">
-                    <svg class="icon" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17.93c-3.95-.49-7-3.85-7-7.93s3.05-7.44 7-7.93v15.86z"/></svg>
-                    Rubricas
+                <a href="comandos.html?tab=agendamentos" class="nav-item" id="nav-prazos-link">
+                    <svg class="icon" viewBox="0 0 24 24">
+                        <path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zm0-12H5V6h14v2zm-7 5h5v5h-5z" />
+                    </svg>
+                    Prazos
                 </a>
-                <a href="index.html?filter=OC" class="nav-item">
-                    <svg class="icon" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
-                    Ocorrências
+                <a href="apps.html" class="nav-item" id="nav-apps-link">
+                    <svg class="icon" viewBox="0 0 24 24">
+                        <path d="M4 8h4V4H4v4zm6 12h4v-4h-4v4zm-6 0h4v-4H4v4zm0-6h4v-4H4v4zm6 0h4v-4h-4v4zm6-10v4h4V4h-4zm-6 4h4V4h-4v4zm6 6h4v-4h-4v4zm0 6h4v-4h-4v4z" />
+                    </svg>
+                    Apps
                 </a>
-                <a href="index.html?filter=BOX" class="nav-item">
-                    <svg class="icon" viewBox="0 0 24 24"><path d="M4 10h3v7H4zm6.5 0h3v7H-3zM2 19h20v3H2zm15-9h3v7h-3zm-5-9L2 6v2h20V6z"/></svg>
-                    Outros
-                </a>
-                <a href="index.html?tab=categories" class="nav-item">
-                    <svg class="icon" viewBox="0 0 24 24"><path d="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/></svg>
-                    Categorias
-                </a>
-                <a href="index.html?tab=agendamentos" class="nav-item">
-                    <svg class="icon" viewBox="0 0 24 24"><path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zm0-12H5V6h14v2zm-7 5h5v5h-5z"/></svg>
-                    Controle de Prazos
-                </a>
-                
+
                 <hr class="nav-divider">
-                
-                <a href="#" class="nav-item active" id="nav-procedures" onclick="switchTab('procedures'); resetFilters(); return false;">
-                    <svg class="icon" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
-                    Procedimentos SGP/NUAP
-                </a>
-                <button class="nav-item" onclick="openAddModal()">
-                    <svg class="icon" viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
-                    Novo Procedimento
-                </button>
-                <button class="nav-item" onclick="openCategoriesModal()">
-                    <svg class="icon" viewBox="0 0 24 24"><path d="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/></svg>
-                    Gerenciar Categorias
-                </button>
-                <button class="nav-item" onclick="exportBackup()">
-                    <svg class="icon" viewBox="0 0 24 24"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM17 13l-5 5-5-5h3V9h4v4h3z"/></svg>
-                    Exportar JSON
-                </button>
-                <button class="nav-item" onclick="triggerImport()">
-                    <svg class="icon" viewBox="0 0 24 24"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v-4h-4v4H7l5 5 5-5h-3z"/></svg>
-                    Importar JSON
-                </button>
-                <input type="file" id="import-file-input" style="display: none;" accept=".json" onchange="importBackup(event)">
-                <hr class="nav-divider">
-                <button class="nav-item" id="nav-settings" onclick="switchTab('settings')">
-                    <svg class="icon" viewBox="0 0 24 24"><path d="M19.43 12.98c.04-.32.07-.64.07-.98s-.03-.66-.07-.98l2.11-1.65c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.4-1.08-.73-1.69-.98l-.38-2.65C14.46 2.18 14.25 2 14 2h-4c-.25 0-.46.18-.49.42l-.38 2.65c-.61.25-1.17.59-1.69.98l-2.49-1c-.23-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64l2.11 1.65c-.04.32-.07.65-.07.98s.03.66.07.98l-2.11 1.65c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1c.52.4 1.08.73 1.69.98l.38 2.65c.03.24.24.42.49.42h4c.25 0 .46-.18.49-.42l.38-2.65c.61-.25 1.17-.59 1.69-.98l2.49 1c.23.09.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.65zM12 15.5c-1.93 0-3.5-1.57-3.5-3.5s1.57-3.5 3.5-3.5 3.5 1.57 3.5 3.5-1.57 3.5-3.5 3.5z"/></svg>
+
+                <span class="sidebar-section-label">Sistema</span>
+                <button class="nav-item" id="nav-settings-btn" onclick="switchTab('settings')">
+                    <svg class="icon" viewBox="0 0 24 24">
+                        <path d="M19.43 12.98c.04-.32.07-.64.07-.98s-.03-.66-.07-.98l2.11-1.65c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.4-1.08-.73-1.69-.98l-.38-2.65C14.46 2.18 14.25 2 14 2h-4c-.25 0-.46.18-.49.42l-.38 2.65c-.61.25-1.17.59-1.69.98l-2.49-1c-.23-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64l2.11 1.65c-.04.32-.07.65-.07.98s.03.66.07.98l-2.11 1.65c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1c.52.4 1.08.73 1.69.98l.38 2.65c.03.24.24.42.49.42h4c.25 0 .46-.18.49-.42l.38-2.65c.61-.25 1.17-.59 1.69-.98l2.49 1c.23.09.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.65zM12 15.5c-1.93 0-3.5-1.57-3.5-3.5s1.57-3.5 3.5-3.5 3.5 1.57 3.5 3.5-1.57 3.5-3.5 3.5z" />
+                    </svg>
                     Configurações
                 </button>
 
+                <div id="admin-actions-section" style="margin-top: 0.5rem;">
+                    <span class="sidebar-section-label">Ações Admin</span>
+                    <button class="nav-item" id="btn-new-proc" onclick="openAddModal()">
+                        <svg class="icon" viewBox="0 0 24 24">
+                            <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
+                        </svg>
+                        Novo Procedimento
+                    </button>
+                    <button class="nav-item" id="btn-manage-cats" onclick="openCategoriesModal()">
+                        <svg class="icon" viewBox="0 0 24 24">
+                            <path d="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z" />
+                        </svg>
+                        Gerenciar Categorias
+                    </button>
+                    <button class="nav-item" onclick="exportBackup()">
+                        <svg class="icon" viewBox="0 0 24 24">
+                            <path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM17 13l-5 5-5-5h3V9h4v4h3z" />
+                        </svg>
+                        Exportar JSON
+                    </button>
+                    <button class="nav-item" onclick="triggerImport()">
+                        <svg class="icon" viewBox="0 0 24 24">
+                            <path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v-4h-4v4H7l5 5 5-5h-3z" />
+                        </svg>
+                        Importar JSON
+                    </button>
+                    <input type="file" id="import-file-input" style="display: none;" accept=".json" onchange="importBackup(event)">
+                </div>
+
                 <!-- Admin login/logout at bottom of sidebar -->
-                <div style="margin-top: auto; padding-top: 1rem;">
+                <div style="margin-top: auto; padding-top: 0.75rem;">
                     <hr class="nav-divider">
-                    <!-- Shown to non-admins: subtle login button -->
-                    <button class="nav-item" id="btn-admin-login" onclick="adminLogin()" style="font-size: 0.78rem; color: var(--text-secondary); opacity: 0.6;">
-                        <svg class="icon" viewBox="0 0 24 24" style="width: 1rem; height: 1rem;"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
+                    <button class="nav-item" id="btn-admin-login" onclick="adminLogin()"
+                        style="font-size: 0.78rem; color: var(--text-muted); opacity: 0.7;">
+                        <svg class="icon" viewBox="0 0 24 24" style="width: 1rem; height: 1rem;">
+                            <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z" />
+                        </svg>
                         Acesso Admin
                     </button>
-                    <!-- Shown to admins: logout button -->
-                    <button class="nav-item" id="btn-admin-logout" onclick="adminLogout()" style="font-size: 0.78rem; color: #dc2626; display: none;">
-                        <svg class="icon" viewBox="0 0 24 24" style="width: 1rem; height: 1rem;"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg>
+                    <button class="nav-item" id="btn-admin-logout" onclick="adminLogout()"
+                        style="font-size: 0.78rem; color: var(--danger); display: none;">
+                        <svg class="icon" viewBox="0 0 24 24" style="width: 1rem; height: 1rem;">
+                            <path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z" />
+                        </svg>
                         Sair do Modo Admin
                     </button>
                 </div>
@@ -1222,131 +1397,187 @@
             <div id="content-procedures" style="display: flex; flex-direction: column; gap: 1.5rem; width: 100%;">
                 <!-- Metrics Card -->
                 <div class="card">
-                <div class="card-header-siape">
-                    <svg class="icon" viewBox="0 0 24 24" style="color: var(--accent);">
-                        <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/>
-                    </svg>
-                    Procedimentos SGP / NUAP - Central PRF
-                </div>
-                <div class="metrics-grid">
-                    <div class="metric-column">
-                        <span class="metric-label">TOTAL DE FLUXOS</span>
-                        <div class="metric-value-red">
-                            <svg class="icon" viewBox="0 0 24 24" style="width: 1.2rem; height: 1.2rem;"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
-                            <span id="count-procedures">0</span>
+                    <div class="card-header-siape">
+                        <svg class="icon" viewBox="0 0 24 24" style="color: var(--accent);">
+                            <path
+                                d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z" />
+                        </svg>
+                        Procedimentos SGP / NUAP - Central PRF
+                    </div>
+                    <div class="metrics-grid">
+                        <div class="metric-column">
+                            <span class="metric-label">TOTAL DE FLUXOS</span>
+                            <div class="metric-value-red">
+                                <svg class="icon" viewBox="0 0 24 24" style="width: 1.2rem; height: 1.2rem;">
+                                    <path
+                                        d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z" />
+                                </svg>
+                                <span id="count-procedures">0</span>
+                            </div>
+                        </div>
+                        <div class="metric-column">
+                            <span class="metric-label">CATEGORIAS ATIVAS</span>
+                            <div class="metric-value-text" id="count-categories" style="font-size: 1.8rem;">
+                                0
+                            </div>
                         </div>
                     </div>
-                    <div class="metric-column">
-                        <span class="metric-label">CATEGORIAS ATIVAS</span>
-                        <div class="metric-value-text" id="count-categories" style="font-size: 1.8rem;">
-                            0
+                </div>
+
+                <!-- Search and Filter Panel (styled exactly like Painel de Registros in screenshot) -->
+                <div class="card">
+                    <div class="panel-header-blue">
+                        <svg class="icon" viewBox="0 0 24 24" style="width: 1.1rem; height: 1.1rem;">
+                            <path
+                                d="M4 14h6v-4H4v4zm0 5h6v-4H4v4zM4 9h6V5H4v4zm7 5h10v-4H11v4zm0 5h10v-4H11v4zm0-14v4h10V5H11z" />
+                        </svg>
+                        PAINEL DE REGISTROS / FILTROS E BUSCA
+                    </div>
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="search-input">Pesquisa Geral *</label>
+                            <div class="search-input-wrapper">
+                                <input type="text" id="search-input"
+                                    placeholder="Pesquise por procedimento, rubrica ou comandos associados..."
+                                    oninput="handleSearch()">
+                                <button class="search-clear" id="search-clear" onclick="clearSearch()">&times;</button>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="filter-category-select">Filtrar por Categoria *</label>
+                            <select id="filter-category-select" onchange="filterCategory(this.value)">
+                                <option value="ALL">Todas as Categorias</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row-extra">
+                        <div style="font-size: 0.8rem; color: var(--text-secondary);">
+                            Dica: Digite <code
+                                style="font-family: var(--font-mono); color: var(--accent); font-weight: bold;">/</code>
+                            para focar na pesquisa geral.
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Search and Filter Panel (styled exactly like Painel de Registros in screenshot) -->
-            <div class="card">
-                <div class="panel-header-blue">
-                    <svg class="icon" viewBox="0 0 24 24" style="width: 1.1rem; height: 1.1rem;">
-                        <path d="M4 14h6v-4H4v4zm0 5h6v-4H4v4zM4 9h6V5H4v4zm7 5h10v-4H11v4zm0 5h10v-4H11v4zm0-14v4h10V5H11z"/>
-                    </svg>
-                    PAINEL DE REGISTROS / FILTROS E BUSCA
+                <!-- Procedures Grid -->
+                <div class="procedures-grid" id="procedures-grid">
+                    <!-- Dynamically populated -->
                 </div>
-                
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label for="search-input">Pesquisa Geral *</label>
-                        <div class="search-input-wrapper">
-                            <input type="text" id="search-input" placeholder="Pesquise por procedimento, rubrica ou comandos associados..." oninput="handleSearch()">
-                            <button class="search-clear" id="search-clear" onclick="clearSearch()">&times;</button>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="filter-category-select">Filtrar por Categoria *</label>
-                        <select id="filter-category-select" onchange="filterCategory(this.value)">
-                            <option value="ALL">Todas as Categorias</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="form-row-extra">
-                    <div style="font-size: 0.8rem; color: var(--text-secondary);">
-                        Dica: Digite <code style="font-family: var(--font-mono); color: var(--accent); font-weight: bold;">/</code> para focar na pesquisa geral.
-                    </div>
-                </div>
-            </div>
-
-            <!-- Procedures Grid -->
-            <div class="procedures-grid" id="procedures-grid">
-                <!-- Dynamically populated -->
-            </div>
             </div>
 
             <!-- Content Settings Tab -->
-            <div id="content-settings" style="display: none; flex-direction: column; gap: 1.5rem; width: 100%; max-width: 800px; margin: 0 auto; padding: 1.5rem;">
+            <div id="content-settings"
+                style="display: none; flex-direction: column; gap: 1.5rem; width: 100%; max-width: 800px; margin: 0 auto; padding: 1.5rem;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                    <h2 style="font-size: 1.25rem; font-weight: 800; color: var(--accent); display: flex; align-items: center; gap: 0.5rem;">
+                        ⚙️ Configurações do Sistema
+                    </h2>
+                    <button class="btn btn-accent" onclick="switchTab('procedures')">← Voltar aos Procedimentos</button>
+                </div>
                 <div class="card">
                     <div class="card-header-siape">
-                        <svg class="icon" viewBox="0 0 24 24" style="color: var(--accent); margin-right: 0.25rem;"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96z"/></svg>
+                        <svg class="icon" viewBox="0 0 24 24" style="color: var(--accent); margin-right: 0.25rem;">
+                            <path
+                                d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96z" />
+                        </svg>
                         Sincronização em Nuvem (Cloud Sync)
                     </div>
                     <div style="padding: 1.5rem; display: flex; flex-direction: column; gap: 1.25rem;">
                         <p style="font-size: 0.95rem; color: var(--text-secondary); line-height: 1.5;">
-                            Escolha como deseja sincronizar seus dados. O método via GitHub Gist é imune a bloqueios de rede corporativa.
+                            Escolha como deseja sincronizar seus dados. O método via GitHub Gist é imune a bloqueios de
+                            rede corporativa.
                         </p>
-                        
+
                         <div class="form-group" style="display: flex; flex-direction: column; gap: 0.35rem;">
-                            <label style="font-weight: bold; font-size: 0.9rem; color: var(--text-primary);">Método de Sincronização:</label>
-                            <select id="sync-method-select" onchange="toggleSyncMethod(this.value)" style="padding: 0.6rem; font-size: 0.9rem; border: 1px solid var(--border-color); border-radius: 0.375rem; background: var(--bg-secondary); color: var(--text-primary);">
+                            <label style="font-weight: bold; font-size: 0.9rem; color: var(--text-primary);">Método de
+                                Sincronização:</label>
+                            <select id="sync-method-select" onchange="toggleSyncMethod(this.value)"
+                                style="padding: 0.6rem; font-size: 0.9rem; border: 1px solid var(--border-color); border-radius: 0.375rem; background: var(--bg-secondary); color: var(--text-primary);">
                                 <option value="gist">GitHub Gist (Recomendado para rede da PRF / Seguro)</option>
-                                <option value="jsonblob">Servidor Público / JSONBlob (Sem cadastro - pode ser bloqueado)</option>
+                                <option value="jsonblob">Servidor Público / JSONBlob (Sem cadastro - pode ser bloqueado)
+                                </option>
                             </select>
                         </div>
 
                         <!-- GIST CONFIG AREA -->
-                        <div id="sync-gist-area" style="display: flex; flex-direction: column; gap: 1rem; border: 1px solid var(--border-color); padding: 1rem; border-radius: 0.5rem; background: var(--bg-tertiary);">
+                        <div id="sync-gist-area"
+                            style="display: flex; flex-direction: column; gap: 1rem; border: 1px solid var(--border-color); padding: 1rem; border-radius: 0.5rem; background: var(--bg-tertiary);">
                             <div class="form-group" style="display: flex; flex-direction: column; gap: 0.35rem;">
-                                <label style="font-weight: bold; font-size: 0.85rem; color: var(--text-primary);">1. GitHub Personal Access Token (PAT):</label>
-                                <input type="password" id="github-token-input" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" style="padding: 0.6rem; font-size: 0.9rem; border: 1px solid var(--border-color); border-radius: 0.375rem; background: var(--bg-secondary); color: var(--text-primary);" onchange="saveGithubConfig()">
-                                <span style="font-size: 0.75rem; color: var(--text-secondary);">Gere um token com escopo <strong>gist</strong> em Settings -> Developer Settings -> Personal Access Tokens (Classic) no seu GitHub.</span>
+                                <label style="font-weight: bold; font-size: 0.85rem; color: var(--text-primary);">1.
+                                    GitHub Personal Access Token (PAT):</label>
+                                <input type="password" id="github-token-input" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx"
+                                    style="padding: 0.6rem; font-size: 0.9rem; border: 1px solid var(--border-color); border-radius: 0.375rem; background: var(--bg-secondary); color: var(--text-primary);"
+                                    onchange="saveGithubConfig()">
+                                <span style="font-size: 0.75rem; color: var(--text-secondary);">Gere um token com escopo
+                                    <strong>gist</strong> em Settings -> Developer Settings -> Personal Access Tokens
+                                    (Classic) no seu GitHub.</span>
                             </div>
-                            
+
                             <div class="form-group" style="display: flex; flex-direction: column; gap: 0.35rem;">
-                                <label style="font-weight: bold; font-size: 0.85rem; color: var(--text-primary);">2. ID do Gist (Opcional):</label>
+                                <label style="font-weight: bold; font-size: 0.85rem; color: var(--text-primary);">2. ID
+                                    do Gist (Opcional):</label>
                                 <div style="display: flex; gap: 0.5rem;">
-                                    <input type="text" id="github-gist-id-input" placeholder="Deixe em branco para criar um novo" style="padding: 0.6rem; font-size: 0.9rem; flex: 1; border: 1px solid var(--border-color); border-radius: 0.375rem; background: var(--bg-secondary); color: var(--text-primary);" onchange="saveGithubConfig()">
-                                    <button class="btn" style="padding: 0.6rem 1rem; font-size: 0.9rem; border-color: var(--accent); color: var(--accent);" onclick="setupGithubGist()">Criar/Vincular Gist</button>
+                                    <input type="text" id="github-gist-id-input"
+                                        placeholder="Deixe em branco para criar um novo"
+                                        style="padding: 0.6rem; font-size: 0.9rem; flex: 1; border: 1px solid var(--border-color); border-radius: 0.375rem; background: var(--bg-secondary); color: var(--text-primary);"
+                                        onchange="saveGithubConfig()">
+                                    <button class="btn"
+                                        style="padding: 0.6rem 1rem; font-size: 0.9rem; border-color: var(--accent); color: var(--accent);"
+                                        onclick="setupGithubGist()">Criar/Vincular Gist</button>
                                 </div>
-                                <span style="font-size: 0.75rem; color: var(--text-secondary);">Para carregar seus dados existentes em outro computador, cole o ID do Gist correspondente no campo acima.</span>
+                                <span style="font-size: 0.75rem; color: var(--text-secondary);">Para carregar seus dados
+                                    existentes em outro computador, cole o ID do Gist correspondente no campo
+                                    acima.</span>
                             </div>
                         </div>
 
                         <!-- JSONBLOB CONFIG AREA -->
-                        <div id="sync-jsonblob-area" style="display: none; flex-direction: column; gap: 1rem; border: 1px solid var(--border-color); padding: 1rem; border-radius: 0.5rem; background: var(--bg-tertiary);">
+                        <div id="sync-jsonblob-area"
+                            style="display: none; flex-direction: column; gap: 1rem; border: 1px solid var(--border-color); padding: 1rem; border-radius: 0.5rem; background: var(--bg-tertiary);">
                             <div class="form-group" style="display: flex; flex-direction: column; gap: 0.35rem;">
-                                <label style="font-weight: bold; font-size: 0.85rem; color: var(--text-primary);">Chave de Sincronização:</label>
+                                <label style="font-weight: bold; font-size: 0.85rem; color: var(--text-primary);">Chave
+                                    de Sincronização:</label>
                                 <div style="display: flex; gap: 0.5rem;">
-                                    <input type="text" id="sync-key-input" placeholder="Cole sua chave aqui ou clique em 'Gerar Nova Chave'" style="padding: 0.6rem; font-size: 0.9rem; flex: 1; border: 1px solid var(--border-color); border-radius: 0.375rem; background: var(--bg-secondary); color: var(--text-primary);" onchange="updateSyncKey(this.value)">
-                                    <button class="btn" style="padding: 0.6rem 1rem; font-size: 0.9rem; border-color: var(--accent); color: var(--accent);" onclick="generateNewSyncKey()">Gerar Nova Chave</button>
+                                    <input type="text" id="sync-key-input"
+                                        placeholder="Cole sua chave aqui ou clique em 'Gerar Nova Chave'"
+                                        style="padding: 0.6rem; font-size: 0.9rem; flex: 1; border: 1px solid var(--border-color); border-radius: 0.375rem; background: var(--bg-secondary); color: var(--text-primary);"
+                                        onchange="updateSyncKey(this.value)">
+                                    <button class="btn"
+                                        style="padding: 0.6rem 1rem; font-size: 0.9rem; border-color: var(--accent); color: var(--accent);"
+                                        onclick="generateNewSyncKey()">Gerar Nova Chave</button>
                                 </div>
                             </div>
                         </div>
 
-                        <div style="display: flex; align-items: center; justify-content: space-between; padding: 1rem; background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: 0.5rem; margin-top: 0.5rem;">
+                        <div
+                            style="display: flex; align-items: center; justify-content: space-between; padding: 1rem; background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: 0.5rem; margin-top: 0.5rem;">
                             <div style="display: flex; flex-direction: column; gap: 0.25rem;">
-                                <span style="font-weight: bold; font-size: 0.9rem; color: var(--text-primary);">Sincronização Automática</span>
-                                <span style="font-size: 0.8rem; color: var(--text-secondary);">Salvar todas as alterações na nuvem automaticamente ao realizar mudanças.</span>
+                                <span
+                                    style="font-weight: bold; font-size: 0.9rem; color: var(--text-primary);">Sincronização
+                                    Automática</span>
+                                <span style="font-size: 0.8rem; color: var(--text-secondary);">Salvar todas as
+                                    alterações na nuvem automaticamente ao realizar mudanças.</span>
                             </div>
-                            <label class="switch" style="position: relative; display: inline-block; width: 46px; height: 24px; flex-shrink: 0;">
-                                <input type="checkbox" id="auto-sync-checkbox" onchange="toggleAutoSync(this.checked)" style="opacity: 0; width: 0; height: 0;">
-                                <span class="slider" style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #cbd5e1; transition: .4s; border-radius: 24px;"></span>
+                            <label class="switch"
+                                style="position: relative; display: inline-block; width: 46px; height: 24px; flex-shrink: 0;">
+                                <input type="checkbox" id="auto-sync-checkbox" onchange="toggleAutoSync(this.checked)"
+                                    style="opacity: 0; width: 0; height: 0;">
+                                <span class="slider"
+                                    style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #cbd5e1; transition: .4s; border-radius: 24px;"></span>
                             </label>
                         </div>
 
-                        <div style="display: flex; gap: 1rem; align-items: center; margin-top: 0.5rem; border-top: 1px solid var(--border-color); padding-top: 1.25rem;">
-                            <button class="btn btn-accent" style="padding: 0.6rem 1.25rem; font-size: 0.9rem; color: #ffffff;" id="btn-sync-now" onclick="syncNow()">Sincronizar Agora</button>
-                            <div id="sync-status" style="font-size: 0.9rem; color: var(--text-secondary); font-style: italic;">Nuvem inativa</div>
+                        <div
+                            style="display: flex; gap: 1rem; align-items: center; margin-top: 0.5rem; border-top: 1px solid var(--border-color); padding-top: 1.25rem;">
+                            <button class="btn btn-accent"
+                                style="padding: 0.6rem 1.25rem; font-size: 0.9rem; color: #ffffff;" id="btn-sync-now"
+                                onclick="syncNow()">Sincronizar Agora</button>
+                            <div id="sync-status"
+                                style="font-size: 0.9rem; color: var(--text-secondary); font-style: italic;">Nuvem
+                                inativa</div>
                         </div>
                     </div>
                 </div>
@@ -1355,32 +1586,67 @@
     </div>
 
     <!-- Admin Login Modal -->
-    <div class="login-overlay" id="login-modal">
-        <div class="login-box">
-            <h2>🔐 Acesso Administrador</h2>
-            <p class="login-sub">SGP / NUAP — Painel de Procedimentos</p>
-            <input type="email" id="login-email" placeholder="E-mail" autocomplete="username"
-                onkeydown="if(event.key==='Enter') document.getElementById('login-password').focus()">
-            <input type="password" id="login-password" placeholder="Senha" autocomplete="current-password"
-                onkeydown="if(event.key==='Enter') submitAdminLogin()">
-            <p class="login-error" id="login-error">❌ E-mail ou senha incorretos.</p>
-            <button class="btn btn-accent" onclick="submitAdminLogin()" style="width: 100%; padding: 0.7rem; font-size: 0.95rem;">
-                Entrar como Admin
-            </button>
-            <button class="btn" onclick="closeLoginModal()" style="width: 100%; font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.5rem;">
-                Cancelar
-            </button>
-            <div style="text-align: center; font-size: 0.65rem; color: var(--text-secondary); opacity: 0.5; border-top: 1px dashed var(--border-color); padding-top: 0.5rem; margin-top: 0.25rem;">
-                Build: 2026.07.10.4 (Pure JS Crypto)
+    <div class="panel-overlay" id="login-modal" onclick="if(event.target.id==='login-modal') closeLoginModal()" style="z-index: 10010;">
+        <div class="panel-content" style="max-width: 440px; align-self: center; border-radius: 0.875rem; padding: 1.75rem; background: var(--bg-secondary); box-shadow: 0 20px 40px rgba(0,0,0,0.3);" onclick="event.stopPropagation()">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.75rem;">
+                <h2 style="font-size: 1.2rem; font-weight: 800; color: var(--accent); display: flex; align-items: center; gap: 0.5rem; margin: 0;">
+                    🔐 Acesso Administrador
+                </h2>
+                <button class="close-btn" onclick="closeLoginModal()">&times;</button>
+            </div>
+            <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1.25rem;">
+                SGP / NUAP — Painel de Procedimentos
+            </p>
+            <div class="form-group" style="margin-bottom: 1rem;">
+                <label for="login-email" style="font-weight: 700; font-size: 0.85rem;">E-mail do Administrador</label>
+                <input type="email" id="login-email" class="form-control" placeholder="E-mail" autocomplete="username"
+                    onkeydown="if(event.key==='Enter') document.getElementById('login-password').focus()">
+            </div>
+            <div class="form-group" style="margin-bottom: 1.25rem;">
+                <label for="login-password" style="font-weight: 700; font-size: 0.85rem;">Senha</label>
+                <input type="password" id="login-password" class="form-control" placeholder="Senha" autocomplete="current-password"
+                    onkeydown="if(event.key==='Enter') submitAdminLogin()">
+            </div>
+            <p class="login-error" id="login-error" style="display: none; color: #dc2626; background: #fef2f2; border: 1px solid #fca5a5; padding: 0.65rem 0.875rem; border-radius: 0.5rem; font-size: 0.82rem; margin-bottom: 1rem; font-weight: 600;">
+                ❌ E-mail ou senha incorretos.
+            </p>
+            <div style="display: flex; gap: 0.75rem;">
+                <button class="btn btn-accent" onclick="submitAdminLogin()" style="flex: 1; padding: 0.7rem; font-size: 0.95rem; font-weight: 700;">
+                    Entrar como Admin
+                </button>
+                <button class="btn" onclick="closeLoginModal()" style="padding: 0.7rem 1.25rem; font-size: 0.9rem;">
+                    Cancelar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- App Runner Modal -->
+    <div class="panel-overlay" id="app-runner-modal" onclick="closeAppModal()" style="z-index: 10005;">
+        <div class="panel-content" style="max-width: 1100px; width: 95%; height: 90vh; border-radius: 0.75rem; overflow: hidden;" onclick="event.stopPropagation()">
+            <div class="panel-header" style="background: linear-gradient(135deg, #0b1340 0%, #0e1a50 100%); color: #fff;">
+                <h2 id="app-runner-title" style="color: #fbbf24; font-size: 1.1rem; display: flex; align-items: center; gap: 0.5rem;">
+                    🚀 Aplicativo de Suporte
+                </h2>
+                <button class="close-btn" onclick="closeAppModal()" style="color: #fff;">&times;</button>
+            </div>
+            <div style="width: 100%; height: calc(100% - 55px); background: #f8fafc;">
+                <iframe id="app-runner-iframe" src="" style="width: 100%; height: 100%; border: none;"></iframe>
             </div>
         </div>
     </div>
 
     <!-- Image Lightbox Modal -->
-    <div class="panel-overlay" id="lightbox-modal" onclick="closeLightbox()" style="background-color: rgba(0,0,0,0.92); z-index: 10000; cursor: zoom-out;">
-        <span style="position: absolute; top: 1.5rem; right: 2rem; color: #fff; font-size: 2.5rem; font-weight: bold; cursor: pointer;" onclick="closeLightbox()">&times;</span>
-        <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; padding: 2rem;">
-            <img id="lightbox-img" src="" style="max-width: 95%; max-height: 95%; border-radius: 6px; box-shadow: 0 10px 35px rgba(0,0,0,0.8); cursor: default;" onclick="event.stopPropagation()" />
+    <div class="panel-overlay" id="lightbox-modal" onclick="closeLightbox()"
+        style="background-color: rgba(0,0,0,0.92); z-index: 10000; cursor: zoom-out;">
+        <span
+            style="position: absolute; top: 1.5rem; right: 2rem; color: #fff; font-size: 2.5rem; font-weight: bold; cursor: pointer;"
+            onclick="closeLightbox()">&times;</span>
+        <div
+            style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; padding: 2rem;">
+            <img id="lightbox-img" src=""
+                style="max-width: 95%; max-height: 95%; border-radius: 6px; box-shadow: 0 10px 35px rgba(0,0,0,0.8); cursor: default;"
+                onclick="event.stopPropagation()" />
         </div>
     </div>
 
@@ -1390,10 +1656,12 @@
             <div class="panel-header">
                 <h2 id="panel-title">Título do Procedimento</h2>
                 <div style="display: flex; gap: 0.5rem; align-items: center;">
-                    <button class="btn" id="edit-proc-btn" onclick="editCurrentProcedure()" style="padding: 0.35rem 0.75rem; font-size: 0.85rem; border-color: var(--accent); color: var(--accent);">
+                    <button class="btn" id="edit-proc-btn" onclick="editCurrentProcedure()"
+                        style="padding: 0.35rem 0.75rem; font-size: 0.85rem; border-color: var(--accent); color: var(--accent);">
                         ✏️ Editar
                     </button>
-                    <button class="btn" id="delete-proc-btn" onclick="deleteProcedure(activeProcedureId)" style="padding: 0.35rem 0.75rem; font-size: 0.85rem; border-color: #dc2626; color: #dc2626;">
+                    <button class="btn" id="delete-proc-btn" onclick="deleteProcedure(activeProcedureId)"
+                        style="padding: 0.35rem 0.75rem; font-size: 0.85rem; border-color: #dc2626; color: #dc2626;">
                         🗑️ Excluir
                     </button>
                     <button class="close-btn" onclick="togglePanel(false)">&times;</button>
@@ -1407,7 +1675,9 @@
 
     <!-- Add Procedure Modal (clicking outside does NOT close - use X or Cancelar) -->
     <div class="panel-overlay" id="add-modal">
-        <div class="panel-content" style="max-height: 90vh; height: auto; align-self: center; border-radius: 0.5rem; max-width: 600px;" onclick="event.stopPropagation()">
+        <div class="panel-content"
+            style="max-height: 90vh; height: auto; align-self: center; border-radius: 0.5rem; max-width: 600px;"
+            onclick="event.stopPropagation()">
             <div class="panel-header">
                 <h2 id="modal-title">Adicionar Novo Procedimento</h2>
                 <button class="close-btn" onclick="closeAddModal()">&times;</button>
@@ -1427,23 +1697,28 @@
                 </div>
                 <div class="form-group">
                     <label for="proc-subtitle">Subtítulo (ex: Cadastro de Dependente e Inclusão)</label>
-                    <input type="text" id="proc-subtitle" class="form-control" placeholder="ex: Cadastro de Dependente e Inclusão">
+                    <input type="text" id="proc-subtitle" class="form-control"
+                        placeholder="ex: Cadastro de Dependente e Inclusão">
                 </div>
                 <div class="form-group">
                     <label for="proc-desc">Descrição Curta</label>
-                    <textarea id="proc-desc" class="form-control" rows="2" placeholder="Breve resumo sobre o procedimento..."></textarea>
+                    <textarea id="proc-desc" class="form-control" rows="2"
+                        placeholder="Breve resumo sobre o procedimento..."></textarea>
                 </div>
                 <div class="form-group">
                     <label for="proc-alert">Aviso de Atenção (Alerta Vermelho - Opcional)</label>
-                    <textarea id="proc-alert" class="form-control" rows="2" placeholder="Atenção: Aposentado não faz jus..."></textarea>
+                    <textarea id="proc-alert" class="form-control" rows="2"
+                        placeholder="Atenção: Aposentado não faz jus..."></textarea>
                 </div>
                 <div class="form-group">
                     <label for="proc-extrainfo">Informações Adicionais (Banner Âmbar - Opcional)</label>
-                    <textarea id="proc-extrainfo" class="form-control" rows="2" placeholder="Valor pago em 2024: R$ 500,00..."></textarea>
+                    <textarea id="proc-extrainfo" class="form-control" rows="2"
+                        placeholder="Valor pago em 2024: R$ 500,00..."></textarea>
                 </div>
-                
+
                 <div style="margin-top: 1.5rem; margin-bottom: 0.5rem;">
-                    <label style="font-weight: 700; color: var(--accent); font-size: 0.95rem;">Etapas (Passo a Passo)</label>
+                    <label style="font-weight: 700; color: var(--accent); font-size: 0.95rem;">Etapas (Passo a
+                        Passo)</label>
                 </div>
                 <div id="steps-inputs-container">
                     <!-- Dynamic step rows -->
@@ -1452,10 +1727,12 @@
 
                 <div class="form-group" style="margin-top: 1.5rem;">
                     <label for="proc-notes">Informações Complementares e Rubricas (Opcional - uma por linha)</label>
-                    <textarea id="proc-notes" class="form-control" rows="4" placeholder="Uma nota por linha. Dica: use tags <code>RUBRICA</code> para formatar. Ex: Rubrica principal: <code>00136</code>"></textarea>
+                    <textarea id="proc-notes" class="form-control" rows="4"
+                        placeholder="Uma nota por linha. Dica: use tags <code>RUBRICA</code> para formatar. Ex: Rubrica principal: <code>00136</code>"></textarea>
                 </div>
             </div>
-            <div class="panel-footer" style="padding: 1rem 1.5rem; display: flex; justify-content: flex-end; gap: 0.75rem; background-color: var(--bg-primary);">
+            <div class="panel-footer"
+                style="padding: 1rem 1.5rem; display: flex; justify-content: flex-end; gap: 0.75rem; background-color: var(--bg-primary);">
                 <button class="btn" onclick="closeAddModal()">Cancelar</button>
                 <button class="btn btn-accent" onclick="saveNewProcedure()">Salvar Procedimento</button>
             </div>
@@ -1464,28 +1741,36 @@
 
     <!-- Manage Categories Modal -->
     <div class="panel-overlay" id="categories-modal">
-        <div class="panel-content" style="max-height: 80vh; height: auto; align-self: center; border-radius: 0.5rem; max-width: 500px;" onclick="event.stopPropagation()">
+        <div class="panel-content"
+            style="max-height: 80vh; height: auto; align-self: center; border-radius: 0.5rem; max-width: 500px;"
+            onclick="event.stopPropagation()">
             <div class="panel-header">
                 <h2>Gerenciar Categorias</h2>
                 <button class="close-btn" onclick="closeCategoriesModal()">&times;</button>
             </div>
-            <div class="panel-body" style="padding: 1.5rem; overflow-y: auto; display: flex; flex-direction: column; gap: 1rem;">
+            <div class="panel-body"
+                style="padding: 1.5rem; overflow-y: auto; display: flex; flex-direction: column; gap: 1rem;">
                 <p style="font-size: 0.85rem; color: var(--text-secondary);">
-                    Renomeie as categorias existentes ou clique em Excluir (lixeira). Procedimentos na categoria excluída serão movidos para "Sem Categoria".
+                    Renomeie as categorias existentes ou clique em Excluir (lixeira). Procedimentos na categoria
+                    excluída serão movidos para "Sem Categoria".
                 </p>
                 <div id="categories-list-container" style="display: flex; flex-direction: column; gap: 0.75rem;">
                     <!-- Categories list with rename inputs and delete buttons -->
                 </div>
-                
+
                 <div style="border-top: 1px solid var(--border-color); padding-top: 1rem; margin-top: 0.5rem;">
-                    <label style="font-size: 0.85rem; font-weight: 700; color: var(--text-secondary); display: block; margin-bottom: 0.35rem;">Nova Categoria</label>
+                    <label
+                        style="font-size: 0.85rem; font-weight: 700; color: var(--text-secondary); display: block; margin-bottom: 0.35rem;">Nova
+                        Categoria</label>
                     <div style="display: flex; gap: 0.5rem;">
-                        <input type="text" id="new-category-name" class="form-control" placeholder="Nome da categoria...">
+                        <input type="text" id="new-category-name" class="form-control"
+                            placeholder="Nome da categoria...">
                         <button class="btn btn-accent" onclick="addCategory()">+ Adicionar</button>
                     </div>
                 </div>
             </div>
-            <div class="panel-footer" style="padding: 1rem 1.5rem; display: flex; justify-content: flex-end; gap: 0.75rem; background-color: var(--bg-primary);">
+            <div class="panel-footer"
+                style="padding: 1rem 1.5rem; display: flex; justify-content: flex-end; gap: 0.75rem; background-color: var(--bg-primary);">
                 <button class="btn" onclick="closeCategoriesModal()">Cancelar</button>
                 <button class="btn btn-accent" onclick="saveCategories()">Salvar Alterações</button>
             </div>
@@ -1515,21 +1800,23 @@
                     },
                     {
                         title: "Conferir e Abater Férias",
-                        desc: "Conferir o valor recebido a título de auxílio-transporte e lançá-lo na coluna de valores recebidos. Se houve férias, o sistema já abate automaticamente, então desconte apenas a diferença para evitar bitributação/desconto duplo."
+                        desc: "Conferir o valor recebido a título de auxílio-transporte e lançá-lo na coluna de valores recebidos. Se houve férias, o sistema já abate automaticamente, então desconte apenas a diferença para evitar bitributação/desconto duplo.",
+                        appLink: "contador"
                     },
                     {
                         title: "Dias de Presença",
-                        desc: "Lançar a quantidade de dias trabalhados na coluna de dias trabalhados (presença)."
+                        desc: "Lançar a quantidade de dias trabalhados na coluna de dias trabalhados (presença).",
+                        appLink: "contador"
                     },
                     {
                         title: "Movimentação Financeira no SIAPE",
-                        desc: "Lançar o valor resultante na coluna <strong>desconto</strong> no SIAPE usando a transação <code class=\"code-copy\" onclick=\"copyText('>FPATMOVFIN')\" title=\"Clique para copiar\">>FPATMOVFIN</code> (Assunto de cálculo: 44)."
+                        desc: "Lançar o valor resultante na coluna <strong>desconto</strong> no SIAPE usando a transação <code class=\"code-copy\" onclick=\"copyText('FPATMOVFIN')\" title=\"Clique para copiar\">FPATMOVFIN</code> (Assunto de cálculo: 44)."
                     }
                 ],
                 notes: [
                     "Ajuste do mês anterior: O auxílio é antecipado. Exemplo: Pedido de aumento em 20 de Março. Pagar na folha de Abril a diferença de Fevereiro (para uso em Março) e a diferença de Março (para uso em Abril) na sequência 6.",
                     "No SIGEPE: Exclua o benefício no Sigepe Benefícios com a data mais antiga que conseguir, evitando novos acertos automáticos.",
-                    "Atualização SIAPE (tela preta): Utilizar <code class=\"code-copy\" onclick=\"copyText('>FPATMOVFIN')\">>FPATMOVFIN</code> com Assunto de Cálculo 44 para lançamento sem prazo.",
+                    "Atualização SIAPE (tela preta): Utilizar <code class=\"code-copy\" onclick=\"copyText('FPATMOVFIN')\">FPATMOVFIN</code> com Assunto de Cálculo 44 para lançamento sem prazo.",
                     "Rubricas Normais (Lançamento automático): <code class=\"code-copy\" onclick=\"copyText('00951')\">00951</code>, <code class=\"code-copy\" onclick=\"copyText('00370')\">00370</code>, <code class=\"code-copy\" onclick=\"copyText('82850')\">82850</code>.",
                     "Rubricas de Acerto (Situações excepcionais): <code class=\"code-copy\" onclick=\"copyText('83297')\">83297</code> (Acerto AT), <code class=\"code-copy\" onclick=\"copyText('83296')\">83296</code> (Acerto CLT), <code class=\"code-copy\" onclick=\"copyText('83295')\">83295</code> (Acerto CDT)."
                 ]
@@ -1544,7 +1831,7 @@
                 steps: [
                     {
                         title: "Cadastro de Alimentação Individual",
-                        desc: "Acessar a transação <code class=\"code-copy\" onclick=\"copyText('>CDATALIIND')\" title=\"Clique para copiar\">>CDATALIIND</code> (usada tanto para inclusão quanto exclusão)."
+                        desc: "Acessar a transação <code class=\"code-copy\" onclick=\"copyText('CDATALIIND')\" title=\"Clique para copiar\">CDATALIIND</code> (usada tanto para inclusão quanto exclusão)."
                     },
                     {
                         title: "Preencher Parâmetros",
@@ -1552,7 +1839,8 @@
                     },
                     {
                         title: "Primeiro Mês (Lançamento Manual)",
-                        desc: "No primeiro mês, lançar manualmente no <code class=\"code-copy\" onclick=\"copyText('>FPATMOVFIN')\">>FPATMOVFIN</code> os seguintes lançamentos com prazo <code>001</code>:<br>• <strong>Sequência 1:</strong> Proporcional (mês atual)<br>• <strong>Sequência 2:</strong> Integral (mês seguinte adiantado) - valor de R$ 1.000,00."
+                        desc: "No primeiro mês, lançar manualmente no <code class=\"code-copy\" onclick=\"copyText('FPATMOVFIN')\">FPATMOVFIN</code> os seguintes lançamentos com prazo <code>001</code>:<br>• <strong>Sequência 1:</strong> Proporcional (mês atual)<br>• <strong>Sequência 2:</strong> Integral (mês seguinte adiantado) - valor de R$ 1.000,00.",
+                        appLink: "calculadora"
                     }
                 ],
                 notes: [
@@ -1570,15 +1858,15 @@
                 steps: [
                     {
                         title: "Cadastramento de Dependente",
-                        desc: "Caso o pedido ocorra na folha de pagamento do mesmo mês do nascimento do dependente, cadastrá-lo na transação <code class=\"code-copy\" onclick=\"copyText('>CDIADEPEND')\" title=\"Clique para copiar\">>CDIADEPEND</code>. O sistema realiza o pagamento automático."
+                        desc: "Caso o pedido ocorra na folha de pagamento do mesmo mês do nascimento do dependente, cadastrá-lo na transação <code class=\"code-copy\" onclick=\"copyText('CDIADEPEND')\" title=\"Clique para copiar\">CDIADEPEND</code>. O sistema realiza o pagamento automático."
                     },
                     {
                         title: "Verificar Vinculação",
-                        desc: "Verifique se o filho já foi devidamente incluído em <code class=\"code-copy\" onclick=\"copyText('>CDCODEPEND')\">>CDCODEPEND</code> com a opção <code>01 - AUXILIO-PRE ESCOLA - INDIRET</code>."
+                        desc: "Verifique se o filho já foi devidamente incluído em <code class=\"code-copy\" onclick=\"copyText('CDCODEPEND')\">CDCODEPEND</code> com a opção <code>01 - AUXILIO-PRE ESCOLA - INDIRET</code>."
                     },
                     {
                         title: "Atualizar Número de Dependentes",
-                        desc: "Acessar a transação <code class=\"code-copy\" onclick=\"copyText('>CAIASERVID')\" title=\"Clique para copiar\">>CAIASERVID</code> e atualizar o número total de dependentes funcionais."
+                        desc: "Acessar a transação <code class=\"code-copy\" onclick=\"copyText('CAIASERVID')\" title=\"Clique para copiar\">CAIASERVID</code> e atualizar o número total de dependentes funcionais."
                     }
                 ],
                 notes: []
@@ -1593,11 +1881,11 @@
                 steps: [
                     {
                         title: "Cadastro Inicial do Dependente",
-                        desc: "Cadastrar o dependente primeiro na transação <code class=\"code-copy\" onclick=\"copyText('>CDIADEPEND')\" title=\"Clique para copiar\">>CDIADEPEND</code>. Em caso de parto múltiplo (gêmeos), certifique-se de cadastrar todos os dependentes antes de prosseguir com o pagamento."
+                        desc: "Cadastrar o dependente primeiro na transação <code class=\"code-copy\" onclick=\"copyText('CDIADEPEND')\" title=\"Clique para copiar\">CDIADEPEND</code>. Em caso de parto múltiplo (gêmeos), certifique-se de cadastrar todos os dependentes antes de prosseguir com o pagamento."
                     },
                     {
                         title: "Lançamento do Auxílio",
-                        desc: "Acessar a transação <code class=\"code-copy\" onclick=\"copyText('>CDINAUXNAT')\" title=\"Clique para copiar\">>CDINAUXNAT</code>."
+                        desc: "Acessar a transação <code class=\"code-copy\" onclick=\"copyText('CDINAUXNAT')\" title=\"Clique para copiar\">CDINAUXNAT</code>."
                     },
                     {
                         title: "Inserir Dados",
@@ -1605,7 +1893,7 @@
                     },
                     {
                         title: "Outros Dependentes (Gêmeos)",
-                        desc: "Para registrar o auxílio para os demais filhos em partos múltiplos, retornar à transação <code class=\"code-copy\" onclick=\"copyText('>CDINAUXNAT')\">>CDINAUXNAT</code> e repetir o processo selecionando o outro dependente."
+                        desc: "Para registrar o auxílio para os demais filhos em partos múltiplos, retornar à transação <code class=\"code-copy\" onclick=\"copyText('CDINAUXNAT')\">CDINAUXNAT</code> e repetir o processo selecionando o outro dependente."
                     }
                 ],
                 notes: [
@@ -1623,17 +1911,18 @@
                 steps: [
                     {
                         title: "Instaurar Processo",
-                        desc: "Cadastrar a função <code class=\"code-copy\" onclick=\"copyText('>GRIAPROADM')\" title=\"Clique para copiar\">>GRIAPROADM</code>. Esta função inclui o processo administrativo e gera dois dígitos identificadores finais."
+                        desc: "Cadastrar a função <code class=\"code-copy\" onclick=\"copyText('GRIAPROADM')\" title=\"Clique para copiar\">GRIAPROADM</code>. Esta função inclui o processo administrativo e gera dois dígitos identificadores finais."
                     },
                     {
                         title: "Cadastrar Beneficiário",
-                        desc: "Acessar a função <code class=\"code-copy\" onclick=\"copyText('>GRINBENEF')\" title=\"Clique para copiar\">>GRINBENEF</code> para incluir o servidor beneficiado e os respectivos valores financeiros. Se necessário, esta função também é usada para retificar valores incorretos."
+                        desc: "Acessar a função <code class=\"code-copy\" onclick=\"copyText('GRINBENEF')\" title=\"Clique para copiar\">GRINBENEF</code> para incluir o servidor beneficiado e os respectivos valores financeiros. Se necessário, esta função também é usada para retificar valores incorretos.",
+                        appLink: "calculadora"
                     }
                 ],
                 notes: [
                     "Para ressarcimento per capita de plano de saúde nos exercícios anteriores, utilize o objeto de pagamento <code class=\"code-copy\" onclick=\"copyText('242')\">242</code>.",
-                    "Para consultar os objetos de pagamento disponíveis, utilize a transação <code class=\"code-copy\" onclick=\"copyText('>TBCOOBJPAG')\">>TBCOOBJPAG</code>.",
-                    "Para tabelas salariais retroativas, consulte <code class=\"code-copy\" onclick=\"copyText('>TBCONIVCEM')\">>TBCONIVCEM</code>."
+                    "Para consultar os objetos de pagamento disponíveis, utilize a transação <code class=\"code-copy\" onclick=\"copyText('TBCOOBJPAG')\">TBCOOBJPAG</code>.",
+                    "Para tabelas salariais retroativas, consulte <code class=\"code-copy\" onclick=\"copyText('TBCONIVCEM')\">TBCONIVCEM</code>."
                 ]
             },
             {
@@ -1658,7 +1947,7 @@
                     },
                     {
                         title: "Cadastrar Ocorrência no SIAPE",
-                        desc: "Acessar a transação <code class=\"code-copy\" onclick=\"copyText('>FPMOVSUPLIN')\" title=\"Clique para copiar\">>FPMOVSUPLIN</code> (para servidores com ocorrência de exclusão) e efetuar os cálculos via <code class=\"code-copy\" onclick=\"copyText('>FPCLSUPLIN')\" title=\"Clique para copiar\">>FPCLSUPLIN</code>."
+                        desc: "Acessar a transação <code class=\"code-copy\" onclick=\"copyText('FPMOVSUPLIN')\" title=\"Clique para copiar\">FPMOVSUPLIN</code> (para servidores com ocorrência de exclusão) e efetuar os cálculos via <code class=\"code-copy\" onclick=\"copyText('FPCLSUPLIN')\" title=\"Clique para copiar\">FPCLSUPLIN</code>."
                     }
                 ],
                 notes: []
@@ -1670,7 +1959,7 @@
         if (savedProcs) {
             try {
                 PROCEDURES = JSON.parse(savedProcs);
-            } catch(e) {
+            } catch (e) {
                 console.error("Erro ao carregar procedimentos de localStorage:", e);
                 PROCEDURES = [...DEFAULT_PROCEDURES];
             }
@@ -1683,7 +1972,7 @@
         if (savedCats) {
             try {
                 CATEGORIES = JSON.parse(savedCats);
-            } catch(e) {
+            } catch (e) {
                 console.error("Erro ao carregar categorias:", e);
                 CATEGORIES = ["Auxílios", "Financeiro", "Cadastro / Aposentadoria"];
             }
@@ -1701,14 +1990,14 @@
         // ADMIN CREDENTIALS (password stored as SHA-256 hash)
         // =========================================================
         const ADMIN_EMAIL = "nathanaeladmin@gmail.com";
-        const ADMIN_HASH  = "96bf726319dcc6eaf1b3112c75bcee7cd07cc2ce1cda332cddcf8ae5209842e0";
+        const ADMIN_HASH = "96bf726319dcc6eaf1b3112c75bcee7cd07cc2ce1cda332cddcf8ae5209842e0";
 
         const SITE_GIST_ID = localStorage.getItem("github_gist_id_procedures") || "5bd8f241cdc0e04c683bc580bd379c45";
 
         // Force light theme to match the required PRF intranet look
         document.documentElement.setAttribute("data-theme", "light");
-        
-        window.onload = async function() {
+
+        window.onload = async function () {
             updateThemeLabel();
             updateStats();
 
@@ -1720,8 +2009,6 @@
             const addCatNavItem = document.querySelector('[onclick*="openCategoriesModal"]');
 
             if (!isAdmin) {
-                // Hide settings nav
-                if (settingsNavItem) settingsNavItem.style.display = "none";
                 // Hide add/manage nav items
                 if (addProcNavItem) addProcNavItem.style.display = "none";
                 if (addCatNavItem) addCatNavItem.style.display = "none";
@@ -1743,6 +2030,12 @@
                 document.getElementById("header-admin-logout").style.display = "block";
             }
 
+            // Check query parameters or hash to open settings tab directly
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('tab') === 'settings' || window.location.hash === '#settings') {
+                switchTab('settings');
+            }
+
             // Initialize sync UI (only relevant for admin)
             if (isAdmin) {
                 const syncMethod = localStorage.getItem("sync_method") || "gist";
@@ -1760,7 +2053,7 @@
 
                 const autoSync = localStorage.getItem("cloud_auto_sync") === "true";
                 document.getElementById("auto-sync-checkbox").checked = autoSync;
-                
+
                 updateSyncStatusLabel();
             }
 
@@ -1809,7 +2102,7 @@
                             }
                         }
                     }
-                } catch(e) {
+                } catch (e) {
                     console.warn("Não foi possível carregar da nuvem, usando dados locais.", e);
                 }
             }
@@ -1832,7 +2125,7 @@
         function updateStats() {
             const procCount = document.getElementById("count-procedures");
             if (procCount) procCount.textContent = PROCEDURES.length;
-            
+
             const catCount = document.getElementById("count-categories");
             if (catCount) catCount.textContent = CATEGORIES.length;
         }
@@ -1894,6 +2187,48 @@
             updateStats();
         }
 
+        // Toggle mobile sidebar menu
+        function toggleMobileSidebar(show) {
+            const sidebar = document.querySelector(".sidebar");
+            const overlay = document.getElementById("sidebar-overlay");
+            if (sidebar) {
+                if (show) sidebar.classList.add("open");
+                else sidebar.classList.remove("open");
+            }
+            if (overlay) {
+                if (show) overlay.classList.add("active");
+                else overlay.classList.remove("active");
+            }
+        }
+
+        // Tab switching (Procedures vs Settings)
+        function switchTab(tabName) {
+            const procContent = document.getElementById("content-procedures");
+            const settingsContent = document.getElementById("content-settings");
+            const navProcedures = document.getElementById("nav-procedures-home");
+            const navSettings = document.getElementById("nav-settings-btn");
+
+            if (tabName === 'settings') {
+                if (procContent) procContent.style.display = "none";
+                if (settingsContent) settingsContent.style.display = "flex";
+                if (navProcedures) navProcedures.classList.remove("active");
+                if (navSettings) navSettings.classList.add("active");
+                if (window.history && window.history.replaceState) {
+                    window.history.replaceState(null, null, '#settings');
+                }
+            } else {
+                if (settingsContent) settingsContent.style.display = "none";
+                if (procContent) procContent.style.display = "flex";
+                if (navSettings) navSettings.classList.remove("active");
+                if (navProcedures) navProcedures.classList.add("active");
+                if (window.history && window.history.replaceState) {
+                    window.history.replaceState(null, null, '#procedures');
+                }
+            }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            toggleMobileSidebar(false);
+        }
+
         // Filter by category dropdown
         function filterCategory(category) {
             selectedCategory = category;
@@ -1909,7 +2244,7 @@
 
             const filtered = PROCEDURES.filter(proc => {
                 const matchesCategory = selectedCategory === 'ALL' || proc.category === selectedCategory;
-                
+
                 if (!matchesCategory) return false;
 
                 if (query) {
@@ -1955,7 +2290,7 @@
             if (!proc) return;
 
             document.getElementById("panel-title").innerHTML = `${proc.title} <span style="font-size: 0.8rem; font-weight: normal; color: var(--text-secondary);">(${proc.category})</span>`;
-            
+
             const body = document.getElementById("panel-body");
             body.innerHTML = "";
 
@@ -1977,11 +2312,27 @@
             proc.steps.forEach((step, idx) => {
                 const item = document.createElement("div");
                 item.className = "step-item";
+
+                let appButtonHtml = "";
+                const appKey = step.appLink || getSuggestedApp(proc, step);
+                if (appKey) {
+                    const appMeta = getAppMetadata(appKey);
+                    if (appMeta) {
+                        appButtonHtml = `
+                            <div style="margin-top: 0.65rem;">
+                                <button class="btn btn-accent" style="padding: 0.35rem 0.8rem; font-size: 0.8rem; border-radius: 0.4rem; display: inline-flex; align-items: center; gap: 0.4rem;" onclick="openAppModal('${appKey}')">
+                                    ${appMeta.icon} ${appMeta.label}
+                                </button>
+                            </div>`;
+                    }
+                }
+
                 item.innerHTML = `
                     <div class="step-number">${idx + 1}</div>
                     <div class="step-details">
                         <div class="step-title">${step.title}</div>
                         <div class="step-description">${renderStepDescription(step.desc)}</div>
+                        ${appButtonHtml}
                     </div>
                 `;
                 body.appendChild(item);
@@ -1992,7 +2343,7 @@
                 const notesDiv = document.createElement("div");
                 notesDiv.className = "notes-section";
                 notesDiv.innerHTML = `<h4>Informações Complementares e Rubricas</h4>`;
-                
+
                 const ul = document.createElement("ul");
                 ul.className = "notes-list";
                 proc.notes.forEach(note => {
@@ -2000,7 +2351,7 @@
                     li.innerHTML = note;
                     ul.appendChild(li);
                 });
-                
+
                 notesDiv.appendChild(ul);
                 body.appendChild(notesDiv);
             }
@@ -2050,7 +2401,7 @@
             const toast = document.getElementById("toast");
             toast.querySelector("span").textContent = message;
             toast.classList.add("show");
-            
+
             setTimeout(() => {
                 toast.classList.remove("show");
             }, 2000);
@@ -2091,7 +2442,7 @@
         }
 
         // No-op: modal does not close on outside click
-        function closeAddModalOuter(e) {}
+        function closeAddModalOuter(e) { }
 
         function adminLogin() {
             document.getElementById("login-email").value = "";
@@ -2105,13 +2456,189 @@
             document.getElementById("login-modal").classList.remove("open");
         }
 
+        function adminLogout() {
+            localStorage.removeItem("admin_session");
+            localStorage.removeItem("github_token");
+            showToast("Sessão Admin encerrada com sucesso.");
+            setTimeout(() => location.reload(), 500);
+        }
+
+        // --- EXPORTAR E IMPORTAR BACKUP JSON ---
+        function exportBackup() {
+            const data = {
+                version: "1.0",
+                exportedAt: new Date().toISOString(),
+                procedures: PROCEDURES,
+                categories: CATEGORIES
+            };
+            const jsonStr = JSON.stringify(data, null, 2);
+            const blob = new Blob([jsonStr], { type: "application/json" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = `sgp_nuap_backup_${new Date().toISOString().slice(0, 10)}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            showToast("Backup JSON exportado com sucesso!");
+        }
+
+        function triggerImport() {
+            const input = document.getElementById("import-file-input");
+            if (input) {
+                input.value = "";
+                input.click();
+            }
+        }
+
+        function importBackup(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                try {
+                    const parsed = JSON.parse(e.target.result);
+                    let importedProcs = null;
+                    let importedCats = null;
+
+                    if (Array.isArray(parsed)) {
+                        importedProcs = parsed;
+                    } else if (parsed && parsed.procedures) {
+                        importedProcs = parsed.procedures;
+                        importedCats = parsed.categories;
+                    }
+
+                    if (importedProcs && Array.isArray(importedProcs)) {
+                        if (confirm(`Deseja importar ${importedProcs.length} procedimentos? Isso substituirá os dados atuais.`)) {
+                            PROCEDURES = importedProcs;
+                            if (importedCats && Array.isArray(importedCats)) {
+                                CATEGORIES = importedCats;
+                                localStorage.setItem("sgp_nuap_categories", JSON.stringify(CATEGORIES));
+                            }
+                            localStorage.setItem("sgp_nuap_procedures", JSON.stringify(PROCEDURES));
+                            renderCategoryFilters();
+                            renderProcedures();
+                            showToast("✅ Backup importado com sucesso!");
+                            if (localStorage.getItem("cloud_auto_sync") === "true") {
+                                syncUpload();
+                            }
+                        }
+                    } else {
+                        alert("Arquivo JSON inválido. Formato não reconhecido.");
+                    }
+                } catch (err) {
+                    console.error(err);
+                    alert("Erro ao ler o arquivo JSON: " + err.message);
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        // --- GERENCIAR CATEGORIAS MODAL ---
+        function openCategoriesModal() {
+            const modal = document.getElementById("categories-modal");
+            if (!modal) return;
+            renderCategoriesList();
+            modal.classList.add("open");
+        }
+
+        function closeCategoriesModal() {
+            const modal = document.getElementById("categories-modal");
+            if (modal) modal.classList.remove("open");
+        }
+
+        function renderCategoriesList() {
+            const container = document.getElementById("categories-list-container");
+            if (!container) return;
+            container.innerHTML = "";
+
+            CATEGORIES.forEach((cat, index) => {
+                const item = document.createElement("div");
+                item.style.cssText = "display: flex; gap: 0.5rem; align-items: center;";
+                item.innerHTML = `
+                    <input type="text" class="form-control" value="${cat}" onchange="updateCategoryName(${index}, this.value)">
+                    <button class="btn" onclick="removeCategory(${index})" style="color: #dc2626; border-color: #dc2626; padding: 0.4rem 0.6rem;">🗑️</button>
+                `;
+                container.appendChild(item);
+            });
+        }
+
+        function addCategory() {
+            const input = document.getElementById("new-category-name");
+            if (!input) return;
+            const val = input.value.trim();
+            if (!val) return;
+
+            if (CATEGORIES.includes(val)) {
+                alert("Esta categoria já existe.");
+                return;
+            }
+
+            CATEGORIES.push(val);
+            localStorage.setItem("sgp_nuap_categories", JSON.stringify(CATEGORIES));
+            input.value = "";
+            renderCategoriesList();
+            renderCategoryFilters();
+            showToast(`Categoria "${val}" adicionada!`);
+
+            if (localStorage.getItem("cloud_auto_sync") === "true") {
+                syncUpload();
+            }
+        }
+
+        function updateCategoryName(index, newName) {
+            newName = newName.trim();
+            if (!newName) return;
+            const oldName = CATEGORIES[index];
+            if (oldName === newName) return;
+
+            CATEGORIES[index] = newName;
+            PROCEDURES.forEach(p => {
+                if (p.category === oldName) p.category = newName;
+            });
+
+            localStorage.setItem("sgp_nuap_categories", JSON.stringify(CATEGORIES));
+            localStorage.setItem("sgp_nuap_procedures", JSON.stringify(PROCEDURES));
+            renderCategoryFilters();
+            renderProcedures();
+            showToast(`Categoria renomeada para "${newName}"!`);
+
+            if (localStorage.getItem("cloud_auto_sync") === "true") {
+                syncUpload();
+            }
+        }
+
+        function removeCategory(index) {
+            const catName = CATEGORIES[index];
+            if (!confirm(`Tem certeza que deseja excluir a categoria "${catName}"?`)) return;
+
+            CATEGORIES.splice(index, 1);
+            const fallbackCat = CATEGORIES.length > 0 ? CATEGORIES[0] : "Sem Categoria";
+            PROCEDURES.forEach(p => {
+                if (p.category === catName) p.category = fallbackCat;
+            });
+
+            localStorage.setItem("sgp_nuap_categories", JSON.stringify(CATEGORIES));
+            localStorage.setItem("sgp_nuap_procedures", JSON.stringify(PROCEDURES));
+            renderCategoriesList();
+            renderCategoryFilters();
+            renderProcedures();
+            showToast(`Categoria "${catName}" removida!`);
+
+            if (localStorage.getItem("cloud_auto_sync") === "true") {
+                syncUpload();
+            }
+        }
+
         // Algoritmo SHA-256 em puro JS para funcionar em ambientes sem HTTPS (intranets)
         // 100% sem estado (state-free) para evitar bugs de reutilização de variáveis globais
         function sha256(ascii) {
             function rightRotate(value, amount) {
                 return (value >>> amount) | (value << (32 - amount));
             }
-            
+
             var mathPow = Math.pow;
             var maxWord = mathPow(2, 32);
             var lengthProperty = 'length';
@@ -2119,7 +2646,7 @@
             var result = '';
             var words = [];
             var asciiLength = ascii[lengthProperty] * 8;
-            
+
             var hash = [
                 0x6a09e667, 0xbb67ae85, 0x3c6ef372, 0xa54ff53a,
                 0x510e527f, 0x9b05688c, 0x1f83d9ab, 0x5be0cd19
@@ -2140,12 +2667,12 @@
             while (ascii[lengthProperty] % 64 - 56) ascii += '\x00';
             for (i = 0; i < ascii[lengthProperty]; i++) {
                 j = ascii.charCodeAt(i);
-                if (j >> 8) return; 
+                if (j >> 8) return;
                 words[i >> 2] |= j << (24 - (i % 4) * 8);
             }
             words[words[lengthProperty]] = ((asciiLength / maxWord) | 0);
             words[words[lengthProperty]] = (asciiLength);
-            
+
             for (j = 0; j < words[lengthProperty];) {
                 var w = words.slice(j, j += 16);
                 var oldHash = hash.slice(0);
@@ -2159,7 +2686,7 @@
                             w[i - 16]
                         ) | 0;
                     }
-                    
+
                     var temp1 = hash[7] +
                         (rightRotate(wItem = hash[4], 6) ^ rightRotate(wItem, 11) ^ rightRotate(wItem, 25)) +
                         ((wItem & hash[5]) ^ (~wItem & hash[6])) +
@@ -2167,22 +2694,22 @@
                         wItem;
                     var temp2 = (rightRotate(wItem = hash[0], 2) ^ rightRotate(wItem, 13) ^ rightRotate(wItem, 22)) +
                         ((wItem & hash[1]) ^ (wItem & hash[2]) ^ (hash[1] & hash[2]));
-                    
+
                     hash = [(temp1 + temp2) | 0].concat(hash);
                     hash[4] = (hash[4] + temp1) | 0;
                 }
-                
+
                 for (i = 0; i < 8; i++) {
                     hash[i] = (hash[i] + oldHash[i]) | 0;
                 }
             }
-            
+
             for (i = 0; i < 8; i++) {
                 var a = hash[i];
                 result += ((a >> 24) & 255).toString(16).padStart(2, '0') +
-                          ((a >> 16) & 255).toString(16).padStart(2, '0') +
-                          ((a >> 8) & 255).toString(16).padStart(2, '0') +
-                          (a & 255).toString(16).padStart(2, '0');
+                    ((a >> 16) & 255).toString(16).padStart(2, '0') +
+                    ((a >> 8) & 255).toString(16).padStart(2, '0') +
+                    (a & 255).toString(16).padStart(2, '0');
             }
             return result;
         }
@@ -2197,6 +2724,24 @@
                 result += String.fromCharCode(decryptedVal);
             }
             return result;
+        }
+
+        function adminLogin() {
+            document.getElementById("login-email").value = "";
+            document.getElementById("login-password").value = "";
+            document.getElementById("login-error").style.display = "none";
+            document.getElementById("login-modal").classList.add("open");
+            setTimeout(() => document.getElementById("login-email").focus(), 100);
+        }
+
+        function closeLoginModal() {
+            document.getElementById("login-modal").classList.remove("open");
+        }
+
+        function adminLogout() {
+            localStorage.removeItem("admin_session");
+            showToast("Saiu do modo admin. Recarregando...");
+            setTimeout(() => location.reload(), 900);
         }
 
         async function submitAdminLogin() {
@@ -2253,12 +2798,6 @@
             }
         }
 
-        function adminLogout() {
-            localStorage.removeItem("admin_session");
-            showToast("Saiu do modo admin. Recarregando...");
-            setTimeout(() => location.reload(), 900);
-        }
-
         function deleteProcedure(id) {
             const proc = PROCEDURES.find(p => p.id === id);
             if (!proc) return;
@@ -2282,16 +2821,59 @@
             showToast(`Procedimento "${proc.title}" excluído!`);
         }
 
+        // --- APPS INTEGRATION HELPERS ---
+        function getAppMetadata(key) {
+            switch (key) {
+                case 'calculadora':
+                    return { label: 'Abrir Calculadora RH & Geral', icon: '🧮', url: 'calculadora.html' };
+                case 'contador':
+                    return { label: 'Abrir Contador de Dias & Prazos', icon: '📅', url: 'contador_de_dias.html' };
+                case 'substituicao':
+                    return { label: 'Abrir Calculadora de Substituição', icon: '📊', url: 'calculadora_substituicao_aprimorada.html' };
+                default:
+                    return null;
+            }
+        }
+
+        function getSuggestedApp(proc, step) {
+            if (step.appLink) return step.appLink;
+            const text = (proc.title + ' ' + step.title + ' ' + (step.desc || '')).toLowerCase();
+            if (text.includes('substitui')) return 'substituicao';
+            if (text.includes('transporte') && (text.includes('dias') || text.includes('ponto') || text.includes('presença'))) return 'contador';
+            if (text.includes('devolução') || text.includes('erário') || text.includes('proporcional')) return 'calculadora';
+            return null;
+        }
+
+        function openAppModal(appKey) {
+            const meta = getAppMetadata(appKey);
+            if (!meta) return;
+            const modal = document.getElementById("app-runner-modal");
+            const title = document.getElementById("app-runner-title");
+            const iframe = document.getElementById("app-runner-iframe");
+            if (modal && iframe) {
+                title.innerHTML = `${meta.icon} ${meta.label}`;
+                iframe.src = meta.url;
+                modal.classList.add("open");
+            }
+        }
+
+        function closeAppModal() {
+            const modal = document.getElementById("app-runner-modal");
+            const iframe = document.getElementById("app-runner-iframe");
+            if (modal) modal.classList.remove("open");
+            if (iframe) iframe.src = "";
+        }
+
         function editProcedureById(id) {
             activeProcedureId = id;
             editCurrentProcedure();
         }
 
-        function addNewStepInput(stepTitle = "", stepDesc = "") {
+        function addNewStepInput(stepTitle = "", stepDesc = "", stepAppLink = "") {
             const container = document.getElementById("steps-inputs-container");
             const div = document.createElement("div");
             div.className = "step-input-group";
-            
+
             const stepNum = container.children.length + 1;
             div.innerHTML = `
                 <button type="button" class="remove-step-btn" onclick="this.parentElement.remove(); reorderSteps();">&times;</button>
@@ -2299,6 +2881,15 @@
                 <div class="form-group">
                     <label>Título do Passo</label>
                     <input type="text" class="form-control step-title-input" placeholder="ex: Acessar transação" value="${stepTitle}">
+                </div>
+                <div class="form-group" style="margin-bottom: 0.5rem;">
+                    <label>Vincular App de Suporte (Opcional)</label>
+                    <select class="form-control step-applink-select">
+                        <option value="">Nenhum App</option>
+                        <option value="calculadora" ${stepAppLink === 'calculadora' ? 'selected' : ''}>🧮 Calculadora RH &amp; Geral</option>
+                        <option value="contador" ${stepAppLink === 'contador' ? 'selected' : ''}>📅 Contador de Dias &amp; Prazos</option>
+                        <option value="substituicao" ${stepAppLink === 'substituicao' ? 'selected' : ''}>📊 Calculadora de Substituição</option>
+                    </select>
                 </div>
                 <div class="form-group">
                     <label>Descrição do Passo</label>
@@ -2363,7 +2954,7 @@
 
         // Registrar evento global para fechar dropdown de cores ao clicar fora
         if (!window.colorPickerEventRegistered) {
-            document.addEventListener("click", function(event) {
+            document.addEventListener("click", function (event) {
                 if (!event.target.closest(".tb-color-picker-wrapper")) {
                     document.querySelectorAll(".tb-color-dropdown").forEach(d => {
                         d.classList.remove("show");
@@ -2378,7 +2969,7 @@
             const textarea = formGroup.querySelector("textarea");
             const dropdown = dot.closest(".tb-color-dropdown");
             dropdown.classList.remove("show");
-            
+
             insertFormattingHelper(textarea, `<span style="color: ${color};">`, '</span>', 'texto');
         }
 
@@ -2388,10 +2979,10 @@
             const text = textarea.value;
             const selectedText = text.substring(startPos, endPos) || defaultText;
             const insertText = before + selectedText + after;
-            
+
             textarea.value = text.substring(0, startPos) + insertText + text.substring(endPos);
             textarea.focus();
-            
+
             const newCursorPos = startPos + before.length + selectedText.length + after.length;
             textarea.setSelectionRange(newCursorPos, newCursorPos);
             textarea.dispatchEvent(new Event('input'));
@@ -2402,9 +2993,9 @@
             const textarea = formGroup.querySelector("textarea");
             const startPos = textarea.selectionStart;
             const text = textarea.value;
-            
+
             const prefix = (startPos === 0 || text.charAt(startPos - 1) === '\n') ? '- ' : '\n- ';
-            
+
             insertFormattingHelper(textarea, prefix, '', 'Item');
         }
 
@@ -2413,9 +3004,9 @@
             const textarea = formGroup.querySelector("textarea");
             const startPos = textarea.selectionStart;
             const text = textarea.value;
-            
+
             const prefix = (startPos === 0 || text.charAt(startPos - 1) === '\n') ? '1. ' : '\n1. ';
-            
+
             insertFormattingHelper(textarea, prefix, '', 'Item');
         }
 
@@ -2425,15 +3016,15 @@
             const startPos = textarea.selectionStart;
             const endPos = textarea.selectionEnd;
             const text = textarea.value;
-            
+
             let code = text.substring(startPos, endPos);
             if (!code) {
                 code = prompt("Qual código/comando deseja inserir? (Ex: >FPATMOVFIN ou 00136)");
                 if (!code) return;
             }
-            
+
             const insertText = `<code class="code-copy" onclick="copyText('${code}')">${code}</code>`;
-            
+
             textarea.value = text.substring(0, startPos) + insertText + text.substring(endPos);
             textarea.focus();
             const newCursorPos = startPos + insertText.length;
@@ -2444,25 +3035,25 @@
         function insertImageHelper(buttonEl) {
             const formGroup = buttonEl.closest(".form-group");
             const textarea = formGroup.querySelector("textarea");
-            
+
             const url = prompt("Cole o Link/URL da imagem (ex: https://site.com/foto.png):");
             if (!url) return;
-            
+
             const legenda = prompt("Digite uma legenda curta para a imagem (opcional):");
-            
+
             let imgHtml = `\n<div class="proc-img-wrapper" style="text-align: center; margin: 0.75rem 0;">`;
             imgHtml += `<img src="${url}" alt="${legenda || 'Imagem do procedimento'}" class="proc-step-img" style="max-width: 100%; max-height: 280px; border-radius: 6px; border: 1px solid var(--border-color); cursor: pointer;" onclick="zoomImage(this)" />`;
             if (legenda) {
                 imgHtml += `<div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.25rem;">${legenda}</div>`;
             }
             imgHtml += `</div>\n`;
-            
+
             const startPos = textarea.selectionStart;
             const endPos = textarea.selectionEnd;
             const text = textarea.value;
-            
+
             textarea.value = text.substring(0, startPos) + imgHtml + text.substring(endPos);
-            
+
             textarea.focus();
             const newCursorPos = startPos + imgHtml.length;
             textarea.setSelectionRange(newCursorPos, newCursorPos);
@@ -2472,44 +3063,44 @@
         function renderInlineMarkdown(text) {
             if (!text) return "";
             let html = text;
-            
+
             // 1. Negrito: **texto** ou __texto__ -> <strong>texto</strong>
             html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
             html = html.replace(/__(.*?)__/g, '<strong>$1</strong>');
-            
+
             // 2. Itálico: *texto* ou _texto_ -> <em>texto</em>
             html = html.replace(/\*(.*?)\*/g, '<em>$1</em>');
             html = html.replace(/\b_(.*?)_\b/g, '<em>$1</em>');
-            
+
             // 3. Sublinhado: ++texto++ -> <u>texto</u>
             html = html.replace(/\+\+(.*?)\+\+/g, '<u>$1</u>');
-            
+
             return html;
         }
 
         function renderStepDescription(text) {
             if (!text) return "";
-            
+
             let lines = text.split("\n");
             let htmlResult = [];
             let listStack = [];
-            
+
             for (let i = 0; i < lines.length; i++) {
                 let line = lines[i];
-                
+
                 // Matches lists:
                 // ul: spaces, followed by -, *, +, or •, followed by space(s) and content
                 const ulMatch = line.match(/^(\s*)([-*+•])\s+(.*)$/);
                 // ol: spaces, followed by one or more digits, a dot, followed by space(s) and content
                 const olMatch = line.match(/^(\s*)(\d+)\.\s+(.*)$/);
-                
+
                 if (ulMatch || olMatch) {
                     const indent = (ulMatch ? ulMatch[1] : olMatch[1]).length;
                     const type = ulMatch ? 'ul' : 'ol';
                     const content = ulMatch ? ulMatch[3] : olMatch[3];
-                    
+
                     let currentDepth = listStack.length;
-                    
+
                     if (currentDepth === 0 || indent > listStack[currentDepth - 1].indent) {
                         listStack.push({ type: type, indent: indent });
                         htmlResult.push(`<${type} class="markdown-${type}">`);
@@ -2518,9 +3109,9 @@
                             let closed = listStack.pop();
                             htmlResult.push(`</${closed.type}>`);
                         }
-                        
-                        if (listStack.length > 0 && 
-                            listStack[listStack.length - 1].indent === indent && 
+
+                        if (listStack.length > 0 &&
+                            listStack[listStack.length - 1].indent === indent &&
                             listStack[listStack.length - 1].type !== type) {
                             let closed = listStack.pop();
                             htmlResult.push(`</${closed.type}>`);
@@ -2528,14 +3119,14 @@
                             htmlResult.push(`<${type} class="markdown-${type}">`);
                         }
                     }
-                    
+
                     htmlResult.push(`<li class="markdown-li">${renderInlineMarkdown(content)}</li>`);
                 } else {
                     while (listStack.length > 0) {
                         let closed = listStack.pop();
                         htmlResult.push(`</${closed.type}>`);
                     }
-                    
+
                     if (line.trim() === "") {
                         htmlResult.push("<br>");
                     } else {
@@ -2543,28 +3134,28 @@
                     }
                 }
             }
-            
+
             while (listStack.length > 0) {
                 let closed = listStack.pop();
                 htmlResult.push(`</${closed.type}>`);
             }
-            
+
             let finalHtml = "";
             for (let j = 0; j < htmlResult.length; j++) {
                 let current = htmlResult[j];
                 finalHtml += current;
-                
+
                 if (j < htmlResult.length - 1) {
-                    let next = htmlResult[j+1];
+                    let next = htmlResult[j + 1];
                     let isCurrentListTag = current.startsWith("<ul") || current.startsWith("</ul") || current.startsWith("<ol") || current.startsWith("</ol") || current.startsWith("<li") || current.startsWith("</li") || current === "<br>";
                     let isNextListTag = next.startsWith("<ul") || next.startsWith("</ul") || next.startsWith("<ol") || next.startsWith("</ol") || next.startsWith("<li") || next.startsWith("</li") || next === "<br>";
-                    
+
                     if (!isCurrentListTag && !isNextListTag) {
                         finalHtml += "<br>";
                     }
                 }
             }
-            
+
             return finalHtml;
         }
 
@@ -2595,8 +3186,11 @@
             stepDivs.forEach(div => {
                 const sTitle = div.querySelector(".step-title-input").value.trim();
                 const sDesc = div.querySelector(".step-desc-input").value.trim();
+                const sAppLink = div.querySelector(".step-applink-select") ? div.querySelector(".step-applink-select").value : "";
                 if (sTitle && sDesc) {
-                    steps.push({ title: sTitle, desc: sDesc });
+                    const stepObj = { title: sTitle, desc: sDesc };
+                    if (sAppLink) stepObj.appLink = sAppLink;
+                    steps.push(stepObj);
                 }
             });
 
@@ -2636,15 +3230,15 @@
 
             closeAddModal();
             renderProcedures();
-            
+
             if (editingProcedureId) {
                 openProcedure(id);
             }
-            
+
             if (localStorage.getItem("cloud_auto_sync") === "true") {
                 syncUpload();
             }
-            
+
             showToast(editingProcedureId ? "Procedimento atualizado com sucesso!" : "Procedimento salvo com sucesso!");
         }
 
@@ -2653,14 +3247,14 @@
             if (!proc) return;
 
             editingProcedureId = proc.id;
-            
+
             // Open modal
             document.getElementById("add-modal").classList.add("open");
             document.getElementById("modal-title").textContent = "Editar Procedimento";
-            
+
             // Populate category dropdown
             updateCategoryDropdown();
-            
+
             // Populate fields
             document.getElementById("proc-category").value = proc.category;
             document.getElementById("proc-title").value = proc.title;
@@ -2669,14 +3263,14 @@
             document.getElementById("proc-alert").value = proc.alert || "";
             document.getElementById("proc-extrainfo").value = proc.extraInfo || "";
             document.getElementById("proc-notes").value = proc.notes ? proc.notes.join("\n") : "";
-            
+
             // Populate steps
             const container = document.getElementById("steps-inputs-container");
             container.innerHTML = "";
             proc.steps.forEach(step => {
-                addNewStepInput(step.title, step.desc);
+                addNewStepInput(step.title, step.desc, step.appLink || "");
             });
-            
+
             // Close details drawer
             togglePanel(false);
         }
@@ -2686,7 +3280,7 @@
             const dataStr = JSON.stringify(PROCEDURES, null, 4);
             const blob = new Blob([dataStr], { type: "application/json" });
             const url = URL.createObjectURL(blob);
-            
+
             const link = document.createElement("a");
             link.href = url;
             link.download = "procedimentos_backup.json";
@@ -2707,7 +3301,7 @@
             if (!file) return;
 
             const reader = new FileReader();
-            reader.onload = function(e) {
+            reader.onload = function (e) {
                 try {
                     const importedData = JSON.parse(e.target.result);
                     if (Array.isArray(importedData)) {
@@ -2770,7 +3364,7 @@
         function renderCategoriesList() {
             const container = document.getElementById("categories-list-container");
             container.innerHTML = "";
-            
+
             if (tempCategories.length === 0) {
                 container.innerHTML = `<p style="font-size: 0.85rem; color: var(--text-secondary); text-align: center;">Nenhuma categoria cadastrada.</p>`;
                 return;
@@ -2804,12 +3398,12 @@
             const input = document.getElementById("new-category-name");
             const val = input.value.trim();
             if (!val) return;
-            
+
             if (tempCategories.some(c => c.toLowerCase() === val.toLowerCase())) {
                 alert("Esta categoria já existe.");
                 return;
             }
-            
+
             tempCategories.push(val);
             input.value = "";
             renderCategoriesList();
@@ -2842,11 +3436,11 @@
             closeCategoriesModal();
             renderCategoryFilters();
             renderProcedures();
-            
+
             if (localStorage.getItem("cloud_auto_sync") === "true") {
                 syncUpload();
             }
-            
+
             showToast("Categorias atualizadas com sucesso!");
         }
 
@@ -2863,37 +3457,6 @@
                 }
                 select.appendChild(opt);
             });
-        }
-
-        let currentTab = "procedures"; // procedures or settings
-
-        function switchTab(tabId) {
-            currentTab = tabId;
-            
-            const navItems = document.querySelectorAll(".sidebar-nav .nav-item");
-            navItems.forEach(item => item.classList.remove("active"));
-            
-            if (tabId === 'procedures') {
-                document.getElementById("nav-procedures").classList.add("active");
-            } else if (tabId === 'settings') {
-                document.getElementById("nav-settings").classList.add("active");
-            }
-
-            document.getElementById("content-procedures").style.display = tabId === 'procedures' ? 'flex' : 'none';
-            document.getElementById("content-settings").style.display = tabId === 'settings' ? 'flex' : 'none';
-            
-            toggleMobileSidebar(false);
-        }
-
-        function toggleMobileSidebar(show) {
-            const sidebar = document.querySelector(".sidebar");
-            const overlay = document.getElementById("sidebar-overlay");
-            if (sidebar) {
-                sidebar.classList.toggle("open", show);
-            }
-            if (overlay) {
-                overlay.classList.toggle("active", show);
-            }
         }
 
         // --- CLOUD SYNC HELPER FUNCTIONS ---
@@ -2929,7 +3492,7 @@
                 alert("Por favor, preencha o Token do GitHub antes.");
                 return;
             }
-            
+
             let gistId = localStorage.getItem("github_gist_id_procedures");
             document.getElementById("sync-status").textContent = "Criando Gist...";
             try {
@@ -2942,7 +3505,7 @@
                             "Content-Type": "application/json"
                         },
                         body: JSON.stringify({
-                            description: "SGP/NUAP Procedures Sync Data",
+                            description: "SGP-PA Procedures Sync Data",
                             public: true,
                             files: {
                                 "procedures_data.json": {
@@ -2976,7 +3539,7 @@
                         document.getElementById("sync-status").textContent = "Erro de vinculação";
                     }
                 }
-            } catch(e) {
+            } catch (e) {
                 console.error(e);
                 document.getElementById("sync-status").textContent = "Erro de conexão";
             }
@@ -3006,7 +3569,7 @@
                             return JSON.parse(file.content);
                         }
                     }
-                } catch(e) {
+                } catch (e) {
                     console.error("Erro ao ler do Gist:", e);
                 }
             } else {
@@ -3017,7 +3580,7 @@
                     if (res.ok) {
                         return await res.json();
                     }
-                } catch(e) {
+                } catch (e) {
                     console.error("Erro ao ler do JSONBlob:", e);
                 }
             }
@@ -3046,7 +3609,7 @@
                         })
                     });
                     return res.ok;
-                } catch(e) {
+                } catch (e) {
                     console.error("Erro ao salvar no Gist:", e);
                 }
             } else {
@@ -3061,7 +3624,7 @@
                         body: JSON.stringify({ procedures: procedures, categories: categories })
                     });
                     return res.ok;
-                } catch(e) {
+                } catch (e) {
                     console.error("Erro ao salvar no JSONBlob:", e);
                 }
             }
@@ -3098,7 +3661,7 @@
                 } else {
                     document.getElementById("sync-status").textContent = "Erro ao registrar chave";
                 }
-            } catch(e) {
+            } catch (e) {
                 console.error(e);
                 document.getElementById("sync-status").textContent = "Erro de conexão";
             }
@@ -3134,14 +3697,14 @@
                 alert("Por favor, configure as chaves de sincronização primeiro.");
                 return;
             }
-            
+
             document.getElementById("sync-status").textContent = "Sincronizando...";
-            
+
             const cloudData = await cloudGet();
             if (cloudData && cloudData.procedures && cloudData.categories) {
                 // Check if local data is "empty" (only default data, never edited)
                 const hasLocalData = !!localStorage.getItem("sgp_nuap_procedures");
-                
+
                 const doDownload = !hasLocalData || confirm(
                     "Dados de fluxos salvos na nuvem foram detectados.\n\n" +
                     "Clique OK para BAIXAR da nuvem (sobrescreve dados locais).\n" +
@@ -3159,7 +3722,7 @@
                         document.getElementById("sync-status").textContent = "Sincronizado!";
                         showToast("✅ Dados baixados da nuvem com sucesso!");
                         return;
-                    } catch(e) {
+                    } catch (e) {
                         console.error(e);
                     }
                 }
@@ -3167,7 +3730,7 @@
                 document.getElementById("sync-status").textContent = "Sem dados na nuvem";
                 showToast("Nenhum dado encontrado na nuvem. Enviando dados locais...");
             }
-            
+
             const success = await syncUpload();
             if (success) {
                 alert("✅ Sincronização concluída com sucesso! Os dados foram enviados para a nuvem.");
@@ -3181,4 +3744,5 @@
         renderProcedures();
     </script>
 </body>
+
 </html>

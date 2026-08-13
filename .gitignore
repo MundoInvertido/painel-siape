@@ -1,6 +1,3 @@
-# Ignore temporary scratchpad files and developer logs
+.kiro/
 scratch/
-*.log
-.gemini/
-.agents/
-check_html.*
+*.tmp
