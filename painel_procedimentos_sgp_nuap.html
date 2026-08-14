@@ -1989,8 +1989,13 @@
         // =========================================================
         // ADMIN CREDENTIALS (password stored as SHA-256 hash)
         // =========================================================
-        const ADMIN_EMAIL = "nathanaeladmin@gmail.com";
-        const ADMIN_HASH = "96bf726319dcc6eaf1b3112c75bcee7cd07cc2ce1cda332cddcf8ae5209842e0";
+        const ADMIN_USERS = [
+            { email: "nathanaeladmin@gmail.com", hashes: ["96bf726319dcc6eaf1b3112c75bcee7cd07cc2ce1cda332cddcf8ae5209842e0", "341c2c425a51fa8390a648366ab87e4cffbdd2b9a170785fa3aaeeea3074d300"] },
+            { email: "nuap.pa@prf.gov.br", hashes: ["1591bfd0887d2e92401c22b2a41e31aa8b5356f2e0a5a7c27971f0468230be9e"] },
+            { email: "sgp.pa@prf.gov.br", hashes: ["20deacb6aa44b43964135bcf8a4d29a08007ef462699c1c4d1c0d2aeb9c016e3"] }
+        ];
+        const ADMIN_EMAIL = ADMIN_USERS[0].email;
+        const ADMIN_HASH = ADMIN_USERS[0].hashes[0];
 
         const SITE_GIST_ID = localStorage.getItem("github_gist_id_procedures") || "5bd8f241cdc0e04c683bc580bd379c45";
 
@@ -2728,7 +2733,9 @@
                 // SHA-256 via puro JS
                 const hashHex = sha256(password);
 
-                if (email === ADMIN_EMAIL.toLowerCase() && (hashHex === ADMIN_HASH || hashHex === "341c2c425a51fa8390a648366ab87e4cffbdd2b9a170785fa3aaeeea3074d300")) {
+                const userMatch = ADMIN_USERS.find(u => u.email.toLowerCase() === email && u.hashes.includes(hashHex));
+
+                if (userMatch) {
                     try {
                         const encryptedToken = "140F003139221E0A2E5F3A0A77540B4F4A0147042C0C462A30242D0D55557E40421D413C441B3409";
                         const encryptedGistCmd = "165F475647514452025E5D5F56545354155146591053460454595C0F07090153";
@@ -2738,17 +2745,20 @@
                         const decryptedGistCmd = xorDecrypt(encryptedGistCmd, password);
                         const decryptedGistProc = xorDecrypt(encryptedGistProc, password);
 
-                        // Salva as credenciais no localStorage
-                        localStorage.setItem("github_token", decryptedToken);
-                        localStorage.setItem("github_gist_id", decryptedGistCmd);
-                        localStorage.setItem("github_gist_id_procedures", decryptedGistProc);
-                        localStorage.setItem("sync_method", "gist");
-                        localStorage.setItem("cloud_auto_sync", "true");
+                        if (decryptedToken && (decryptedToken.startsWith("github_pat_") || decryptedToken.startsWith("ghp_"))) {
+                            localStorage.setItem("github_token", decryptedToken);
+                            localStorage.setItem("github_gist_id", decryptedGistCmd);
+                            localStorage.setItem("github_gist_id_procedures", decryptedGistProc);
+                            localStorage.setItem("github_gist_id_unified", decryptedGistProc);
+                            localStorage.setItem("sync_method", "gist");
+                            localStorage.setItem("cloud_auto_sync", "true");
+                        }
                     } catch (e) {
                         console.error("Erro ao decodificar credenciais de sincronização automática:", e);
                     }
 
                     localStorage.setItem("admin_session", "true");
+                    localStorage.setItem("admin_user_email", email);
                     closeLoginModal();
                     showToast("✅ Login realizado! Recarregando...");
                     setTimeout(() => location.reload(), 900);
