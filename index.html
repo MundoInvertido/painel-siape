@@ -2858,7 +2858,15 @@
               localStorage.setItem("cloud_auto_sync", "true");
             }
           } catch (e) {
-         } else {
+            console.error("Erro ao decodificar credenciais de sincronização automática:", e);
+          }
+
+          localStorage.setItem("admin_session", "true");
+          localStorage.setItem("admin_user_email", email);
+          closeLoginModal();
+          showToast("✅ Login realizado! Recarregando...");
+          setTimeout(() => location.reload(), 900);
+        } else {
           console.error("Login incorreto. Email:", email, "Hash gerado:", hashHex);
           msgEl.innerHTML = `❌ E-mail ou senha incorretos.<br><span style="font-size:0.72rem;opacity:0.75;user-select:all;">Hash no browser: ${hashHex}</span>`;
           msgEl.style.display = "block";
