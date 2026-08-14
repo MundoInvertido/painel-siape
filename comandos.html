@@ -4986,7 +4986,7 @@ matches:
     const ADMIN_EMAIL = ADMIN_USERS[0].email;
     const ADMIN_HASH = ADMIN_USERS[0].hashes[0];
 
-    const SITE_GIST_ID = localStorage.getItem("github_gist_id") || "e8782043f341ddabf667e26e045a593e";
+    const SITE_GIST_ID = localStorage.getItem("github_gist_id_unified") || localStorage.getItem("github_gist_id_procedures") || localStorage.getItem("github_gist_id") || "5bd8f241cdc0e04c683bc580bd379c45";
 
     window.onload = async function () {
       // Force light theme to match the required PRF intranet look
