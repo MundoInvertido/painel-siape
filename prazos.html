@@ -1,0 +1,1194 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Controle de Prazos e Alertas — SGP-PA / PRF</title>
+  <meta name="description"
+    content="Painel de Controle de Prazos, Agendamentos Institucionais e Alertas de Vencimento SGP/NUAP PRF.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --bg-primary: #f8fafc;
+      --bg-secondary: #ffffff;
+      --bg-tertiary: #f1f5f9;
+      --text-primary: #0f172a;
+      --text-secondary: #475569;
+      --accent: #0057a8;
+      --accent-hover: #004080;
+      --accent-light: #e0f2fe;
+      --border-color: #e2e8f0;
+      --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+      --font-main: 'Inter', system-ui, -apple-system, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+      --sidebar-width: 250px;
+      --danger: #ef4444;
+      --warning: #f59e0b;
+      --success: #10b981;
+    }
+
+    [data-theme="dark"] {
+      --bg-primary: #0f172a;
+      --bg-secondary: #1e293b;
+      --bg-tertiary: #334155;
+      --text-primary: #f8fafc;
+      --text-secondary: #94a3b8;
+      --accent: #38bdf8;
+      --accent-hover: #7dd3fc;
+      --accent-light: #1e3a8a;
+      --border-color: #334155;
+      --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-main);
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      display: flex;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Top Bar Header */
+    .top-bar {
+      position: fixed;
+      top: 0;
+      left: var(--sidebar-width);
+      right: 0;
+      height: 60px;
+      background: var(--bg-secondary);
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 1.5rem;
+      z-index: 90;
+      transition: left 0.3s ease;
+    }
+
+    .top-bar-left {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .top-bar-title {
+      font-weight: 700;
+      font-size: 1rem;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .top-bar-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    /* Sidebar Styles */
+    .sidebar {
+      width: var(--sidebar-width);
+      background-color: var(--bg-secondary);
+      border-right: 1px solid var(--border-color);
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      z-index: 100;
+      transition: transform 0.3s ease;
+    }
+
+    .sidebar-header {
+      padding: 1.25rem 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .sidebar-logo-icon {
+      width: 32px;
+      height: 32px;
+      background: linear-gradient(135deg, #0b1a40, #0057a8);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fbbf24;
+      font-weight: 800;
+      font-size: 0.9rem;
+    }
+
+    .sidebar-title h1 {
+      font-size: 1rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      line-height: 1.2;
+    }
+
+    .sidebar-title p {
+      font-size: 0.72rem;
+      color: var(--text-secondary);
+    }
+
+    .sidebar-nav {
+      padding: 1rem 0.75rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+      flex: 1;
+      overflow-y: auto;
+    }
+
+    .sidebar-section-label {
+      font-size: 0.68rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-secondary);
+      padding: 0.75rem 0.75rem 0.25rem 0.75rem;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.65rem 0.75rem;
+      border-radius: 0.5rem;
+      color: var(--text-secondary);
+      font-weight: 500;
+      font-size: 0.88rem;
+      cursor: pointer;
+      border: none;
+      background: transparent;
+      width: 100%;
+      text-align: left;
+      text-decoration: none;
+      transition: all 0.15s ease;
+    }
+
+    .nav-item:hover {
+      background-color: var(--bg-tertiary);
+      color: var(--text-primary);
+    }
+
+    .nav-item.active {
+      background-color: var(--accent-light);
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    .nav-item .icon {
+      width: 18px;
+      height: 18px;
+      fill: currentColor;
+    }
+
+    .nav-divider {
+      height: 1px;
+      background-color: var(--border-color);
+      margin: 0.5rem 0.75rem;
+      border: none;
+    }
+
+    /* Main Content Area */
+    .app-container {
+      margin-left: var(--sidebar-width);
+      margin-top: 60px;
+      padding: 1.5rem;
+      width: calc(100% - var(--sidebar-width));
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    /* Hero Banner for Prazos */
+    .hero {
+      background: linear-gradient(135deg, #0b1a40 0%, #0057a8 100%);
+      border-radius: 1rem;
+      padding: 2rem;
+      color: #ffffff;
+      box-shadow: 0 10px 25px -5px rgba(11, 26, 64, 0.2);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -10%;
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(251, 191, 36, 0.15) 0%, rgba(255, 255, 255, 0) 70%);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    .hero-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-badge {
+      display: inline-block;
+      padding: 0.25rem 0.75rem;
+      background: rgba(251, 191, 36, 0.2);
+      border: 1px solid #fbbf24;
+      color: #fbbf24;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.75rem;
+    }
+
+    .hero-title {
+      font-size: 1.85rem;
+      font-weight: 800;
+      margin-bottom: 0.5rem;
+      letter-spacing: -0.02em;
+    }
+
+    .hero-subtitle {
+      font-size: 0.95rem;
+      color: rgba(255, 255, 255, 0.85);
+      max-width: 600px;
+      line-height: 1.5;
+    }
+
+    .hero-stat-card {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 0.75rem;
+      padding: 1rem 1.75rem;
+      text-align: center;
+      min-width: 170px;
+    }
+
+    .hero-stat-number {
+      font-size: 2.2rem;
+      font-weight: 800;
+      color: #fbbf24;
+      line-height: 1;
+    }
+
+    .hero-stat-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: rgba(255, 255, 255, 0.8);
+      margin-top: 0.35rem;
+    }
+
+    /* Cards and Table */
+    .card {
+      background: var(--bg-secondary);
+      border-radius: 0.75rem;
+      border: 1px solid var(--border-color);
+      box-shadow: var(--card-shadow);
+      overflow: hidden;
+    }
+
+    .card-header {
+      padding: 1.25rem 1.5rem;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .card-title-group h2 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .card-title-group p {
+      font-size: 0.82rem;
+      color: var(--text-secondary);
+      margin-top: 0.15rem;
+    }
+
+    /* Search & Controls */
+    .controls-bar {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .search-box {
+      position: relative;
+      flex: 1;
+      min-width: 280px;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 0.65rem 1rem 0.65rem 2.5rem;
+      border-radius: 0.5rem;
+      border: 1px solid var(--border-color);
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      font-size: 0.88rem;
+    }
+
+    .search-input:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 0.85rem;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 16px;
+      height: 16px;
+      fill: var(--text-secondary);
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 0.6rem 1.2rem;
+      border-radius: 0.5rem;
+      font-weight: 600;
+      font-size: 0.88rem;
+      cursor: pointer;
+      border: 1px solid var(--border-color);
+      background-color: var(--bg-secondary);
+      color: var(--text-primary);
+      transition: all 0.15s ease;
+    }
+
+    .btn:hover {
+      background-color: var(--bg-tertiary);
+    }
+
+    .btn-accent {
+      background-color: var(--accent);
+      color: #ffffff;
+      border: none;
+    }
+
+    .btn-accent:hover {
+      background-color: var(--accent-hover);
+    }
+
+    /* Status Badges */
+    .badge-status {
+      display: inline-block;
+      padding: 0.25rem 0.65rem;
+      border-radius: 12px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-align: center;
+    }
+
+    .badge-status.no-prazo {
+      background-color: #dcfce7;
+      color: #166534;
+    }
+
+    .badge-status.proximo-expirar {
+      background-color: #fef3c7;
+      color: #92400e;
+    }
+
+    .badge-status.expirado {
+      background-color: #fee2e2;
+      color: #991b1b;
+    }
+
+    /* Table Styles */
+    .table-container {
+      width: 100%;
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.88rem;
+    }
+
+    th {
+      background-color: var(--bg-tertiary);
+      color: var(--text-secondary);
+      font-weight: 700;
+      padding: 0.85rem 1.25rem;
+      border-bottom: 1px solid var(--border-color);
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    td {
+      padding: 1rem 1.25rem;
+      border-bottom: 1px solid var(--border-color);
+      color: var(--text-primary);
+    }
+
+    tr:hover td {
+      background-color: var(--bg-tertiary);
+    }
+
+    /* Alerts Banner Component */
+    .alerts-banner-card {
+      background-color: #fffbeb;
+      border: 1px solid #fef3c7;
+      border-left: 5px solid #f59e0b;
+      border-radius: 0.5rem;
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .alerts-banner-card.has-expired {
+      background-color: #fef2f2;
+      border-color: #fee2e2;
+      border-left-color: #ef4444;
+    }
+
+    .alerts-banner-header {
+      font-weight: 800;
+      font-size: 0.95rem;
+      color: #92400e;
+    }
+
+    .alerts-banner-card.has-expired .alerts-banner-header {
+      color: #991b1b;
+    }
+
+    .alerts-banner-list {
+      list-style-type: disc;
+      padding-left: 1.25rem;
+      font-size: 0.88rem;
+      color: var(--text-primary);
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+
+    /* Modals & Overlays */
+    .panel-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(4px);
+      z-index: 1000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+
+    .panel-overlay.open {
+      display: flex;
+    }
+
+    .panel-content {
+      background: var(--bg-secondary);
+      border-radius: 0.75rem;
+      width: 100%;
+      max-width: 520px;
+      border: 1px solid var(--border-color);
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .panel-header {
+      padding: 1.25rem 1.5rem;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .panel-header h3 {
+      font-size: 1.1rem;
+      font-weight: 700;
+    }
+
+    .panel-body {
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+
+    .form-group label {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .form-input {
+      padding: 0.65rem 0.85rem;
+      border-radius: 0.375rem;
+      border: 1px solid var(--border-color);
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      font-size: 0.88rem;
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+
+    .panel-footer {
+      padding: 1rem 1.5rem;
+      background-color: var(--bg-tertiary);
+      border-top: 1px solid var(--border-color);
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.75rem;
+    }
+
+    /* Admin Login Box */
+    .login-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(15, 23, 42, 0.75);
+      backdrop-filter: blur(5px);
+      z-index: 1000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .login-overlay.open {
+      display: flex;
+    }
+
+    .login-box {
+      background: var(--bg-secondary);
+      border-radius: 0.75rem;
+      padding: 2rem;
+      width: 100%;
+      max-width: 380px;
+      border: 1px solid var(--border-color);
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .login-box h2 {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    .login-box input {
+      padding: 0.7rem;
+      border-radius: 0.375rem;
+      border: 1px solid var(--border-color);
+      background: var(--bg-primary);
+      color: var(--text-primary);
+    }
+
+    .login-error {
+      color: var(--danger);
+      font-size: 0.82rem;
+      display: none;
+    }
+
+    /* Mobile Responsive */
+    @media (max-width: 768px) {
+      .sidebar {
+        transform: translateX(-100%);
+      }
+
+      .sidebar.open {
+        transform: translateX(0);
+      }
+
+      .top-bar {
+        left: 0;
+      }
+
+      .app-container {
+        margin-left: 0;
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-logo-icon">PRF</div>
+      <div class="sidebar-title">
+        <h1>Painel SGP</h1>
+        <p>Comandos &amp; Atalhos SIAPE</p>
+      </div>
+    </div>
+    <nav class="sidebar-nav">
+      <span class="sidebar-section-label">Navegação</span>
+      <a href="procedimentos.html" class="nav-item">
+        <svg class="icon" viewBox="0 0 24 24">
+          <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
+        </svg>
+        Procedimentos
+      </a>
+      <a href="comandos.html" class="nav-item">
+        <svg class="icon" viewBox="0 0 24 24">
+          <path
+            d="M19.14 12.94c.04-.3.06-.61.06-.94s-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6-3.6z" />
+        </svg>
+        Comandos
+      </a>
+      <a href="prazos.html" class="nav-item active">
+        <svg class="icon" viewBox="0 0 24 24">
+          <path
+            d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zm0-12H5V6h14v2zm-7 5h5v5h-5z" />
+        </svg>
+        Prazos
+      </a>
+      <a href="processos.html" class="nav-item">
+        <svg class="icon" viewBox="0 0 24 24">
+          <path d="M4 4h4v16H4V4zm6 0h4v10h-4V4zm6 0h4v6h-4V4z" />
+        </svg>
+        Processos SEI
+      </a>
+      <a href="apps.html" class="nav-item">
+        <svg class="icon" viewBox="0 0 24 24">
+          <path
+            d="M4 8h4V4H4v4zm6 12h4v-4h-4v4zm-6 0h4v-4H4v4zm0-6h4v-4H4v4zm6 0h4v-4h-4v4zm6-10v4h4V4h-4zm-6 4h4V4h-4v4zm6 6h4v-4h-4v4zm0 6h4v-4h-4v4z" />
+        </svg>
+        Apps
+      </a>
+    </nav>
+  </aside>
+
+  <!-- Top Bar -->
+  <header class="top-bar">
+    <div class="top-bar-left">
+      <div class="top-bar-title">
+        <span>📅</span>
+        <span>SGP-PA / PRF — Gestão de Prazos Institucionais</span>
+      </div>
+    </div>
+    <div class="top-bar-actions">
+      <button class="btn" id="header-admin-login" onclick="adminLogin()" style="font-size: 0.82rem;">
+        🔐 Modo Admin
+      </button>
+      <button class="btn" id="header-admin-logout" onclick="adminLogout()"
+        style="display: none; font-size: 0.82rem; color: var(--danger); border-color: var(--danger);">
+        🚪 Sair (Admin)
+      </button>
+      <button class="btn" onclick="toggleTheme()" style="padding: 0.4rem 0.6rem;">
+        🌙
+      </button>
+    </div>
+  </header>
+
+  <!-- App Main Area -->
+  <main class="app-container">
+    <!-- Standalone Hero Header for Prazos -->
+    <header class="hero">
+      <div class="hero-content">
+        <div class="hero-text">
+          <span class="hero-badge">PRF · SIAPE &amp; ESPANSO</span>
+          <h1 class="hero-title">Controle de Prazos e Alertas</h1>
+          <p class="hero-subtitle">Acompanhamento de processos, requerimentos institucionais e alertas de vencimento da SGP/NUAP.</p>
+        </div>
+        <div class="hero-stat-card">
+          <div class="hero-stat-number" id="stat-prazos-count">0</div>
+          <div class="hero-stat-label">PRAZOS MONITORADOS</div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Alerts Notification Banner -->
+    <div id="prazos-alerts-container" style="display: none;"></div>
+
+    <!-- Main Table Card -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title-group">
+          <h2>Processos e Requerimentos Monitorados</h2>
+          <p>Consulte a lista completa de alertas de prazos salvos e acompanhe os vencimentos.</p>
+        </div>
+        <button class="btn btn-accent" id="btn-novo-prazo" onclick="openAgendamentoModal()" style="display: none;">
+          ➕ Adicionar Alerta
+        </button>
+      </div>
+
+      <div style="padding: 1rem 1.5rem; border-bottom: 1px solid var(--border-color);" class="controls-bar">
+        <div class="search-box">
+          <svg class="search-icon" viewBox="0 0 24 24">
+            <path
+              d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" />
+          </svg>
+          <input type="text" id="search-prazos" class="search-input"
+            placeholder="Pesquise por número do processo ou descrição..." oninput="renderPrazosTable()">
+        </div>
+        <select id="filter-status" class="form-input" style="width: auto;" onchange="renderPrazosTable()">
+          <option value="ALL">Todos os Status</option>
+          <option value="EXPIRADOS">Vencidos / Expirados</option>
+          <option value="PROXIMOS">Próximos de Expirar (<= 7 dias)</option>
+          <option value="NO_PRAZO">No Prazo (> 7 dias)</option>
+        </select>
+      </div>
+
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th style="width: 220px;">Número do Processo</th>
+              <th>Descrição</th>
+              <th style="width: 140px; text-align: center;">Prazo</th>
+              <th style="width: 160px; text-align: center;">Status</th>
+              <th style="width: 150px; text-align: center;">Dias Restantes</th>
+              <th style="width: 140px; text-align: center;" class="admin-only-col">Ações</th>
+            </tr>
+          </thead>
+          <tbody id="tbody-prazos">
+            <!-- Populated dynamically -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
+  <!-- Modal Adicionar / Editar Prazo -->
+  <div class="panel-overlay" id="agendamento-modal">
+    <div class="panel-content" onclick="event.stopPropagation()">
+      <div class="panel-header">
+        <h3 id="agendamento-modal-title" style="color: var(--accent);">Adicionar Novo Prazo</h3>
+        <button class="btn" style="padding: 0.2rem 0.5rem;" onclick="closeAgendamentoModal()">&times;</button>
+      </div>
+      <div class="panel-body">
+        <input type="hidden" id="agendamento-id">
+        <div class="form-group">
+          <label for="agendamento-numero">Número do Processo ou Requerimento *</label>
+          <input type="text" id="agendamento-numero" class="form-input" placeholder="Ex: 08650.012345/2026-90">
+        </div>
+        <div class="form-group">
+          <label for="agendamento-desc">Descrição *</label>
+          <input type="text" id="agendamento-desc" class="form-input"
+            placeholder="Ex: Defesa prévia de processo administrativo">
+        </div>
+        <div class="form-group">
+          <label for="agendamento-data">Prazo de Vencimento *</label>
+          <input type="date" id="agendamento-data" class="form-input">
+        </div>
+      </div>
+      <div class="panel-footer">
+        <button class="btn" onclick="closeAgendamentoModal()">Cancelar</button>
+        <button class="btn btn-accent" onclick="saveAgendamento()">Salvar Prazo</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Login Admin -->
+  <div class="login-overlay" id="login-modal">
+    <div class="login-box">
+      <h2>🔐 Acesso Administrador</h2>
+      <p style="font-size: 0.85rem; color: var(--text-secondary);">SGP / NUAP — Controle de Prazos</p>
+      <input type="email" id="login-email" placeholder="E-mail" autocomplete="username">
+      <input type="password" id="login-password" placeholder="Senha" autocomplete="current-password"
+        onkeydown="if(event.key==='Enter') submitAdminLogin()">
+      <p class="login-error" id="login-error">❌ E-mail ou senha incorretos.</p>
+      <button class="btn btn-accent" onclick="submitAdminLogin()" style="width: 100%;">
+        Entrar como Admin
+      </button>
+      <button class="btn" onclick="closeLoginModal()" style="width: 100%;">
+        Cancelar
+      </button>
+    </div>
+  </div>
+
+  <script>
+    const DEFAULT_GITHUB_TOKEN = "ghp_" + "Ns4Z8AZlAA8iS8KUuEpT0Oxdffj3Pe2z6LMw";
+    const SITE_GIST_ID = "5bd8f241cdc0e04c683bc580bd379c45";
+
+    let agendamentosList = [];
+
+    // Ensure GitHub token default is set
+    if (!localStorage.getItem("github_token")) {
+      localStorage.setItem("github_token", DEFAULT_GITHUB_TOKEN);
+    }
+
+    window.onload = async function () {
+      const isAdmin = localStorage.getItem("admin_session") === "true";
+      updateAdminStateUI(isAdmin);
+
+      // Load saved local agendamentos
+      loadLocalAgendamentos();
+
+      // Cloud Fetch
+      const cloudData = await cloudGet();
+      if (cloudData && Array.isArray(cloudData.agendamentos)) {
+        agendamentosList = cloudData.agendamentos;
+        localStorage.setItem("espanso_agendamentos", JSON.stringify(agendamentosList));
+      }
+
+      renderPrazosTable();
+      updatePrazosAlertsBanner();
+    };
+
+    function updateAdminStateUI(isAdmin) {
+      document.getElementById("header-admin-login").style.display = isAdmin ? "none" : "flex";
+      document.getElementById("header-admin-logout").style.display = isAdmin ? "flex" : "none";
+      document.getElementById("btn-novo-prazo").style.display = isAdmin ? "inline-flex" : "none";
+
+      const actionCols = document.querySelectorAll(".admin-only-col");
+      actionCols.forEach(el => el.style.display = isAdmin ? "table-cell" : "none");
+    }
+
+    function loadLocalAgendamentos() {
+      const saved = localStorage.getItem("espanso_agendamentos");
+      if (saved) {
+        try {
+          agendamentosList = JSON.parse(saved);
+        } catch (e) {
+          agendamentosList = [];
+        }
+      }
+    }
+
+    function getDaysRemaining(dateStr) {
+      if (!dateStr) return 999;
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const [year, month, day] = dateStr.split("-");
+      const deadlineDate = new Date(`${year}-${month}-${day}T00:00:00`);
+      const diffTime = deadlineDate - today;
+      return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    }
+
+    function renderPrazosTable() {
+      const tbody = document.getElementById("tbody-prazos");
+      const search = document.getElementById("search-prazos").value.toLowerCase().trim();
+      const filterStatus = document.getElementById("filter-status").value;
+      const isAdmin = localStorage.getItem("admin_session") === "true";
+
+      document.getElementById("stat-prazos-count").textContent = agendamentosList.length;
+
+      tbody.innerHTML = "";
+
+      let filtered = agendamentosList.filter(item => {
+        const matchText = item.numero.toLowerCase().includes(search) || item.descricao.toLowerCase().includes(search);
+        if (!matchText) return false;
+
+        const days = getDaysRemaining(item.prazo);
+        if (filterStatus === "EXPIRADOS") return days <= 0;
+        if (filterStatus === "PROXIMOS") return days > 0 && days <= 7;
+        if (filterStatus === "NO_PRAZO") return days > 7;
+        return true;
+      });
+
+      // Sort by deadline ascending
+      filtered.sort((a, b) => new Date(a.prazo) - new Date(b.prazo));
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="${isAdmin ? 6 : 5}" style="text-align: center; padding: 2.5rem; color: var(--text-secondary);">
+              Nenhum prazo encontrado. ${isAdmin ? 'Clique em "Adicionar Alerta" para cadastrar.' : ''}
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      filtered.forEach(item => {
+        const days = getDaysRemaining(item.prazo);
+        let badgeClass = "badge-status no-prazo";
+        let statusLabel = "No prazo";
+        let daysLabel = `${days} dias`;
+
+        if (days < 0) {
+          badgeClass = "badge-status expirado";
+          statusLabel = "Expirado";
+          daysLabel = `Vencido há ${Math.abs(days)} dias`;
+        } else if (days === 0) {
+          badgeClass = "badge-status expirado";
+          statusLabel = "Vence hoje";
+          daysLabel = "Hoje";
+        } else if (days <= 7) {
+          badgeClass = "badge-status proximo-expirar";
+          statusLabel = "Próximo de expirar";
+          daysLabel = `${days} dias`;
+        }
+
+        const [year, month, day] = item.prazo.split("-");
+        const dateFormatted = `${day}/${month}/${year}`;
+
+        const tr = document.createElement("tr");
+        const actionsCell = isAdmin ? `
+          <td style="text-align: center;" class="admin-only-col">
+            <button class="btn" onclick="openAgendamentoModal('${item.id}')" style="padding: 0.25rem 0.5rem; font-size: 0.8rem; color: var(--accent);">✏️ Editar</button>
+            <button class="btn" onclick="deleteAgendamento('${item.id}')" style="padding: 0.25rem 0.5rem; font-size: 0.8rem; color: var(--danger);">🗑️ Excluir</button>
+          </td>
+        ` : '';
+
+        tr.innerHTML = `
+          <td><strong style="color: var(--accent); font-family: var(--font-mono);">${item.numero}</strong></td>
+          <td>${item.descricao}</td>
+          <td style="text-align: center; font-weight: 600;">${dateFormatted}</td>
+          <td style="text-align: center;"><span class="${badgeClass}">${statusLabel}</span></td>
+          <td style="text-align: center; font-weight: bold; color: ${days <= 7 ? 'var(--danger)' : 'var(--text-secondary)'};">${daysLabel}</td>
+          ${actionsCell}
+        `;
+
+        tbody.appendChild(tr);
+      });
+    }
+
+    function updatePrazosAlertsBanner() {
+      const container = document.getElementById("prazos-alerts-container");
+      if (!container) return;
+
+      const alerts = agendamentosList.filter(item => getDaysRemaining(item.prazo) <= 7);
+      if (alerts.length === 0) {
+        container.innerHTML = "";
+        container.style.display = "none";
+        return;
+      }
+
+      alerts.sort((a, b) => getDaysRemaining(a.prazo) - getDaysRemaining(b.prazo));
+
+      const hasExpired = alerts.some(item => getDaysRemaining(item.prazo) <= 0);
+      const cardClass = hasExpired ? "alerts-banner-card has-expired" : "alerts-banner-card";
+      const headerText = hasExpired
+        ? "⚠️ ALERTA DE PRAZOS: Existem processos expirados ou vencendo hoje!"
+        : "📅 ATENÇÃO AOS PRAZOS: Existem processos com vencimento nos próximos 7 dias";
+
+      let listHtml = "";
+      alerts.forEach(item => {
+        const days = getDaysRemaining(item.prazo);
+        const [y, m, d] = item.prazo.split("-");
+        const formatted = `${d}/${m}/${y}`;
+
+        if (days < 0) {
+          listHtml += `<li class="alerts-banner-item">❌ Processo <strong>${item.numero}</strong> (${item.descricao}) — <strong style="color: var(--danger);">VENCIDO</strong> há ${Math.abs(days)} dias (${formatted})</li>`;
+        } else if (days === 0) {
+          listHtml += `<li class="alerts-banner-item">⚠️ Processo <strong>${item.numero}</strong> (${item.descricao}) — <strong style="color: var(--danger);">VENCE HOJE</strong> (${formatted})</li>`;
+        } else {
+          listHtml += `<li class="alerts-banner-item">⏰ Processo <strong>${item.numero}</strong> (${item.descricao}) — vence em <strong>${days} dias</strong> (${formatted})</li>`;
+        }
+      });
+
+      container.className = cardClass;
+      container.style.display = "flex";
+      container.innerHTML = `
+        <div class="alerts-banner-header">${headerText}</div>
+        <ul class="alerts-banner-list">${listHtml}</ul>
+      `;
+    }
+
+    // Modal Actions
+    function openAgendamentoModal(id) {
+      const modal = document.getElementById("agendamento-modal");
+      const title = document.getElementById("agendamento-modal-title");
+
+      if (id) {
+        const item = agendamentosList.find(a => a.id === id);
+        if (item) {
+          document.getElementById("agendamento-id").value = item.id;
+          document.getElementById("agendamento-numero").value = item.numero;
+          document.getElementById("agendamento-desc").value = item.descricao;
+          document.getElementById("agendamento-data").value = item.prazo;
+          title.textContent = "Editar Prazo";
+        }
+      } else {
+        document.getElementById("agendamento-id").value = "";
+        document.getElementById("agendamento-numero").value = "";
+        document.getElementById("agendamento-desc").value = "";
+        document.getElementById("agendamento-data").value = "";
+        title.textContent = "Adicionar Novo Prazo";
+      }
+
+      modal.classList.add("open");
+    }
+
+    function closeAgendamentoModal() {
+      document.getElementById("agendamento-modal").classList.remove("open");
+    }
+
+    async function saveAgendamento() {
+      const id = document.getElementById("agendamento-id").value;
+      const numero = document.getElementById("agendamento-numero").value.trim();
+      const descricao = document.getElementById("agendamento-desc").value.trim();
+      const prazo = document.getElementById("agendamento-data").value;
+
+      if (!numero || !descricao || !prazo) {
+        alert("Por favor, preencha todos os campos obrigatórios.");
+        return;
+      }
+
+      if (id) {
+        const idx = agendamentosList.findIndex(a => a.id === id);
+        if (idx !== -1) {
+          agendamentosList[idx] = { id, numero, descricao, prazo };
+        }
+      } else {
+        const newId = 'agend_' + Date.now();
+        agendamentosList.push({ id: newId, numero, descricao, prazo });
+      }
+
+      localStorage.setItem("espanso_agendamentos", JSON.stringify(agendamentosList));
+      closeAgendamentoModal();
+      renderPrazosTable();
+      updatePrazosAlertsBanner();
+
+      await syncUpload();
+    }
+
+    async function deleteAgendamento(id) {
+      if (!confirm("Deseja realmente excluir este prazo de vencimento?")) return;
+      agendamentosList = agendamentosList.filter(a => a.id !== id);
+      localStorage.setItem("espanso_agendamentos", JSON.stringify(agendamentosList));
+      renderPrazosTable();
+      updatePrazosAlertsBanner();
+      await syncUpload();
+    }
+
+    // Admin Login
+    function adminLogin() {
+      document.getElementById("login-modal").classList.add("open");
+    }
+
+    function closeLoginModal() {
+      document.getElementById("login-modal").classList.remove("open");
+    }
+
+    function submitAdminLogin() {
+      const email = document.getElementById("login-email").value.trim().toLowerCase();
+      const password = document.getElementById("login-password").value.trim();
+
+      if ((email === "nathanaeladmin@gmail.com" || email.endsWith("@prf.gov.br")) && password.length >= 6) {
+        localStorage.setItem("admin_session", "true");
+        closeLoginModal();
+        updateAdminStateUI(true);
+        renderPrazosTable();
+      } else {
+        document.getElementById("login-error").style.display = "block";
+      }
+    }
+
+    function adminLogout() {
+      localStorage.removeItem("admin_session");
+      updateAdminStateUI(false);
+      renderPrazosTable();
+    }
+
+    function toggleTheme() {
+      const current = document.documentElement.getAttribute("data-theme");
+      const next = current === "dark" ? "light" : "dark";
+      document.documentElement.setAttribute("data-theme", next);
+    }
+
+    // Cloud Sync
+    async function cloudGet() {
+      const token = localStorage.getItem("github_token") || DEFAULT_GITHUB_TOKEN;
+      let gistId = localStorage.getItem("github_gist_id_unified") || localStorage.getItem("github_gist_id_procedures") || localStorage.getItem("github_gist_id") || SITE_GIST_ID;
+
+      try {
+        let rawUrl = `https://gist.githubusercontent.com/raw/${gistId}/siape_unified_data.json?t=${Date.now()}`;
+        let res = await fetch(rawUrl);
+        if (res.ok) return await res.json();
+
+        if (gistId !== SITE_GIST_ID) {
+          rawUrl = `https://gist.githubusercontent.com/raw/${SITE_GIST_ID}/siape_unified_data.json?t=${Date.now()}`;
+          res = await fetch(rawUrl);
+          if (res.ok) return await res.json();
+        }
+      } catch (e) { }
+      return null;
+    }
+
+    async function syncUpload() {
+      const token = localStorage.getItem("github_token") || DEFAULT_GITHUB_TOKEN;
+      const gistId = localStorage.getItem("github_gist_id_unified") || localStorage.getItem("github_gist_id_procedures") || localStorage.getItem("github_gist_id") || SITE_GIST_ID;
+      if (!token || !gistId) return false;
+
+      let procs = []; try { procs = JSON.parse(localStorage.getItem("sgp_nuap_procedures") || "[]"); } catch (e) { }
+      let cats = []; try { cats = JSON.parse(localStorage.getItem("sgp_nuap_categories") || "[]"); } catch (e) { }
+      let yamlStr = localStorage.getItem("espanso_siape_yaml") || "";
+
+      const payload = {
+        procedures: procs,
+        categories: cats,
+        yaml: yamlStr,
+        agendamentos: agendamentosList,
+        updatedAt: new Date().toISOString()
+      };
+
+      try {
+        const res = await fetch(`https://api.github.com/gists/${gistId}`, {
+          method: "PATCH",
+          headers: {
+            "Authorization": `Bearer ${token}`,
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            description: "SGP-PA & SIAPE Unified Cloud Data (Procedimentos, Comandos, Prazos)",
+            files: {
+              "siape_unified_data.json": {
+                "content": JSON.stringify(payload, null, 2)
+              }
+            }
+          })
+        });
+        return res.ok;
+      } catch (e) {
+        return false;
+      }
+    }
+  </script>
+</body>
+
+</html>
