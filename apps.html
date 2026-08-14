@@ -42,8 +42,8 @@
       --sidebar-bg: #ffffff;
       --sidebar-border: #e2e8f0;
       --sidebar-text: #334155;
-      --sidebar-active-bg: linear-gradient(135deg, #0057a8 0%, #1d4ed8 100%);
-      --sidebar-active-text: #ffffff;
+      --sidebar-active-bg: #eff6ff;
+      --sidebar-active-text: #0057a8;
       --sidebar-icon-color: #64748b;
 
       --header-bg: #0b1a40;
@@ -221,7 +221,7 @@
     }
 
     .nav-item:hover .icon {
-      color: var(--accent);
+      color: var(--sidebar-active-text);
     }
 
     .nav-item.active {
@@ -232,7 +232,7 @@
     }
 
     .nav-item.active .icon {
-      color: var(--accent);
+      color: var(--sidebar-active-text);
     }
 
     .nav-badge {

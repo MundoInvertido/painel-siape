@@ -409,13 +409,13 @@
 
     <!-- Tab Bar -->
     <div class="app-tabs-nav">
-      <a href="periculosidade.html" class="app-tab-btn" style="text-decoration: none;">
+      <button class="app-tab-btn active" id="tab-btn-padrao" onclick="switchCalcTab('padrao')">
         <svg class="icon" viewBox="0 0 24 24">
-          <path d="M12 2L1 21h22L12 2zm1 14h-2v-2h2v2zm0-4h-2V9h2v3z" />
+          <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z" />
         </svg>
-        ⚡ Periculosidade (10%)
-      </a>
-      <button class="app-tab-btn active" id="tab-btn-diaria" onclick="switchCalcTab('diaria')">
+        Calculadora Convencional
+      </button>
+      <button class="app-tab-btn" id="tab-btn-diaria" onclick="switchCalcTab('diaria')">
         <svg class="icon" viewBox="0 0 24 24">
           <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 14h-2v-2h2v2zm0-4h-2V7h2v5z" />
         </svg>
@@ -427,17 +427,57 @@
         </svg>
         Devolução ao Erário / Descontos
       </button>
-      <button class="app-tab-btn" id="tab-btn-padrao" onclick="switchCalcTab('padrao')">
+      <a href="periculosidade.html" class="app-tab-btn" style="text-decoration: none;">
         <svg class="icon" viewBox="0 0 24 24">
-          <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z" />
+          <path d="M12 2L1 21h22L12 2zm1 14h-2v-2h2v2zm0-4h-2V9h2v3z" />
         </svg>
-        Calculadora Convencional
-      </button>
+        ⚡ Periculosidade (10%)
+      </a>
     </div>
 
-    <!-- TAB 1: DIÁRIA / REMUNERAÇÃO PROPORCIONAL -->
-    <div id="view-diaria" class="calc-container">
+    <!-- TAB 1: CALCULADORA CONVENCIONAL -->
+    <div id="view-padrao" class="calc-container">
+      <div style="text-align: center; margin-bottom: 0.5rem;">
+        <h2 style="font-size: 1.1rem; font-weight: 800; color: var(--accent);">Calculadora Convencional</h2>
+        <p style="font-size: 0.85rem; color: var(--text-secondary);">Calculadora aritmética direta para apoio a cálculos diários de gestão.</p>
+      </div>
 
+      <div class="std-calc-wrapper">
+        <div class="std-calc-display">
+          <div class="std-calc-history" id="std-calc-history"></div>
+          <div class="std-calc-main-val" id="std-calc-display">0</div>
+        </div>
+
+        <div class="std-calc-grid">
+          <button class="calc-btn action" onclick="stdCalcClear()">C</button>
+          <button class="calc-btn action" onclick="stdCalcBackspace()">⌫</button>
+          <button class="calc-btn op" onclick="stdCalcOp_percent()">%</button>
+          <button class="calc-btn op" onclick="stdCalcOp('/')">÷</button>
+
+          <button class="calc-btn" onclick="stdCalcNum('7')">7</button>
+          <button class="calc-btn" onclick="stdCalcNum('8')">8</button>
+          <button class="calc-btn" onclick="stdCalcNum('9')">9</button>
+          <button class="calc-btn op" onclick="stdCalcOp('*')">×</button>
+
+          <button class="calc-btn" onclick="stdCalcNum('4')">4</button>
+          <button class="calc-btn" onclick="stdCalcNum('5')">5</button>
+          <button class="calc-btn" onclick="stdCalcNum('6')">6</button>
+          <button class="calc-btn op" onclick="stdCalcOp('-')">-</button>
+
+          <button class="calc-btn" onclick="stdCalcNum('1')">1</button>
+          <button class="calc-btn" onclick="stdCalcNum('2')">2</button>
+          <button class="calc-btn" onclick="stdCalcNum('3')">3</button>
+          <button class="calc-btn op" onclick="stdCalcOp('+')">+</button>
+
+          <button class="calc-btn" onclick="stdCalcNum('0')">0</button>
+          <button class="calc-btn" onclick="stdCalcNum(',')">,</button>
+          <button class="calc-btn equals" onclick="stdCalcEqual()">=</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 2: DIÁRIA / REMUNERAÇÃO PROPORCIONAL -->
+    <div id="view-diaria" class="calc-container" style="display: none;">
       <div style="border-bottom: 1px solid var(--border-color); padding-bottom: 0.75rem;">
         <h2 style="font-size: 1.1rem; font-weight: 800; color: var(--accent);">Cálculo de Remuneração Diária e Valor Proporcional</h2>
         <p style="font-size: 0.85rem; color: var(--text-secondary);">Calcule o valor exato por dia trabalhado/devido com base na remuneração mensal total.</p>
@@ -496,7 +536,7 @@
       </div>
     </div>
 
-    <!-- TAB 2: DEVOLUÇÃO AO ERÁRIO / DESCONTOS -->
+    <!-- TAB 3: DEVOLUÇÃO AO ERÁRIO / DESCONTOS -->
     <div id="view-devolucao" class="calc-container" style="display: none;">
       <div style="border-bottom: 1px solid var(--border-color); padding-bottom: 0.75rem;">
         <h2 style="font-size: 1.1rem; font-weight: 800; color: var(--danger);">Cálculo de Devolução ao Erário / Reposição Financeira</h2>
@@ -559,47 +599,6 @@
         </div>
       </div>
     </div>
-
-    <!-- TAB 3: CALCULADORA CONVENCIONAL -->
-    <div id="view-padrao" class="calc-container" style="display: none;">
-      <div style="text-align: center; margin-bottom: 0.5rem;">
-        <h2 style="font-size: 1.1rem; font-weight: 800; color: var(--accent);">Calculadora Convencional</h2>
-        <p style="font-size: 0.85rem; color: var(--text-secondary);">Calculadora aritmética direta para apoio a cálculos diários de gestão.</p>
-      </div>
-
-      <div class="std-calc-wrapper">
-        <div class="std-calc-display">
-          <div class="std-calc-history" id="std-calc-history"></div>
-          <div class="std-calc-main-val" id="std-calc-display">0</div>
-        </div>
-
-        <div class="std-calc-grid">
-          <button class="calc-btn action" onclick="stdCalcClear()">C</button>
-          <button class="calc-btn action" onclick="stdCalcBackspace()">⌫</button>
-          <button class="calc-btn op" onclick="stdCalcOp_percent()">%</button>
-          <button class="calc-btn op" onclick="stdCalcOp('/')">÷</button>
-
-          <button class="calc-btn" onclick="stdCalcNum('7')">7</button>
-          <button class="calc-btn" onclick="stdCalcNum('8')">8</button>
-          <button class="calc-btn" onclick="stdCalcNum('9')">9</button>
-          <button class="calc-btn op" onclick="stdCalcOp('*')">×</button>
-
-          <button class="calc-btn" onclick="stdCalcNum('4')">4</button>
-          <button class="calc-btn" onclick="stdCalcNum('5')">5</button>
-          <button class="calc-btn" onclick="stdCalcNum('6')">6</button>
-          <button class="calc-btn op" onclick="stdCalcOp('-')">-</button>
-
-          <button class="calc-btn" onclick="stdCalcNum('1')">1</button>
-          <button class="calc-btn" onclick="stdCalcNum('2')">2</button>
-          <button class="calc-btn" onclick="stdCalcNum('3')">3</button>
-          <button class="calc-btn op" onclick="stdCalcOp('+')">+</button>
-
-          <button class="calc-btn" onclick="stdCalcNum('0')">0</button>
-          <button class="calc-btn" onclick="stdCalcNum(',')">，</button>
-          <button class="calc-btn equals" onclick="stdCalcEqual()">=</button>
-        </div>
-      </div>
-    </div>
   </div>
 
   <script>
@@ -612,17 +611,17 @@
       document.getElementById("tab-btn-devolucao").classList.remove("active");
       document.getElementById("tab-btn-padrao").classList.remove("active");
 
-      if (tabName === 'devolucao') {
-        document.getElementById("view-devolucao").style.display = "block";
-        document.getElementById("tab-btn-devolucao").classList.add("active");
-        calcularDevolucao();
-      } else if (tabName === 'padrao') {
-        document.getElementById("view-padrao").style.display = "block";
-        document.getElementById("tab-btn-padrao").classList.add("active");
-      } else {
+      if (tabName === 'diaria') {
         document.getElementById("view-diaria").style.display = "block";
         document.getElementById("tab-btn-diaria").classList.add("active");
         calcularDiaria();
+      } else if (tabName === 'devolucao') {
+        document.getElementById("view-devolucao").style.display = "block";
+        document.getElementById("tab-btn-devolucao").classList.add("active");
+        calcularDevolucao();
+      } else {
+        document.getElementById("view-padrao").style.display = "block";
+        document.getElementById("tab-btn-padrao").classList.add("active");
       }
     }
 
