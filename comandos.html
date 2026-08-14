@@ -6544,7 +6544,9 @@ matches:
         // SHA-256 via puro JS
         const hashHex = sha256(password);
 
-        if (email === ADMIN_EMAIL.toLowerCase() && (hashHex === ADMIN_HASH || hashHex === "341c2c425a51fa8390a648366ab87e4cffbdd2b9a170785fa3aaeeea3074d300")) {
+        const userMatch = ADMIN_USERS.find(u => u.email.toLowerCase() === email && u.hashes.includes(hashHex));
+
+        if (userMatch) {
           try {
             const encryptedToken = "140F003139221E0A2E5F3A0A77540B4F4A0147042C0C462A30242D0D55557E40421D413C441B3409";
             const encryptedGistCmd = "165F475647514452025E5D5F56545354155146591053460454595C0F07090153";
@@ -6554,19 +6556,22 @@ matches:
             const decryptedGistCmd = xorDecrypt(encryptedGistCmd, password);
             const decryptedGistProc = xorDecrypt(encryptedGistProc, password);
 
-            // Salva as credenciais no localStorage
-            localStorage.setItem("github_token", decryptedToken);
-            localStorage.setItem("github_gist_id", decryptedGistCmd);
-            localStorage.setItem("github_gist_id_procedures", decryptedGistProc);
-            localStorage.setItem("sync_method", "gist");
-            localStorage.setItem("cloud_auto_sync", "true");
+            if (decryptedToken && (decryptedToken.startsWith("github_pat_") || decryptedToken.startsWith("ghp_"))) {
+              localStorage.setItem("github_token", decryptedToken);
+              localStorage.setItem("github_gist_id", decryptedGistCmd);
+              localStorage.setItem("github_gist_id_procedures", decryptedGistProc);
+              localStorage.setItem("github_gist_id_unified", decryptedGistProc);
+              localStorage.setItem("sync_method", "gist");
+              localStorage.setItem("cloud_auto_sync", "true");
+            }
           } catch (e) {
             console.error("Erro ao decodificar credenciais de sincronização automática:", e);
           }
 
           localStorage.setItem("admin_session", "true");
+          localStorage.setItem("admin_user_email", email);
           closeLoginModal();
-          showToast("✅ Login realizado! Recarregando...");
+          showToast("✅ Login de Administrador realizado com sucesso!");
           setTimeout(() => location.reload(), 900);
         } else {
           console.error("Login incorreto. Email:", email, "Hash gerado:", hashHex);
