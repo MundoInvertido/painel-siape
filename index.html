@@ -12,25 +12,30 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
     rel="stylesheet">
   <style>
+  <style>
     :root {
-      --bg-primary: #eef2f7;
+      --bg-primary: #f1f5f9;
       --bg-secondary: #ffffff;
       --bg-tertiary: #f8fafc;
       --text-primary: #0f172a;
-      --text-secondary: #64748b;
+      --text-secondary: #475569;
       --text-muted: #94a3b8;
       --accent: #0057a8;
-      --accent-light: #1a7fd4;
-      --accent-hover: #004080;
-      --accent-glow: rgba(0, 87, 168, 0.12);
+      --accent-light: #2563eb;
+      --accent-hover: #1e40af;
+      --accent-glow: rgba(0, 87, 168, 0.15);
+      --gold: #fbbf24;
+      --gold-hover: #f59e0b;
+      --gold-glow: rgba(251, 191, 36, 0.25);
       --danger: #dc2626;
       --danger-glow: rgba(220, 38, 38, 0.12);
       --success: #059669;
-      --border-color: #dde3ec;
-      --card-shadow: 0 2px 8px rgba(15, 23, 42, 0.04), 0 1px 2px rgba(15, 23, 42, 0.06);
-      --card-shadow-hover: 0 12px 24px -4px rgba(0, 87, 168, 0.12), 0 4px 12px -2px rgba(15, 23, 42, 0.06);
-      --accent-gradient: linear-gradient(135deg, #0057a8 0%, #1a7fd4 100%);
-      --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      --border-color: #cbd5e1;
+      --card-shadow: 0 4px 12px rgba(15, 23, 42, 0.05), 0 1px 3px rgba(15, 23, 42, 0.08);
+      --card-shadow-hover: 0 16px 32px -4px rgba(0, 87, 168, 0.18), 0 4px 12px -2px rgba(15, 23, 42, 0.08);
+      --accent-gradient: linear-gradient(135deg, #0b1a40 0%, #0057a8 100%);
+      --gold-gradient: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+      --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Courier New", monospace;
       --font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       --radius-sm: 0.375rem;
       --radius-md: 0.625rem;
@@ -39,13 +44,13 @@
       --sidebar-width: 260px;
       --sidebar-bg: #ffffff;
       --sidebar-border: #e2e8f0;
-      --sidebar-text: #475569;
-      --sidebar-active-bg: #eff6ff;
-      --sidebar-active-text: #0057a8;
-      --sidebar-icon-color: #94a3b8;
+      --sidebar-text: #334155;
+      --sidebar-active-bg: linear-gradient(135deg, #0057a8 0%, #1d4ed8 100%);
+      --sidebar-active-text: #ffffff;
+      --sidebar-icon-color: #64748b;
 
-      --header-bg: #0b1340;
-      --header-height: 54px;
+      --header-bg: #0b1a40;
+      --header-height: 58px;
 
       --panel-header-bg: #eff6ff;
       --panel-header-text: #1e4d8c;
@@ -53,27 +58,23 @@
     }
 
     [data-theme="dark"] {
-      --bg-primary: #0a0f24;
-      --bg-secondary: #111a3c;
-      --bg-tertiary: #1c2754;
+      --bg-primary: #080e1f;
+      --bg-secondary: #0f1830;
+      --bg-tertiary: #162040;
       --text-primary: #f8fafc;
-      --text-secondary: #9aa8d6;
-      --accent: #f59e0b;
-      --accent-hover: #d97706;
-      --accent-glow: rgba(245, 158, 11, 0.15);
+      --text-secondary: #94a3b8;
+      --accent: #fbbf24;
+      --accent-hover: #f59e0b;
+      --accent-glow: rgba(251, 191, 36, 0.15);
       --danger: #ef4444;
-      --border-color: #243572;
-      --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
+      --border-color: #1e2f5a;
+      --card-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
 
-      --sidebar-bg: #111a3c;
-      --sidebar-border: #243572;
-      --sidebar-text: #9aa8d6;
-      --sidebar-active-bg: #1c2754;
-      --sidebar-active-text: #f8fafc;
-
-      --panel-header-bg: #1c2754;
-      --panel-header-text: #f59e0b;
-      --metric-red: #ef4444;
+      --sidebar-bg: #0f1830;
+      --sidebar-border: #1e2f5a;
+      --sidebar-text: #94a3b8;
+      --sidebar-active-bg: #1c2d5a;
+      --sidebar-active-text: #fbbf24;
     }
 
     * {
@@ -95,18 +96,18 @@
 
     /* Top Header Styling */
     .top-header {
-      background: linear-gradient(135deg, #0b1340 0%, #0e1a50 100%);
+      background: linear-gradient(135deg, #0b1a40 0%, #1e3a8a 100%);
       color: #ffffff;
       height: var(--header-height);
       display: flex;
       justify-content: space-between;
       align-items: center;
       padding: 0 1.5rem;
-      box-shadow: 0 2px 16px rgba(0, 0, 0, 0.25);
+      box-shadow: 0 4px 20px rgba(11, 26, 64, 0.3);
       position: sticky;
       top: 0;
       z-index: 1000;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      border-bottom: 2px solid rgba(251, 191, 36, 0.4);
     }
 
     .header-left {
@@ -116,19 +117,19 @@
     }
 
     .logo-prf {
-      font-family: 'Inter', 'Times New Roman', Georgia, serif;
+      font-family: 'Inter', sans-serif;
       font-weight: 900;
       color: #fbbf24;
-      font-size: 1.25rem;
-      letter-spacing: 0.06em;
+      font-size: 1.35rem;
+      letter-spacing: 0.08em;
       line-height: 1;
-      text-shadow: 0 1px 8px rgba(251, 191, 36, 0.3);
+      text-shadow: 0 2px 10px rgba(251, 191, 36, 0.4);
     }
 
     .header-subtitle {
-      font-size: 0.78rem;
-      color: rgba(255, 255, 255, 0.5);
-      font-weight: 500;
+      font-size: 0.8rem;
+      color: rgba(255, 255, 255, 0.7);
+      font-weight: 600;
       letter-spacing: 0.02em;
     }
 
@@ -139,28 +140,10 @@
       cursor: pointer;
     }
 
-    .header-title {
-      font-size: 1.25rem;
-      font-weight: 400;
-      color: #ffffff;
-    }
-
     .header-right {
       display: flex;
       align-items: center;
-      gap: 1.5rem;
-    }
-
-    .dropdown-item {
-      display: flex;
-      align-items: center;
-      cursor: pointer;
-      color: #ffffff;
-      font-weight: 500;
-    }
-
-    .dropdown-item:hover {
-      opacity: 0.8;
+      gap: 1rem;
     }
 
     /* App Layout with Left Sidebar */
@@ -180,81 +163,71 @@
       top: var(--header-height);
       height: calc(100vh - var(--header-height));
       overflow-y: auto;
-    }
-
-    .sidebar::-webkit-scrollbar {
-      width: 4px;
-    }
-
-    .sidebar::-webkit-scrollbar-track {
-      background: transparent;
-    }
-
-    .sidebar::-webkit-scrollbar-thumb {
-      background: var(--border-color);
-      border-radius: 4px;
+      box-shadow: 2px 0 10px rgba(0, 0, 0, 0.02);
     }
 
     .sidebar-logo {
-      padding: 1.1rem 1.25rem;
-      border-bottom: 1px solid var(--sidebar-border);
+      padding: 1.25rem;
+      background: linear-gradient(135deg, #0b1a40 0%, #1e3a8a 100%);
+      color: #ffffff;
       display: flex;
       align-items: center;
       gap: 0.75rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     }
 
     .sidebar-logo-icon {
-      width: 2.25rem;
-      height: 2.25rem;
-      background: var(--accent-gradient);
-      border-radius: 0.5rem;
+      width: 2.35rem;
+      height: 2.35rem;
+      background: var(--gold-gradient);
+      border-radius: 0.6rem;
       display: flex;
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
-      box-shadow: 0 4px 12px var(--accent-glow);
+      box-shadow: 0 4px 12px rgba(251, 191, 36, 0.35);
     }
 
     .sidebar-logo h1 {
-      font-size: 0.95rem;
-      font-weight: 800;
-      color: var(--text-primary);
+      font-size: 1rem;
+      font-weight: 900;
+      color: #ffffff;
       letter-spacing: -0.01em;
       line-height: 1.2;
     }
 
     .sidebar-logo p {
       font-size: 0.7rem;
-      color: var(--text-muted);
-      font-weight: 500;
+      color: #fbbf24;
+      font-weight: 600;
       margin-top: 1px;
     }
 
     .sidebar-section-label {
       font-size: 0.65rem;
-      font-weight: 700;
+      font-weight: 800;
       text-transform: uppercase;
       letter-spacing: 0.1em;
-      color: var(--text-muted);
-      padding: 0.75rem 1rem 0.25rem;
+      color: #94a3b8;
+      padding: 1rem 1rem 0.35rem;
     }
 
     .sidebar-nav {
-      padding: 0.75rem 0.75rem;
+      padding: 0.75rem;
       display: flex;
       flex-direction: column;
-      gap: 0.2rem;
+      gap: 0.25rem;
       flex-grow: 1;
     }
 
     .nav-item {
       display: flex;
       align-items: center;
-      gap: 0.625rem;
-      padding: 0.65rem 0.875rem;
+      gap: 0.75rem;
+      padding: 0.7rem 0.9rem;
       color: var(--sidebar-text);
       text-decoration: none;
-      border-radius: var(--radius-md);
+      border-radius: 0.5rem;
       font-size: 0.875rem;
       font-weight: 600;
       cursor: pointer;
@@ -272,25 +245,139 @@
     }
 
     .nav-item:hover {
-      background-color: var(--sidebar-active-bg);
-      color: var(--sidebar-active-text);
-      transform: translateX(2px);
+      background-color: #eff6ff;
+      color: var(--accent);
+      transform: translateX(3px);
     }
 
     .nav-item:hover .icon {
       color: var(--accent);
-      transform: scale(1.1);
+      transform: scale(1.15);
     }
 
-    .nav-item.active {
-      background-color: var(--sidebar-active-bg);
-      color: var(--sidebar-active-text);
+    /* Hero Banner Styling */
+    .hero-banner {
+      background: linear-gradient(135deg, #0b1a40 0%, #1e3a8a 50%, #004080 100%);
+      border-radius: 1rem;
+      padding: 1.75rem 2rem;
+      color: #ffffff;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 10px 25px -5px rgba(11, 26, 64, 0.25), 0 4px 10px -2px rgba(0, 0, 0, 0.05);
+      position: relative;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+    }
+
+    .hero-banner::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -10%;
+      width: 380px;
+      height: 380px;
+      background: radial-gradient(circle, rgba(251, 191, 36, 0.18) 0%, rgba(255, 255, 255, 0) 70%);
+      pointer-events: none;
+    }
+
+    .hero-badge {
+      display: inline-block;
+      background: rgba(251, 191, 36, 0.2);
+      color: #fbbf24;
+      border: 1px solid rgba(251, 191, 36, 0.4);
+      font-size: 0.72rem;
+      font-weight: 800;
+      padding: 0.2rem 0.65rem;
+      border-radius: 9999px;
+      letter-spacing: 0.08em;
+      margin-bottom: 0.5rem;
+      text-transform: uppercase;
+    }
+
+    .hero-title {
+      font-size: 1.6rem;
+      font-weight: 900;
+      color: #ffffff;
+      letter-spacing: -0.02em;
+    }
+
+    .hero-subtitle {
+      font-size: 0.88rem;
+      color: rgba(255, 255, 255, 0.85);
+      margin-top: 0.25rem;
+    }
+
+    .hero-stats {
+      display: flex;
+      gap: 1rem;
+      z-index: 1;
+    }
+
+    .stat-pill {
+      background: rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      border-radius: 0.85rem;
+      padding: 0.85rem 1.35rem;
+      text-align: center;
+      min-width: 110px;
+    }
+
+    .stat-num {
+      display: block;
+      font-size: 1.7rem;
+      font-weight: 900;
+      color: #fbbf24;
+      line-height: 1;
+    }
+
+    .stat-lbl {
+      font-size: 0.68rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.9);
+      letter-spacing: 0.05em;
+      margin-top: 0.35rem;
+    }
+
+    /* Category Pill Bar */
+    .category-pills-bar {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-top: 0.75rem;
+      padding-top: 0.75rem;
+      border-top: 1px solid var(--border-color);
+    }
+
+    .cat-pill-btn {
+      background-color: #ffffff;
+      border: 1px solid #cbd5e1;
+      color: #475569;
+      padding: 0.4rem 0.9rem;
+      border-radius: 9999px;
+      font-size: 0.8rem;
       font-weight: 700;
-      box-shadow: inset 3px 0 0 var(--accent);
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
     }
 
-    .nav-item.active .icon {
-      color: var(--accent);
+    .cat-pill-btn:hover {
+      background-color: #eff6ff;
+      border-color: #3b82f6;
+      color: #0057a8;
+      transform: translateY(-1px);
+    }
+
+    .cat-pill-btn.active {
+      background: linear-gradient(135deg, #0057a8 0%, #1d4ed8 100%);
+      color: #ffffff;
+      border-color: #0057a8;
+      box-shadow: 0 4px 12px rgba(0, 87, 168, 0.3);
     }
 
     .nav-badge {
@@ -1355,67 +1442,41 @@
     <main class="main-content">
       <!-- Content Procedures Tab -->
       <div id="content-procedures" style="display: flex; flex-direction: column; gap: 1.5rem; width: 100%;">
-        <!-- Metrics Card -->
-        <div class="card">
-          <div class="card-header-siape">
-            <svg class="icon" viewBox="0 0 24 24" style="color: var(--accent);">
-              <path
-                d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z" />
-            </svg>
-            Procedimentos SGP / NUAP - Central PRF
+        <!-- Hero Header Banner -->
+        <div class="hero-banner">
+          <div class="hero-content">
+            <div class="hero-badge">PRF · SGP-PA</div>
+            <h1 class="hero-title">Central de Procedimentos Mapeados</h1>
+            <p class="hero-subtitle">Consulte rotinas operacionais, passos consolidados e atalhos rápidos do SIAPE.</p>
           </div>
-          <div class="metrics-grid">
-            <div class="metric-column">
-              <span class="metric-label">TOTAL DE FLUXOS</span>
-              <div class="metric-value-red">
-                <svg class="icon" viewBox="0 0 24 24" style="width: 1.2rem; height: 1.2rem;">
-                  <path
-                    d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z" />
-                </svg>
-                <span id="count-procedures">0</span>
-              </div>
+          <div class="hero-stats">
+            <div class="stat-pill">
+              <span class="stat-num" id="count-procedures">0</span>
+              <span class="stat-lbl">Procedimentos</span>
             </div>
-            <div class="metric-column">
-              <span class="metric-label">CATEGORIAS ATIVAS</span>
-              <div class="metric-value-text" id="count-categories" style="font-size: 1.8rem;">
-                0
-              </div>
+            <div class="stat-pill">
+              <span class="stat-num" id="count-categories">0</span>
+              <span class="stat-lbl">Categorias</span>
             </div>
           </div>
         </div>
 
-        <!-- Search and Filter Panel (styled exactly like Painel de Registros in screenshot) -->
-        <div class="card">
-          <div class="panel-header-blue">
-            <svg class="icon" viewBox="0 0 24 24" style="width: 1.1rem; height: 1.1rem;">
-              <path d="M4 14h6v-4H4v4zm0 5h6v-4H4v4zM4 9h6V5H4v4zm7 5h10v-4H11v4zm0 5h10v-4H11v4zm0-14v4h10V5H11z" />
-            </svg>
-            PAINEL DE REGISTROS / FILTROS E BUSCA
+        <!-- Search and Category Pills Bar -->
+        <div class="card" style="padding: 1.25rem; display: flex; flex-direction: column; gap: 1rem;">
+          <div class="search-input-wrapper">
+            <input type="text" id="search-input"
+              placeholder="🔍 Pesquise por procedimento, palavra-chave, rubrica ou comando SIAPE..." oninput="handleSearch()">
+            <button class="search-clear" id="search-clear" onclick="clearSearch()">&times;</button>
           </div>
 
-          <div class="form-grid">
-            <div class="form-group">
-              <label for="search-input">Pesquisa Geral *</label>
-              <div class="search-input-wrapper">
-                <input type="text" id="search-input"
-                  placeholder="Pesquise por procedimento, rubrica ou comandos associados..." oninput="handleSearch()">
-                <button class="search-clear" id="search-clear" onclick="clearSearch()">&times;</button>
-              </div>
+          <div style="display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap;">
+            <div class="category-pills-bar" id="category-pills-container" style="border-top: none; margin-top: 0; padding-top: 0;">
+              <!-- Dynamically populated category pills -->
             </div>
-
-            <div class="form-group">
-              <label for="filter-category-select">Filtrar por Categoria *</label>
-              <select id="filter-category-select" onchange="filterCategory(this.value)">
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+              <select id="filter-category-select" onchange="filterCategory(this.value)" style="display: none;">
                 <option value="ALL">Todas as Categorias</option>
               </select>
-            </div>
-          </div>
-
-          <div class="form-row-extra">
-            <div style="font-size: 0.8rem; color: var(--text-secondary);">
-              Dica: Digite <code
-                style="font-family: var(--font-mono); color: var(--accent); font-weight: bold;">/</code>
-              para focar na pesquisa geral.
             </div>
           </div>
         </div>
@@ -2041,6 +2102,9 @@
           console.warn("Não foi possível carregar dados da nuvem, usando dados locais.", e);
         }
       }
+
+      renderCategoryFilters();
+      renderProcedures();
     };
 
     function toggleTheme() {
@@ -2097,22 +2161,22 @@
 
         card.innerHTML = `
                     <div style="cursor: pointer;" onclick="openProcedure('${proc.id}')">
-                        <div class="procedure-card-header">
-                            <span class="procedure-category-badge">${proc.category}</span>
+                        <div class="procedure-card-header" style="margin-bottom: 0.65rem;">
+                            <span class="procedure-category-badge" style="background: #fef3c7; color: #92400e; border: 1px solid #fde68a; font-weight: 800;">${proc.category}</span>
                         </div>
                         <div>
-                            <h3>${proc.title}</h3>
-                            <p style="font-size: 0.85rem; color: var(--accent); margin-bottom: 0.5rem; font-weight: 600;">${proc.subtitle}</p>
-                            <p>${proc.description}</p>
+                            <h3 style="font-size: 1.15rem; font-weight: 900; color: #0b1a40; margin-bottom: 0.2rem;">${proc.title}</h3>
+                            <p style="font-size: 0.85rem; color: #0057a8; margin-bottom: 0.5rem; font-weight: 700;">${proc.subtitle}</p>
+                            <p style="font-size: 0.875rem; color: #475569; line-height: 1.5;">${proc.description}</p>
                         </div>
-                        <div class="procedure-card-footer">
-                            <span class="steps-count">
-                                <svg class="icon" viewBox="0 0 20 20" style="width: 1rem; height: 1rem;">
+                        <div class="procedure-card-footer" style="margin-top: 1rem; border-top: 1px solid #e2e8f0; padding-top: 0.85rem;">
+                            <span class="steps-count" style="background: #eff6ff; color: #1e40af; border: 1px solid #bfdbfe; font-weight: 700; border-radius: 9999px; padding: 0.2rem 0.7rem;">
+                                <svg class="icon" viewBox="0 0 20 20" style="width: 0.9rem; height: 0.9rem;">
                                     <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clip-rule="evenodd"/>
                                 </svg>
                                 ${proc.steps.length} etapas
                             </span>
-                            <span>Clique para ver fluxo</span>
+                            <span class="btn btn-accent" style="padding: 0.35rem 0.85rem; font-size: 0.78rem; font-weight: 800; border-radius: 0.5rem;">Visualizar Fluxo ➔</span>
                         </div>
                     </div>
                     ${adminActions}
@@ -2120,6 +2184,7 @@
         grid.appendChild(card);
       });
       updateStats();
+      if (typeof renderCategoryFilters === 'function') renderCategoryFilters();
     }
 
     // Toggle mobile sidebar menu
@@ -3383,17 +3448,37 @@
 
     function renderCategoryFilters() {
       const select = document.getElementById("filter-category-select");
-      if (!select) return;
-      select.innerHTML = '<option value="ALL">Todas as Categorias</option>';
-      CATEGORIES.forEach(cat => {
-        const opt = document.createElement("option");
-        opt.value = cat;
-        opt.textContent = cat;
-        if (selectedCategory === cat) {
-          opt.selected = true;
-        }
-        select.appendChild(opt);
-      });
+      if (select) {
+        select.innerHTML = '<option value="ALL">Todas as Categorias</option>';
+        CATEGORIES.forEach(cat => {
+          const opt = document.createElement("option");
+          opt.value = cat;
+          opt.textContent = cat;
+          if (selectedCategory === cat) {
+            opt.selected = true;
+          }
+          select.appendChild(opt);
+        });
+      }
+
+      const pillsContainer = document.getElementById("category-pills-container");
+      if (pillsContainer) {
+        pillsContainer.innerHTML = "";
+
+        const allBtn = document.createElement("button");
+        allBtn.className = `cat-pill-btn ${selectedCategory === 'ALL' ? 'active' : ''}`;
+        allBtn.textContent = "Todas as Categorias";
+        allBtn.onclick = () => filterCategory('ALL');
+        pillsContainer.appendChild(allBtn);
+
+        CATEGORIES.forEach(cat => {
+          const btn = document.createElement("button");
+          btn.className = `cat-pill-btn ${selectedCategory === cat ? 'active' : ''}`;
+          btn.textContent = cat;
+          btn.onclick = () => filterCategory(cat);
+          pillsContainer.appendChild(btn);
+        });
+      }
     }
 
     // --- CLOUD SYNC HELPER FUNCTIONS ---
