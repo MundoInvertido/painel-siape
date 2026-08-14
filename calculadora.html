@@ -792,14 +792,16 @@
     let calcNewNum = true;      // flag: próximo dígito inicia novo número
     let calcHistory = '';       // linha de histórico
 
+    let calcLastOperandB = null;
+    let calcLastOperator = null;
+
     function stdFmt(val) {
-      // Formata número para exibição sem notação científica
       let n = parseFloat(val);
       if (isNaN(n)) return '0';
-      // Detecta se precisa de decimais
+      // Corrige imprecisões binárias de ponto flutuante do JS (ex: 0.1 + 0.2 = 0.3)
+      n = Math.round(n * 1e12) / 1e12;
       let s = n.toString();
-      // Limita a 12 dígitos significativos
-      if (s.replace('-','').replace('.','').length > 12) {
+      if (s.replace('-', '').replace('.', '').length > 12) {
         s = parseFloat(n.toPrecision(12)).toString();
       }
       return s.replace('.', ',');
@@ -839,7 +841,6 @@
     }
 
     function stdGetValue() {
-      // Converte display em número (BR: vírgula → ponto)
       return parseFloat(calcDisplay.replace(',', '.')) || 0;
     }
 
@@ -860,7 +861,6 @@
       const cur = stdGetValue();
 
       if (calcOperator !== null && !calcNewNum) {
-        // Há operação pendente: resolve e encadeia
         const result = stdApplyOp();
         if (isNaN(result)) {
           calcHistory = 'Erro: divisão por zero';
@@ -878,6 +878,8 @@
       }
 
       calcOperator = op;
+      calcLastOperator = null;
+      calcLastOperandB = null;
       calcNewNum = true;
       const opLabel = { '+': '+', '-': '−', '*': '×', '/': '÷' }[op] || op;
       calcHistory = stdFmt(calcOperand) + ' ' + opLabel;
@@ -885,7 +887,7 @@
     }
 
     function stdCalcOp_percent() {
-      // % no estilo Windows: calcula percentagem do operando armazenado
+      // % modelo Windows: calcula percentagem sobre o operando acumulado
       const cur = stdGetValue();
       let result;
       if (calcOperand !== null && (calcOperator === '+' || calcOperator === '-')) {
@@ -895,26 +897,54 @@
       } else {
         result = cur / 100;
       }
+
       calcDisplay = stdFmt(result);
       calcNewNum = true;
+      if (calcOperand !== null && calcOperator !== null) {
+        const opLabel = { '+': '+', '-': '−', '*': '×', '/': '÷' }[calcOperator] || calcOperator;
+        calcHistory = stdFmt(calcOperand) + ' ' + opLabel + ' ' + stdFmt(result);
+      }
       stdSetDisplay(calcDisplay);
     }
 
     function stdCalcEqual() {
-      if (calcOperator === null) return;
-      const result = stdApplyOp();
+      if (calcOperator !== null) {
+        const b = stdGetValue();
+        const result = stdApplyOp();
 
-      if (isNaN(result)) {
-        calcHistory = 'Erro: divisão por zero';
-        calcDisplay = '0';
-      } else {
-        calcHistory = '';
-        calcDisplay = stdFmt(result);
+        if (isNaN(result)) {
+          calcHistory = 'Erro: divisão por zero';
+          calcDisplay = '0';
+        } else {
+          calcHistory = '';
+          calcDisplay = stdFmt(result);
+        }
+
+        calcLastOperandB = b;
+        calcLastOperator = calcOperator;
+        calcOperand = result;
+        calcOperator = null;
+        calcNewNum = true;
+      } else if (calcLastOperator !== null && calcLastOperandB !== null) {
+        const a = stdGetValue();
+        const b = calcLastOperandB;
+        let result;
+        switch (calcLastOperator) {
+          case '+': result = a + b; break;
+          case '-': result = a - b; break;
+          case '*': result = a * b; break;
+          case '/': result = b === 0 ? NaN : a / b; break;
+          default: result = a;
+        }
+        if (isNaN(result)) {
+          calcHistory = 'Erro: divisão por zero';
+          calcDisplay = '0';
+        } else {
+          calcHistory = '';
+          calcDisplay = stdFmt(result);
+        }
+        calcNewNum = true;
       }
-
-      calcOperand = null;
-      calcOperator = null;
-      calcNewNum = true;
       stdSetDisplay(calcDisplay);
     }
 
@@ -922,6 +952,8 @@
       calcDisplay = '0';
       calcOperand = null;
       calcOperator = null;
+      calcLastOperator = null;
+      calcLastOperandB = null;
       calcNewNum = true;
       calcHistory = '';
       stdSetDisplay(calcDisplay);

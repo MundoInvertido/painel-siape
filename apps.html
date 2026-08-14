@@ -603,6 +603,12 @@
           </svg>
           Calculadora de Substituição
         </button>
+        <button class="nav-item" onclick="switchAppTab('periculosidade')">
+          <svg class="icon" viewBox="0 0 24 24">
+            <path d="M12 2L1 21h22L12 2zm1 14h-2v-2h2v2zm0-4h-2V9h2v3z" />
+          </svg>
+          Adicional de Periculosidade
+        </button>
 
         <hr class="nav-divider">
 
@@ -627,6 +633,12 @@
             </svg>
             Painel de Apps
           </button>
+          <button class="app-tab-btn" id="tab-btn-periculosidade" onclick="switchAppTab('periculosidade')">
+            <svg class="icon" viewBox="0 0 24 24">
+              <path d="M12 2L1 21h22L12 2zm1 14h-2v-2h2v2zm0-4h-2V9h2v3z" />
+            </svg>
+            Periculosidade (10%)
+          </button>
           <button class="app-tab-btn" id="tab-btn-calculadora" onclick="switchAppTab('calculadora')">
             <svg class="icon" viewBox="0 0 24 24">
               <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z" />
@@ -650,7 +662,31 @@
         <!-- VIEW 1: OVERVIEW GRID -->
         <div id="view-overview" class="apps-grid">
 
-          <!-- App Card 0: Calculadora RH & Geral -->
+          <!-- App Card 0: Adicional de Periculosidade -->
+          <div class="app-card">
+            <div style="display: flex; align-items: center; gap: 1rem;">
+              <div class="app-card-icon" style="background: linear-gradient(135deg, #d97706 0%, #f59e0b 100%);">
+                <svg class="icon" viewBox="0 0 24 24" style="width: 1.75rem; height: 1.75rem;">
+                  <path d="M12 2L1 21h22L12 2zm1 14h-2v-2h2v2zm0-4h-2V9h2v3z" />
+                </svg>
+              </div>
+              <div>
+                <h3>Adicional de Periculosidade</h3>
+                <span style="font-size: 0.75rem; font-weight: 700; color: #d97706; text-transform: uppercase;">Gestão RH / SIAPE</span>
+              </div>
+            </div>
+            <p>Cálculo do Adicional de Periculosidade (10% sobre Vencimento Básico), com proporcionalidade de dias e geração de resumo de despacho.</p>
+            <div class="app-card-actions">
+              <button class="btn btn-accent" style="flex: 1; background-color: #d97706; border-color: #d97706;" onclick="switchAppTab('periculosidade')">
+                ▶️ Abrir Aplicativo
+              </button>
+              <a href="periculosidade.html" target="_blank" class="btn" title="Abrir em Nova Aba">
+                ↗️ Nova Aba
+              </a>
+            </div>
+          </div>
+
+          <!-- App Card 1: Calculadora RH & Geral -->
           <div class="app-card">
             <div style="display: flex; align-items: center; gap: 1rem;">
               <div class="app-card-icon" style="background: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%);">
@@ -674,7 +710,7 @@
             </div>
           </div>
 
-          <!-- App Card 1: Contador de Dias -->
+          <!-- App Card 2: Contador de Dias -->
           <div class="app-card">
             <div style="display: flex; align-items: center; gap: 1rem;">
               <div class="app-card-icon">
@@ -698,7 +734,7 @@
             </div>
           </div>
 
-          <!-- App Card 2: Calculadora de Substituição -->
+          <!-- App Card 3: Calculadora de Substituição -->
           <div class="app-card">
             <div style="display: flex; align-items: center; gap: 1rem;">
               <div class="app-card-icon" style="background: linear-gradient(135deg, #059669 0%, #10b981 100%);">
@@ -724,7 +760,12 @@
 
         </div>
 
-        <!-- VIEW 0: CALCULADORA RH & GERAL IFRAME -->
+        <!-- VIEW 0: ADICIONAL DE PERICULOSIDADE IFRAME -->
+        <div id="view-periculosidade" style="display: none; width: 100%;">
+          <iframe src="periculosidade.html" class="app-iframe-container" id="iframe-periculosidade"></iframe>
+        </div>
+
+        <!-- VIEW 1: CALCULADORA RH & GERAL IFRAME -->
         <div id="view-calculadora" style="display: none; width: 100%;">
           <iframe src="calculadora.html" class="app-iframe-container" id="iframe-calculadora"></iframe>
         </div>
@@ -755,18 +796,23 @@
     function switchAppTab(tabName) {
       // Hide all views
       document.getElementById("view-overview").style.display = "none";
+      document.getElementById("view-periculosidade").style.display = "none";
       document.getElementById("view-calculadora").style.display = "none";
       document.getElementById("view-contador").style.display = "none";
       document.getElementById("view-substituicao").style.display = "none";
 
       // Remove active from all buttons
       document.getElementById("tab-btn-overview").classList.remove("active");
+      document.getElementById("tab-btn-periculosidade").classList.remove("active");
       document.getElementById("tab-btn-calculadora").classList.remove("active");
       document.getElementById("tab-btn-contador").classList.remove("active");
       document.getElementById("tab-btn-substituicao").classList.remove("active");
 
       // Show selected view
-      if (tabName === 'calculadora') {
+      if (tabName === 'periculosidade') {
+        document.getElementById("view-periculosidade").style.display = "block";
+        document.getElementById("tab-btn-periculosidade").classList.add("active");
+      } else if (tabName === 'calculadora') {
         document.getElementById("view-calculadora").style.display = "block";
         document.getElementById("tab-btn-calculadora").classList.add("active");
       } else if (tabName === 'contador') {
