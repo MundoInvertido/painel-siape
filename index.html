@@ -2858,15 +2858,7 @@
               localStorage.setItem("cloud_auto_sync", "true");
             }
           } catch (e) {
-            console.error("Erro ao decodificar credenciais de sincronização automática:", e);
-          }
-
-          localStorage.setItem("admin_session", "true");
-          localStorage.setItem("admin_user_email", email);
-          closeLoginModal();
-          showToast("✅ Login realizado! Recarregando...");
-          setTimeout(() => location.reload(), 900);
-        } else {
+         } else {
           console.error("Login incorreto. Email:", email, "Hash gerado:", hashHex);
           msgEl.innerHTML = `❌ E-mail ou senha incorretos.<br><span style="font-size:0.72rem;opacity:0.75;user-select:all;">Hash no browser: ${hashHex}</span>`;
           msgEl.style.display = "block";
@@ -2907,6 +2899,8 @@
       switch (key) {
         case 'calculadora':
           return { label: 'Abrir Calculadora RH & Geral', icon: '🧮', url: 'calculadora.html' };
+        case 'periculosidade':
+          return { label: 'Abrir Calculadora de Periculosidade (10%)', icon: '⚡', url: 'periculosidade.html' };
         case 'contador':
           return { label: 'Abrir Contador de Dias & Prazos', icon: '📅', url: 'contador_de_dias.html' };
         case 'substituicao':
@@ -2966,6 +2960,7 @@
                     <select class="form-control step-applink-select">
                         <option value="none" ${(!stepAppLink || stepAppLink === 'none') ? 'selected' : ''}>Nenhum App</option>
                         <option value="calculadora" ${stepAppLink === 'calculadora' ? 'selected' : ''}>🧮 Calculadora RH &amp; Geral</option>
+                        <option value="periculosidade" ${stepAppLink === 'periculosidade' ? 'selected' : ''}>⚡ Adicional de Periculosidade (10%)</option>
                         <option value="contador" ${stepAppLink === 'contador' ? 'selected' : ''}>📅 Contador de Dias &amp; Prazos</option>
                         <option value="substituicao" ${stepAppLink === 'substituicao' ? 'selected' : ''}>📊 Calculadora de Substituição</option>
                     </select>
