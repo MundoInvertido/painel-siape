@@ -1755,12 +1755,19 @@
 
     // --- CLOUD SYNC INTEGRATION ---
     async function cloudGet() {
-      const gistId = localStorage.getItem("github_gist_id_unified") || localStorage.getItem("github_gist_id_procedures") || localStorage.getItem("github_gist_id") || SITE_GIST_ID;
-      if (!gistId) return null;
+      let gistId = localStorage.getItem("github_gist_id_unified") || localStorage.getItem("github_gist_id_procedures") || localStorage.getItem("github_gist_id");
+      if (!gistId || gistId.length < 20) gistId = SITE_GIST_ID;
+
       try {
-        const rawUrl = `https://gist.githubusercontent.com/raw/${gistId}/siape_unified_data.json`;
-        const res = await fetch(rawUrl + '?t=' + Date.now());
+        let rawUrl = `https://gist.githubusercontent.com/raw/${gistId}/siape_unified_data.json?t=${Date.now()}`;
+        let res = await fetch(rawUrl);
         if (res.ok) return await res.json();
+
+        if (gistId !== SITE_GIST_ID) {
+          rawUrl = `https://gist.githubusercontent.com/raw/${SITE_GIST_ID}/siape_unified_data.json?t=${Date.now()}`;
+          res = await fetch(rawUrl);
+          if (res.ok) return await res.json();
+        }
       } catch(e){}
       return null;
     }

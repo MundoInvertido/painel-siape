@@ -4996,7 +4996,7 @@ matches:
       let savedYaml = localStorage.getItem("espanso_siape_yaml");
       let hasLoadedValidYaml = false;
 
-      if (savedYaml && savedYaml.trim().length > 0) {
+      if (savedYaml && savedYaml.trim().length > 50) {
         rawYaml = savedYaml;
         let testSections = parseEspansoYaml(rawYaml);
         if (testSections && testSections.length > 0) {
@@ -5262,12 +5262,24 @@ matches:
         localStorage.setItem("sgp_nuap_categories", JSON.stringify(parsed.categories));
         updated = true;
       }
-      if (typeof parsed.yaml === 'string') {
-        if (typeof rawYaml !== 'undefined') rawYaml = parsed.yaml;
-        localStorage.setItem("espanso_siape_yaml", parsed.yaml);
-        const yamlInput = document.getElementById("yaml-input");
-        if (yamlInput) yamlInput.value = parsed.yaml;
-        updated = true;
+      if (typeof parsed.yaml === 'string' && parsed.yaml.trim().length > 50) {
+        let testSections = parseEspansoYaml(parsed.yaml);
+        if (testSections && testSections.length > 0) {
+          rawYaml = parsed.yaml;
+          localStorage.setItem("espanso_siape_yaml", parsed.yaml);
+          const yamlInput = document.getElementById("yaml-input");
+          if (yamlInput) yamlInput.value = parsed.yaml;
+          updated = true;
+        }
+      } else if (!rawYaml || rawYaml.trim().length < 50) {
+        const defaultYamlText = document.getElementById("default-yaml") ? document.getElementById("default-yaml").textContent : "";
+        if (defaultYamlText && defaultYamlText.trim().length > 50) {
+          rawYaml = defaultYamlText;
+          localStorage.setItem("espanso_siape_yaml", rawYaml);
+          const yamlInput = document.getElementById("yaml-input");
+          if (yamlInput) yamlInput.value = rawYaml;
+          updated = true;
+        }
       }
       if (parsed.agendamentos && Array.isArray(parsed.agendamentos)) {
         if (typeof agendamentosList !== 'undefined') agendamentosList = parsed.agendamentos;
@@ -5289,51 +5301,39 @@ matches:
       const method = localStorage.getItem("sync_method") || "gist";
       if (method === "gist") {
         const token = localStorage.getItem("github_token");
-        const gistId = localStorage.getItem("github_gist_id_unified") || 
-                       localStorage.getItem("github_gist_id") || 
-                       localStorage.getItem("github_gist_id_procedures") ||
-                       SITE_GIST_ID;
-        if (!gistId) return null;
+        let gistId = localStorage.getItem("github_gist_id_unified") || 
+                     localStorage.getItem("github_gist_id") || 
+                     localStorage.getItem("github_gist_id_procedures");
+        if (!gistId || gistId.length < 20) gistId = SITE_GIST_ID;
+
         try {
-          const rawUrl = `https://gist.githubusercontent.com/raw/${gistId}/siape_unified_data.json`;
-          const res = await fetch(rawUrl + '?t=' + Date.now());
+          let rawUrl = `https://gist.githubusercontent.com/raw/${gistId}/siape_unified_data.json?t=${Date.now()}`;
+          let res = await fetch(rawUrl);
           if (res.ok) {
             return await res.json();
           }
+
+          // Automatic Fallback to default SITE_GIST_ID if custom gist returns 404
+          if (gistId !== SITE_GIST_ID) {
+            gistId = SITE_GIST_ID;
+            rawUrl = `https://gist.githubusercontent.com/raw/${gistId}/siape_unified_data.json?t=${Date.now()}`;
+            res = await fetch(rawUrl);
+            if (res.ok) {
+              return await res.json();
+            }
+          }
+
           const headers = {};
           if (token) headers["Authorization"] = `Bearer ${token}`;
           const apiRes = await fetch(`https://api.github.com/gists/${gistId}`, { headers });
           if (apiRes.ok) {
             const data = await apiRes.json();
-            if (data.files["siape_unified_data.json"]) {
+            if (data.files && data.files["siape_unified_data.json"]) {
               return JSON.parse(data.files["siape_unified_data.json"].content);
-            } else {
-              const unified = {};
-              if (data.files["procedures_data.json"]) {
-                try {
-                  const p = JSON.parse(data.files["procedures_data.json"].content);
-                  unified.procedures = p.procedures;
-                  unified.categories = p.categories;
-                } catch(e){}
-              }
-              if (data.files["comandos_data.json"]) {
-                try {
-                  const c = JSON.parse(data.files["comandos_data.json"].content);
-                  unified.yaml = c.yaml;
-                  unified.agendamentos = c.agendamentos;
-                } catch(e){}
-              } else if (data.files["siape_yaml.json"]) {
-                try {
-                  const c = JSON.parse(data.files["siape_yaml.json"].content);
-                  unified.yaml = c.yaml;
-                  unified.agendamentos = c.agendamentos;
-                } catch(e){}
-              }
-              return unified;
             }
           }
         } catch (e) {
-          console.error("Erro ao carregar dados unificados do Gist:", e);
+          console.warn("Sem dados unificados no Gist, utilizando dados locais.", e);
         }
       } else {
         const syncKey = localStorage.getItem("cloud_sync_key");
@@ -5344,7 +5344,7 @@ matches:
             return await res.json();
           }
         } catch (e) {
-          console.error("Erro ao ler do JSONBlob:", e);
+          console.warn("Erro ao ler do JSONBlob:", e);
         }
       }
       return null;

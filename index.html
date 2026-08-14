@@ -3715,45 +3715,38 @@
       const method = localStorage.getItem("sync_method") || "gist";
       if (method === "gist") {
         const token = localStorage.getItem("github_token");
-        const gistId = localStorage.getItem("github_gist_id_unified") ||
+        let gistId = localStorage.getItem("github_gist_id_unified") ||
           localStorage.getItem("github_gist_id_procedures") ||
-          localStorage.getItem("github_gist_id") ||
-          SITE_GIST_ID;
-        if (!gistId) return null;
+          localStorage.getItem("github_gist_id");
+        if (!gistId || gistId.length < 20) gistId = SITE_GIST_ID;
+
         try {
-          const rawUrl = `https://gist.githubusercontent.com/raw/${gistId}/siape_unified_data.json`;
-          const res = await fetch(rawUrl + '?t=' + Date.now());
+          let rawUrl = `https://gist.githubusercontent.com/raw/${gistId}/siape_unified_data.json?t=${Date.now()}`;
+          let res = await fetch(rawUrl);
           if (res.ok) {
             return await res.json();
           }
+
+          if (gistId !== SITE_GIST_ID) {
+            gistId = SITE_GIST_ID;
+            rawUrl = `https://gist.githubusercontent.com/raw/${gistId}/siape_unified_data.json?t=${Date.now()}`;
+            res = await fetch(rawUrl);
+            if (res.ok) {
+              return await res.json();
+            }
+          }
+
           const headers = {};
           if (token) headers["Authorization"] = `Bearer ${token}`;
           const apiRes = await fetch(`https://api.github.com/gists/${gistId}`, { headers });
           if (apiRes.ok) {
             const data = await apiRes.json();
-            if (data.files["siape_unified_data.json"]) {
+            if (data.files && data.files["siape_unified_data.json"]) {
               return JSON.parse(data.files["siape_unified_data.json"].content);
-            } else {
-              const unified = {};
-              if (data.files["procedures_data.json"]) {
-                try {
-                  const p = JSON.parse(data.files["procedures_data.json"].content);
-                  unified.procedures = p.procedures;
-                  unified.categories = p.categories;
-                } catch (e) { }
-              }
-              if (data.files["comandos_data.json"]) {
-                try {
-                  const c = JSON.parse(data.files["comandos_data.json"].content);
-                  unified.yaml = c.yaml;
-                  unified.agendamentos = c.agendamentos;
-                } catch (e) { }
-              }
-              return unified;
             }
           }
         } catch (e) {
-          console.error("Erro ao carregar dados unificados do Gist:", e);
+          console.warn("Erro ao carregar dados unificados do Gist:", e);
         }
       } else {
         const syncKey = localStorage.getItem("cloud_sync_key");
@@ -3764,7 +3757,7 @@
             return await res.json();
           }
         } catch (e) {
-          console.error("Erro ao ler do JSONBlob:", e);
+          console.warn("Erro ao ler do JSONBlob:", e);
         }
       }
       return null;
