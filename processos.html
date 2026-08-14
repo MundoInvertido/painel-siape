@@ -993,64 +993,65 @@
   </div>
 
   <script>
-    // DEFAULT COLUMNS INITIAL STRUCTURE
     const DEFAULT_COLUMNS = [
       { id: "col_1", title: "Análise de requerimentos e documentos" },
       { id: "col_2", title: "Enviado para correção" },
       { id: "col_3", title: "Incluindo docs" },
       { id: "col_4", title: "Aguardando portaria ou decisão" },
       { id: "col_5", title: "Incluindo no sistema" },
-      { id: "col_6", title: "Concluído" }
+      { id: "col_6", title: "Concluido" }
     ];
 
     const DEFAULT_CARDS = [
       {
         id: "card_1",
-        columnId: "col_1",
+        columnId: "col_4", // Aguardando portaria ou decisão
         title: "Averbação Ferro",
         sei: "08650.001001/2026-12",
         tag: "Averbação",
-        deadline: "2026-08-25",
         description: "Requerimento de averbação de tempo prestado na iniciativa privada pelo PRF Ferro.",
-        checklist: [
-          { text: "Conferir certidão do INSS", done: true },
-          { text: "Analisar mapa de apuração", done: false }
-        ],
+        checklist: [],
         comments: [
-          { author: "NUAP / PA", text: "Processo distribuído para análise inicial.", date: "10/08/2026 09:30" }
+          { author: "NUAP / PA", text: "Processo em análise de decisão.", date: "10/08/2026 09:30" }
         ]
       },
       {
         id: "card_2",
-        columnId: "col_2",
+        columnId: "col_5", // Incluindo no sistema
         title: "Processo averbação Evangelhista",
         sei: "08650.002045/2026-88",
         tag: "Averbação",
-        deadline: "2026-08-18",
-        description: "Aguardando documento complementar do órgão expedidor.",
-        checklist: [
-          { text: "Solicitar cópia legível do Diário Oficial", done: true },
-          { text: "Notificar servidor no SEI", done: true }
-        ],
+        description: "Lançamento dos dados no sistema SIAPE.",
+        checklist: [],
         comments: [
-          { author: "SGP / PA", text: "Ofício enviado ao órgão de origem.", date: "12/08/2026 14:15" }
+          { author: "SGP / PA", text: "Processo encaminhado para inclusão no sistema.", date: "12/08/2026 14:15" }
         ]
       },
       {
         id: "card_3",
-        columnId: "col_6",
+        columnId: "col_6", // Concluido
+        title: "Adicionar prorrogação paternidade",
+        sei: "08650.004010/2026-99",
+        tag: "Concessão",
+        deadline: "2026-08-02",
+        description: "Prorrogação de licença paternidade deferida e cadastrada.",
+        isDone: true,
+        checklist: [],
+        comments: [
+          { author: "SGP / PA", text: "Concluído em 02 de ago.", date: "02/08/2026 10:00" }
+        ]
+      },
+      {
+        id: "card_4",
+        columnId: "col_6", // Concluido
         title: "Processo de averbação MADURO",
         sei: "08650.003112/2026-44",
         tag: "Averbação",
-        deadline: "2026-08-02",
-        description: "Averbação incluída no SIAPE e publicada em boletim.",
-        checklist: [
-          { text: "Lançar no SIAPE", done: true },
-          { text: "Publicar Portaria", done: true },
-          { text: "Arquivar no SEI", done: true }
-        ],
+        description: "Averbação concluída e arquivada.",
+        isDone: true,
+        checklist: [],
         comments: [
-          { author: "SGP / PA", text: "Portaria publicada em 02 de ago.", date: "02/08/2026 16:00" }
+          { author: "SGP / PA", text: "Portaria publicada.", date: "02/08/2026 16:00" }
         ]
       }
     ];
@@ -1143,6 +1144,16 @@
           </div>
         ` : "";
 
+        const addCardFooter = isAdmin ? `
+          <div style="padding: 0.6rem 0.75rem; border-top: 1px solid var(--border-color); display: flex; align-items: center; justify-content: space-between; cursor: pointer; color: var(--text-secondary); transition: background-color 0.15s ease;" 
+               onclick="openCardModalWithColumn('${col.id}')"
+               onmouseover="this.style.backgroundColor='var(--border-color)'" 
+               onmouseout="this.style.backgroundColor='transparent'">
+            <span style="font-size: 0.85rem; font-weight: 600;">+ Adicionar um cartão</span>
+            <span style="font-size: 0.85rem; opacity: 0.7;">📋</span>
+          </div>
+        ` : "";
+
         colEl.innerHTML = `
           <div class="column-header">
             <div class="column-title">
@@ -1153,6 +1164,7 @@
           </div>
           <div class="column-body" id="col-body-${col.id}" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event, '${col.id}')">
           </div>
+          ${addCardFooter}
         `;
 
         const bodyEl = colEl.querySelector(`#col-body-${col.id}`);
@@ -1174,6 +1186,12 @@
         addColBtn.innerHTML = `<span>➕ Adicionar Coluna</span>`;
         container.appendChild(addColBtn);
       }
+    }
+
+    function openCardModalWithColumn(columnId) {
+      openCardModal(null);
+      const colSelect = document.getElementById("card-column-select");
+      if (colSelect) colSelect.value = columnId;
     }
 
     function filterCardMatches(card, search, tag) {
@@ -1201,6 +1219,13 @@
 
       const tagClass = getTagClass(card.tag);
 
+      // Checkmark icon for concluded cards
+      const isConcludedCol = card.columnId === 'col_6' || card.isDone;
+      const checkIconHtml = isConcludedCol ? `<span style="display:inline-flex; align-items:center; justify-content:center; width:1.1rem; height:1.1rem; background-color:#10b981; color:#fff; border-radius:50%; font-size:0.65rem; margin-right:0.35rem; font-weight:900;">✓</span>` : '';
+
+      // Trello Description lines icon ≡
+      const descIconHtml = (card.description && card.description.trim().length > 0) ? `<span style="font-size:0.9rem; color:var(--text-muted); font-weight:bold; margin-right:0.4rem;" title="Possui descrição">≡</span>` : '';
+
       // Checklist metrics
       let checklistText = "";
       if (card.checklist && card.checklist.length > 0) {
@@ -1215,24 +1240,32 @@
       let deadlineHtml = "";
       if (card.deadline) {
         const [y, m, d] = card.deadline.split("-");
-        const dateFormatted = `${d}/${m}`;
+        const dateFormatted = `${parseInt(d,10)} de ago.`;
         const daysRem = getDaysRemaining(card.deadline);
 
         let badgeCls = "deadline-ok";
         if (daysRem < 0) badgeCls = "deadline-danger";
         else if (daysRem <= 3) badgeCls = "deadline-warning";
 
-        deadlineHtml = `<span class="deadline-badge ${badgeCls}">📅 ${dateFormatted}</span>`;
+        if (isConcludedCol) {
+          badgeCls = "deadline-ok";
+        }
+
+        deadlineHtml = `<span class="deadline-badge ${badgeCls}" style="font-weight:700;">🕒 ${dateFormatted}</span>`;
       }
 
       cardEl.innerHTML = `
         <div class="card-tags">
           <span class="tag-pill ${tagClass}">${card.tag || 'Geral'}</span>
         </div>
-        <div class="card-title">${card.title}</div>
+        <div class="card-title" style="display:flex; align-items:flex-start;">
+          ${checkIconHtml}
+          <span>${card.title}</span>
+        </div>
         ${card.sei ? `<div class="card-sei">📄 SEI ${card.sei}</div>` : ''}
         <div class="card-footer">
           <div class="card-metrics">
+            ${descIconHtml}
             ${checklistText ? `<span class="card-metric-item" style="font-weight:700; color:var(--accent);">${checklistText}</span>` : ''}
             ${commentsCount > 0 ? `<span class="card-metric-item">💬 ${commentsCount}</span>` : ''}
           </div>
