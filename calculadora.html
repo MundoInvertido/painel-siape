@@ -708,8 +708,21 @@
       return parseFloat(clean) || 0;
     }
 
+    function truncateMoney(val) {
+      if (isNaN(val) || val === null || val === undefined) return 0;
+      const isNegative = val < 0;
+      const absVal = Math.abs(val);
+      const str = absVal.toFixed(8);
+      const parts = str.split('.');
+      const integerPart = parts[0];
+      const decimalPart = (parts[1] || '00').substring(0, 2);
+      const truncated = parseFloat(integerPart + '.' + decimalPart);
+      return isNegative ? -truncated : truncated;
+    }
+
     function formatReal(value) {
-      return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+      const truncated = truncateMoney(value);
+      return truncated.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL', minimumFractionDigits: 2, maximumFractionDigits: 2 });
     }
 
     function formatCurrencyInput(input) {
@@ -730,15 +743,15 @@
       setTimeout(() => toast.classList.remove("show"), 2500);
     }
 
-    // TAB 0: CALCULAR PERICULOSIDADE (10% DO VENCIMENTO BÁSICO)
+    // TAB 0: CALCULAR PERICULOSIDADE (10% DO VENCIMENTO BÁSICO - TRUNCADO SEM ARREDONDAR)
     function calcularPericulosidade() {
       const vencimento = parseCurrency(document.getElementById("peric-vencimento-basico").value);
       const percentual = parseFloat(document.getElementById("peric-percentual").value) || 10;
       const dias = parseInt(document.getElementById("peric-dias-trabalhados").value) || 30;
 
       const valorIntegral = vencimento * (percentual / 100);
-      const valorProporcional = (valorIntegral / 30) * dias;
-      const valorTotalComVencimento = vencimento + valorProporcional;
+      const valorProporcional = truncateMoney((valorIntegral / 30) * dias);
+      const valorTotalComVencimento = truncateMoney(vencimento + valorProporcional);
 
       document.getElementById("res-peric-valor").textContent = formatReal(valorProporcional);
       document.getElementById("det-peric-vencimento").textContent = formatReal(vencimento);
@@ -770,8 +783,8 @@
       const baseDias = parseInt(document.getElementById("base-dias-tipo").value) || 30;
       const diasTrabalhados = parseInt(document.getElementById("dias-trabalhados").value) || 0;
 
-      const diaria = remuneracao / baseDias;
-      const totalProporcional = diaria * diasTrabalhados;
+      const diaria = truncateMoney(remuneracao / baseDias);
+      const totalProporcional = truncateMoney(diaria * diasTrabalhados);
 
       document.getElementById("res-diaria-val").textContent = formatReal(diaria);
       document.getElementById("res-diaria-total").textContent = formatReal(totalProporcional);
@@ -816,8 +829,8 @@
       const remuneracao = parseCurrency(document.getElementById("dev-remuneracao").value);
       const diasDevolucao = parseInt(document.getElementById("dev-qtd-dias").value) || 0;
 
-      const diariaDesconto = remuneracao / 30;
-      const totalDevolucao = diariaDesconto * diasDevolucao;
+      const diariaDesconto = truncateMoney(remuneracao / 30);
+      const totalDevolucao = truncateMoney(diariaDesconto * diasDevolucao);
 
       document.getElementById("res-dev-total").textContent = formatReal(totalDevolucao);
       document.getElementById("det-dev-diaria").textContent = formatReal(diariaDesconto);
