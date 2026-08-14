@@ -5075,7 +5075,8 @@ matches:
 
       const gistToLoad = localStorage.getItem("github_gist_id_unified") || 
                          localStorage.getItem("github_gist_id") || 
-                         localStorage.getItem("github_gist_id_procedures");
+                         localStorage.getItem("github_gist_id_procedures") ||
+                         SITE_GIST_ID;
       if (gistToLoad) {
         try {
           const cloudData = await cloudGet();
@@ -5284,7 +5285,8 @@ matches:
         const token = localStorage.getItem("github_token");
         const gistId = localStorage.getItem("github_gist_id_unified") || 
                        localStorage.getItem("github_gist_id") || 
-                       localStorage.getItem("github_gist_id_procedures");
+                       localStorage.getItem("github_gist_id_procedures") ||
+                       SITE_GIST_ID;
         if (!gistId) return null;
         try {
           const rawUrl = `https://gist.githubusercontent.com/raw/${gistId}/siape_unified_data.json`;
@@ -5596,11 +5598,9 @@ matches:
       updateMainPageAlerts();
       closeAgendamentoModal();
 
-      showToast(id ? "Prazo atualizado!" : "Novo prazo adicionado com sucesso!");
+      showToast(id ? "Prazo atualizado na nuvem e localmente!" : "Novo prazo adicionado e salvo na nuvem!");
 
-      if (localStorage.getItem("cloud_auto_sync") === "true") {
-        syncUpload();
-      }
+      syncUpload();
     }
 
     function deleteAgendamento(id) {
@@ -5621,11 +5621,9 @@ matches:
       renderAgendamentos();
       updateMainPageAlerts();
 
-      showToast("Prazo excluído.");
+      showToast("Prazo excluído e atualizado na nuvem.");
 
-      if (localStorage.getItem("cloud_auto_sync") === "true") {
-        syncUpload();
-      }
+      syncUpload();
     }
 
     function getDaysRemaining(dateString) {

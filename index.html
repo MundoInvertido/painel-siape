@@ -2088,7 +2088,8 @@
 
       const gistToLoad = localStorage.getItem("github_gist_id_unified") ||
         localStorage.getItem("github_gist_id_procedures") ||
-        localStorage.getItem("github_gist_id");
+        localStorage.getItem("github_gist_id") ||
+        SITE_GIST_ID;
       if (gistToLoad) {
         try {
           const cloudData = await cloudGet();
@@ -3650,7 +3651,8 @@
         const token = localStorage.getItem("github_token");
         const gistId = localStorage.getItem("github_gist_id_unified") ||
           localStorage.getItem("github_gist_id_procedures") ||
-          localStorage.getItem("github_gist_id");
+          localStorage.getItem("github_gist_id") ||
+          SITE_GIST_ID;
         if (!gistId) return null;
         try {
           const rawUrl = `https://gist.githubusercontent.com/raw/${gistId}/siape_unified_data.json`;
