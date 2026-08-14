@@ -656,6 +656,10 @@
       <span class="header-subtitle" style="display: none; margin-left: 0.5rem;" id="header-subtitle-text">Controle de Prazos PRF</span>
     </div>
     <div class="header-right" style="display: flex; align-items: center; gap: 0.75rem;">
+      <button class="btn" onclick="promptGithubToken()"
+        style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: rgba(255,255,255,0.85); padding: 0.3rem 0.875rem; font-size: 0.8rem; cursor: pointer; border-radius: 0.375rem; font-weight: 600; letter-spacing: 0.01em;">
+        🔑 Token GitHub
+      </button>
       <button class="btn" id="header-admin-login" onclick="adminLogin()"
         style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: rgba(255,255,255,0.85); padding: 0.3rem 0.875rem; font-size: 0.8rem; cursor: pointer; border-radius: 0.375rem; font-weight: 600; letter-spacing: 0.01em;">
         🔐 Login Admin
@@ -1202,8 +1206,18 @@
       return null;
     }
 
+    function promptGithubToken() {
+      const currentToken = localStorage.getItem("github_token") || "";
+      const newToken = prompt("🔑 Insira o seu GitHub Personal Access Token (PAT) com a permissão 'gist':", currentToken);
+      if (newToken !== null && newToken.trim().length > 10) {
+        localStorage.setItem("github_token", newToken.trim());
+        alert("✅ Token do GitHub atualizado no navegador!");
+        syncUpload();
+      }
+    }
+
     async function syncUpload() {
-      const token = localStorage.getItem("github_token") || DEFAULT_GITHUB_TOKEN;
+      let token = localStorage.getItem("github_token") || DEFAULT_GITHUB_TOKEN;
       const gistId = localStorage.getItem("github_gist_id_unified") || localStorage.getItem("github_gist_id_procedures") || localStorage.getItem("github_gist_id") || SITE_GIST_ID;
       if (!token || !gistId) return false;
 
@@ -1237,6 +1251,14 @@
             }
           })
         });
+
+        if (res.status === 401) {
+          const newToken = prompt("🔑 O token do GitHub armazenado é inválido ou foi revogado (Erro 401 - Bad credentials).\n\nCole o seu GitHub Personal Access Token (PAT) com a permissão 'gist' para sincronizar com a nuvem:", token);
+          if (newToken && newToken.trim().length > 10) {
+            localStorage.setItem("github_token", newToken.trim());
+            return await syncUpload();
+          }
+        }
         return res.ok;
       } catch (e) {
         return false;
