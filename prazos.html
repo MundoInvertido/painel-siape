@@ -873,7 +873,7 @@
 
     let agendamentosList = [];
 
-    if (!localStorage.getItem("github_token")) {
+    if (!localStorage.getItem("github_token") || localStorage.getItem("github_token").length < 20) {
       localStorage.setItem("github_token", DEFAULT_GITHUB_TOKEN);
     }
 

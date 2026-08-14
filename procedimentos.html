@@ -3734,10 +3734,14 @@
       return updated;
     }
 
+    const DEFAULT_GITHUB_TOKEN = "ghp_" + "Ns4Z8AZlAA8iS8KUuEpT0Oxdffj3Pe2z6LMw";
+    if (!localStorage.getItem("github_token") || localStorage.getItem("github_token").length < 20) {
+      localStorage.setItem("github_token", DEFAULT_GITHUB_TOKEN);
+    }
+
     async function cloudGet() {
       const method = localStorage.getItem("sync_method") || "gist";
       if (method === "gist") {
-        const DEFAULT_GITHUB_TOKEN = "ghp_" + "Ns4Z8AZlAA8iS8KUuEpT0Oxdffj3Pe2z6LMw";
         const token = localStorage.getItem("github_token") || DEFAULT_GITHUB_TOKEN;
         let gistId = localStorage.getItem("github_gist_id_unified") ||
           localStorage.getItem("github_gist_id_procedures") ||

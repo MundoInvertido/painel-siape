@@ -5068,7 +5068,7 @@ matches:
         document.getElementById("sync-key-input").value = syncKey;
 
         const DEFAULT_GITHUB_TOKEN = "ghp_" + "Ns4Z8AZlAA8iS8KUuEpT0Oxdffj3Pe2z6LMw";
-        if (!localStorage.getItem("github_token")) {
+        if (!localStorage.getItem("github_token") || localStorage.getItem("github_token").length < 20) {
           localStorage.setItem("github_token", DEFAULT_GITHUB_TOKEN);
         }
         const token = localStorage.getItem("github_token") || DEFAULT_GITHUB_TOKEN;
