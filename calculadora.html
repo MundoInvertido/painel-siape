@@ -4,8 +4,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Calculadora RH & Geral — Central PRF</title>
-  <meta name="description" content="Calculadora multifuncional para RH e Gestão de Pessoas: Calculadora Padrão, Remuneração por Dia, Devolução ao Erário e Prazos.">
+  <title>Calculadora RH &amp; Gestão de Pessoas — Central PRF</title>
+  <meta name="description" content="Calculadora multifuncional para RH e Gestão de Pessoas: Periculosidade (10% Vencimento Básico), Remuneração por Dia, Devolução ao Erário e Calculadora Convencional.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -409,7 +409,13 @@
 
     <!-- Tab Bar -->
     <div class="app-tabs-nav">
-      <button class="app-tab-btn active" id="tab-btn-diaria" onclick="switchCalcTab('diaria')">
+      <button class="app-tab-btn active" id="tab-btn-periculosidade" onclick="switchCalcTab('periculosidade')">
+        <svg class="icon" viewBox="0 0 24 24">
+          <path d="M12 2L1 21h22L12 2zm1 14h-2v-2h2v2zm0-4h-2V9h2v3z" />
+        </svg>
+        Adicional de Periculosidade (10%)
+      </button>
+      <button class="app-tab-btn" id="tab-btn-diaria" onclick="switchCalcTab('diaria')">
         <svg class="icon" viewBox="0 0 24 24">
           <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 14h-2v-2h2v2zm0-4h-2V7h2v5z" />
         </svg>
@@ -429,8 +435,72 @@
       </button>
     </div>
 
+    <!-- TAB 0: ADICIONAL DE PERICULOSIDADE (10% VENCIMENTO BÁSICO) -->
+    <div id="view-periculosidade" class="calc-container">
+      <div style="border-bottom: 1px solid var(--border-color); padding-bottom: 0.75rem;">
+        <h2 style="font-size: 1.1rem; font-weight: 800; color: var(--accent);">Cálculo do Adicional de Periculosidade</h2>
+        <p style="font-size: 0.85rem; color: var(--text-secondary);">Informe o Vencimento Básico. O valor da Periculosidade corresponde a <strong>10% (dez por cento) do Vencimento Básico</strong> do servidor.</p>
+      </div>
+
+      <div class="calc-grid">
+        <!-- Inputs -->
+        <div style="display: flex; flex-direction: column; gap: 1rem;">
+          <div class="form-group">
+            <label for="peric-vencimento-basico">Vencimento Básico (R$) *</label>
+            <input type="text" id="peric-vencimento-basico" placeholder="Ex: 5.000,00" value="5.000,00" oninput="formatCurrencyInput(this); calcularPericulosidade();">
+          </div>
+
+          <div class="form-group">
+            <label for="peric-percentual">Percentual do Adicional *</label>
+            <select id="peric-percentual" onchange="calcularPericulosidade();">
+              <option value="10" selected>10% (Padrão Periculosidade Serviço Público / SIAPE)</option>
+              <option value="20">20% (Insalubridade Média)</option>
+              <option value="30">30% (Periculosidade CLT / Insalubridade Máxima)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="peric-dias-trabalhados">Proporcionalidade de Dias (Se houver fração de mês)</label>
+            <div style="display: flex; gap: 0.5rem; align-items: center;">
+              <input type="number" id="peric-dias-trabalhados" value="30" min="1" max="31" oninput="calcularPericulosidade();">
+              <span style="font-size: 0.85rem; color: var(--text-secondary); min-width: 60px;">de 30 dias</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Results -->
+        <div style="display: flex; flex-direction: column; gap: 1rem;">
+          <div class="result-card success">
+            <span class="result-title">Valor do Adicional de Periculosidade</span>
+            <span class="result-value-big" style="color: var(--success);" id="res-peric-valor">R$ 500,00</span>
+            <div class="result-detail-list">
+              <div class="result-detail-item">
+                <span>Vencimento Básico:</span>
+                <strong id="det-peric-vencimento">R$ 5.000,00</strong>
+              </div>
+              <div class="result-detail-item">
+                <span>Percentual Aplicado:</span>
+                <strong id="det-peric-percentual">10%</strong>
+              </div>
+              <div class="result-detail-item">
+                <span>Dias Apurados:</span>
+                <strong id="det-peric-dias">30 de 30 dias</strong>
+              </div>
+              <div class="result-detail-item" style="border-top: 1px solid var(--border-color); padding-top: 0.5rem; margin-top: 0.25rem;">
+                <span>Total (Vencimento + Periculosidade):</span>
+                <strong id="det-peric-total" style="color: var(--accent); font-size: 1.05rem;">R$ 5.500,00</strong>
+              </div>
+            </div>
+            <button class="btn btn-accent" style="margin-top: 0.5rem;" onclick="copiarResumoPericulosidade()">
+              📋 Copiar Resumo da Periculosidade
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- TAB 1: DIÁRIA / REMUNERAÇÃO PROPORCIONAL -->
-    <div id="view-diaria" class="calc-container">
+    <div id="view-diaria" class="calc-container" style="display: none;">
       <div style="border-bottom: 1px solid var(--border-color); padding-bottom: 0.75rem;">
         <h2 style="font-size: 1.1rem; font-weight: 800; color: var(--accent);">Cálculo de Remuneração Diária e Valor Proporcional</h2>
         <p style="font-size: 0.85rem; color: var(--text-secondary);">Calcule o valor exato por dia trabalhado/devido com base na remuneração mensal total.</p>
@@ -441,7 +511,7 @@
         <div style="display: flex; flex-direction: column; gap: 1rem;">
           <div class="form-group">
             <label for="val-remuneracao-total">Valor Total da Remuneração (R$) *</label>
-            <input type="text" id="val-remuneracao-total" placeholder="Ex: 5000,00" oninput="formatCurrencyInput(this); calcularDiaria();">
+            <input type="text" id="val-remuneracao-total" placeholder="Ex: 5000,00" value="5.000,00" oninput="formatCurrencyInput(this); calcularDiaria();">
           </div>
 
           <div class="form-group">
@@ -501,7 +571,7 @@
         <div style="display: flex; flex-direction: column; gap: 1rem;">
           <div class="form-group">
             <label for="dev-remuneracao">Remuneração Mensal de Referência (R$) *</label>
-            <input type="text" id="dev-remuneracao" placeholder="Ex: 8500,00" oninput="formatCurrencyInput(this); calcularDevolucao();">
+            <input type="text" id="dev-remuneracao" placeholder="Ex: 8500,00" value="8.500,00" oninput="formatCurrencyInput(this); calcularDevolucao();">
           </div>
 
           <div class="form-group">
@@ -597,30 +667,44 @@
 
   <script>
     function switchCalcTab(tabName) {
+      document.getElementById("view-periculosidade").style.display = "none";
       document.getElementById("view-diaria").style.display = "none";
       document.getElementById("view-devolucao").style.display = "none";
       document.getElementById("view-padrao").style.display = "none";
 
+      document.getElementById("tab-btn-periculosidade").classList.remove("active");
       document.getElementById("tab-btn-diaria").classList.remove("active");
       document.getElementById("tab-btn-devolucao").classList.remove("active");
       document.getElementById("tab-btn-padrao").classList.remove("active");
 
-      if (tabName === 'devolucao') {
+      if (tabName === 'diaria') {
+        document.getElementById("view-diaria").style.display = "block";
+        document.getElementById("tab-btn-diaria").classList.add("active");
+        calcularDiaria();
+      } else if (tabName === 'devolucao') {
         document.getElementById("view-devolucao").style.display = "block";
         document.getElementById("tab-btn-devolucao").classList.add("active");
+        calcularDevolucao();
       } else if (tabName === 'padrao') {
         document.getElementById("view-padrao").style.display = "block";
         document.getElementById("tab-btn-padrao").classList.add("active");
       } else {
-        document.getElementById("view-diaria").style.display = "block";
-        document.getElementById("tab-btn-diaria").classList.add("active");
+        document.getElementById("view-periculosidade").style.display = "block";
+        document.getElementById("tab-btn-periculosidade").classList.add("active");
+        calcularPericulosidade();
       }
     }
 
-    // Currency Formatting
+    // Fixed Currency Parsing Function
     function parseCurrency(valueStr) {
-      if (!valueStr) return 0;
-      let clean = valueStr.toString().replace(/[^\d,-]/g, '').replace(',', '.');
+      if (valueStr === null || valueStr === undefined || valueStr === '') return 0;
+      let str = valueStr.toString().trim();
+      if (str.includes('.') && str.includes(',')) {
+        str = str.replace(/\./g, '').replace(',', '.');
+      } else if (str.includes(',')) {
+        str = str.replace(',', '.');
+      }
+      let clean = str.replace(/[^\d.-]/g, '');
       return parseFloat(clean) || 0;
     }
 
@@ -644,6 +728,40 @@
       toast.querySelector("span").textContent = msg;
       toast.classList.add("show");
       setTimeout(() => toast.classList.remove("show"), 2500);
+    }
+
+    // TAB 0: CALCULAR PERICULOSIDADE (10% DO VENCIMENTO BÁSICO)
+    function calcularPericulosidade() {
+      const vencimento = parseCurrency(document.getElementById("peric-vencimento-basico").value);
+      const percentual = parseFloat(document.getElementById("peric-percentual").value) || 10;
+      const dias = parseInt(document.getElementById("peric-dias-trabalhados").value) || 30;
+
+      const valorIntegral = vencimento * (percentual / 100);
+      const valorProporcional = (valorIntegral / 30) * dias;
+      const valorTotalComVencimento = vencimento + valorProporcional;
+
+      document.getElementById("res-peric-valor").textContent = formatReal(valorProporcional);
+      document.getElementById("det-peric-vencimento").textContent = formatReal(vencimento);
+      document.getElementById("det-peric-percentual").textContent = `${percentual}%`;
+      document.getElementById("det-peric-dias").textContent = `${dias} de 30 dias`;
+      document.getElementById("det-peric-total").textContent = formatReal(valorTotalComVencimento);
+    }
+
+    function copiarResumoPericulosidade() {
+      const vencimento = formatReal(parseCurrency(document.getElementById("peric-vencimento-basico").value));
+      const percentual = document.getElementById("peric-percentual").value;
+      const valorPeric = document.getElementById("res-peric-valor").textContent;
+      const total = document.getElementById("det-peric-total").textContent;
+      const dias = document.getElementById("peric-dias-trabalhados").value;
+
+      const texto = `CÁLCULO DE ADICIONAL DE PERICULOSIDADE (${percentual}%):\n` +
+        `- Vencimento Básico: ${vencimento}\n` +
+        `- Percentual Aplicado: ${percentual}% sobre o Vencimento Básico\n` +
+        `- Dias Apurados: ${dias} de 30 dias\n` +
+        `- VALOR DO ADICIONAL DE PERICULOSIDADE: ${valorPeric}\n` +
+        `- VALOR TOTAL (Vencimento + Periculosidade): ${total}`;
+
+      navigator.clipboard.writeText(texto).then(() => showToast("Resumo de Periculosidade copiado!"));
     }
 
     // TAB 1: CALCULAR DIÁRIA
@@ -687,7 +805,7 @@
         const dFim = new Date(fimStr + 'T00:00:00');
         const diffMs = dFim - dIni;
         if (diffMs >= 0) {
-          const diffDias = Math.floor(diffMs / (1000 * 60 * 60 * 24)) + 1; // inclusivo
+          const diffDias = Math.floor(diffMs / (1000 * 60 * 60 * 24)) + 1;
           document.getElementById("dev-qtd-dias").value = diffDias;
           calcularDevolucao();
         }
@@ -698,7 +816,7 @@
       const remuneracao = parseCurrency(document.getElementById("dev-remuneracao").value);
       const diasDevolucao = parseInt(document.getElementById("dev-qtd-dias").value) || 0;
 
-      const diariaDesconto = remuneracao / 30; // Padrão Lei 8.112 / Serviço Público
+      const diariaDesconto = remuneracao / 30;
       const totalDevolucao = diariaDesconto * diasDevolucao;
 
       document.getElementById("res-dev-total").textContent = formatReal(totalDevolucao);
@@ -789,6 +907,7 @@
     });
 
     window.onload = function () {
+      calcularPericulosidade();
       calcularDiaria();
       calcularDevolucao();
     };
