@@ -933,12 +933,14 @@
         </div>
         <div class="form-group">
           <label>Responsável *</label>
-          <select id="card-assignee-select" class="form-control">
-            <option value="NL">NL (Nathanael)</option>
-            <option value="NUAP">NUAP / PA</option>
-            <option value="SGP">SGP / PA</option>
-            <option value="PRF">PRF / PA</option>
-          </select>
+          <input type="text" id="card-assignee-input" class="form-control" placeholder="ex: Carlos Manoel" list="assignees-list">
+          <datalist id="assignees-list">
+            <option value="Carlos Manoel"></option>
+            <option value="Nathanael Lacerda"></option>
+            <option value="NUAP / PA"></option>
+            <option value="SGP / PA"></option>
+            <option value="PRF / PA"></option>
+          </datalist>
         </div>
         <div class="form-group">
           <label>Tag / Categoria</label>
@@ -1041,6 +1043,7 @@
         title: "Averbação Ferro",
         sei: "08650.001001/2026-12",
         tag: "Averbação",
+        assignee: "Carlos Manoel",
         description: "Requerimento de averbação de tempo prestado na iniciativa privada pelo PRF Ferro.",
         checklist: [],
         comments: [
@@ -1053,6 +1056,7 @@
         title: "Processo averbação Evangelhista",
         sei: "08650.002045/2026-88",
         tag: "Averbação",
+        assignee: "Nathanael Lacerda",
         description: "Lançamento dos dados no sistema SIAPE.",
         checklist: [],
         comments: [
@@ -1065,6 +1069,7 @@
         title: "Adicionar prorrogação paternidade",
         sei: "08650.004010/2026-99",
         tag: "Concessão",
+        assignee: "SGP",
         deadline: "2026-08-02",
         description: "Prorrogação de licença paternidade deferida e cadastrada.",
         isDone: true,
@@ -1079,6 +1084,7 @@
         title: "Processo de averbação MADURO",
         sei: "08650.003112/2026-44",
         tag: "Averbação",
+        assignee: "NUAP",
         description: "Averbação concluída e arquivada.",
         isDone: true,
         checklist: [],
@@ -1286,9 +1292,9 @@
         deadlineHtml = `<span class="deadline-badge ${badgeCls}" style="font-weight:700;">🕒 ${dateFormatted}</span>`;
       }
 
-      const assigneeVal = card.assignee || 'NL';
-      const avatarClass = assigneeVal.toLowerCase();
-      const avatarHtml = `<div class="user-avatar-badge ${avatarClass}" title="Responsável: ${assigneeVal}">${assigneeVal}</div>`;
+      const assigneeVal = (card.assignee && card.assignee.trim()) ? card.assignee.trim() : 'Nathanael Lacerda';
+      const initials = getInitials(assigneeVal);
+      const avatarHtml = `<div class="user-avatar-badge" title="Responsável: ${assigneeVal}">${initials}</div>`;
 
       cardEl.innerHTML = `
         <div class="card-tags" style="display:flex; justify-content:space-between; align-items:center;">
@@ -1311,6 +1317,24 @@
       `;
 
       return cardEl;
+    }
+
+    function getInitials(name) {
+      if (!name || !name.trim()) return 'NL';
+      const cleanName = name.trim();
+      // If 2-4 uppercase letters without spaces (e.g. "NL", "NUAP", "SGP", "PRF")
+      if (cleanName.length <= 4 && cleanName === cleanName.toUpperCase() && !cleanName.includes(' ')) {
+        return cleanName;
+      }
+      // If user typed e.g. "Carlos Manoel" -> "CM"
+      const parts = cleanName.replace(/[\/\-\_\.]/g, ' ').split(/\s+/).filter(Boolean);
+      if (parts.length === 0) return 'NL';
+      if (parts.length === 1) {
+        return parts[0].substring(0, 2).toUpperCase();
+      }
+      const first = parts[0].charAt(0).toUpperCase();
+      const last = parts[parts.length - 1].charAt(0).toUpperCase();
+      return `${first}${last}`;
     }
 
     function getTagClass(tag) {
@@ -1427,7 +1451,7 @@
           document.getElementById("card-title-input").value = card.title || "";
           document.getElementById("card-sei-input").value = card.sei || "";
           document.getElementById("card-column-select").value = card.columnId;
-          document.getElementById("card-assignee-select").value = card.assignee || "NL";
+          document.getElementById("card-assignee-input").value = card.assignee || "Nathanael Lacerda";
           document.getElementById("card-tag-select").value = card.tag || "Geral";
           document.getElementById("card-deadline-input").value = card.deadline || "";
           document.getElementById("card-desc-input").value = card.description || "";
@@ -1443,7 +1467,7 @@
         document.getElementById("card-title-input").value = "";
         document.getElementById("card-sei-input").value = "";
         document.getElementById("card-column-select").value = kanbanState.columns[0]?.id || "";
-        document.getElementById("card-assignee-select").value = "NL";
+        document.getElementById("card-assignee-input").value = "Nathanael Lacerda";
         document.getElementById("card-tag-select").value = "Averbação";
         document.getElementById("card-deadline-input").value = "";
         document.getElementById("card-desc-input").value = "";
@@ -1574,7 +1598,7 @@
           title: '',
           sei: '',
           columnId: document.getElementById("card-column-select").value,
-          assignee: document.getElementById("card-assignee-select").value || 'NL',
+          assignee: document.getElementById("card-assignee-input").value || 'Nathanael Lacerda',
           tag: 'Geral',
           checklist: [],
           comments: []
@@ -1588,7 +1612,7 @@
       const title = document.getElementById("card-title-input").value.trim();
       const sei = document.getElementById("card-sei-input").value.trim();
       const columnId = document.getElementById("card-column-select").value;
-      const assignee = document.getElementById("card-assignee-select").value;
+      const assignee = document.getElementById("card-assignee-input").value.trim() || 'Nathanael Lacerda';
       const tag = document.getElementById("card-tag-select").value;
       const deadline = document.getElementById("card-deadline-input").value;
       const description = document.getElementById("card-desc-input").value.trim();
