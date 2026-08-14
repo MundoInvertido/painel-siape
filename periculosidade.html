@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Adicional de Periculosidade — SGP-PA / NUAP</title>
+  <meta name="description" content="Calculadora de Adicional de Periculosidade: 10% sobre o Vencimento Básico, conforme regra SIAPE.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-primary: #f1f5f9;
+      --bg-secondary: #ffffff;
+      --bg-tertiary: #f8fafc;
+      --text-primary: #0f172a;
+      --text-secondary: #475569;
+      --text-muted: #94a3b8;
+      --accent: #0057a8;
+      --accent-hover: #1e40af;
+      --accent-glow: rgba(0, 87, 168, 0.15);
+      --success: #059669;
+      --success-bg: #ecfdf5;
+      --warning: #d97706;
+      --warning-bg: #fffbeb;
+      --border-color: #cbd5e1;
+      --card-shadow: 0 4px 12px rgba(15, 23, 42, 0.05), 0 1px 3px rgba(15, 23, 42, 0.08);
+      --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+      --radius-sm: 0.375rem;
+      --radius-md: 0.625rem;
+      --radius-lg: 0.875rem;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: var(--font-sans);
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.5;
+      padding: 1rem;
+      -webkit-font-smoothing: antialiased;
+    }
+    .card {
+      background-color: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--card-shadow);
+      overflow: hidden;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    .app-header-bar {
+      padding: 1rem 1.5rem;
+      background: linear-gradient(135deg, #0b1340 0%, #0e1a50 100%);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .app-header-bar h1 {
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: #fbbf24;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .calc-container {
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+    .calc-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
+    @media (max-width: 800px) { .calc-grid { grid-template-columns: 1fr; } }
+    .form-group { display: flex; flex-direction: column; gap: 0.35rem; }
+    .form-group label { font-size: 0.85rem; font-weight: 700; color: var(--text-secondary); }
+    input[type="text"], input[type="number"], select {
+      width: 100%;
+      background-color: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 0.65rem 0.875rem;
+      color: var(--text-primary);
+      font-size: 0.95rem;
+      outline: none;
+      font-family: var(--font-sans);
+    }
+    input:focus, select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-glow);
+    }
+    .btn {
+      background-color: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      color: var(--text-primary);
+      padding: 0.6rem 1.25rem;
+      border-radius: var(--radius-md);
+      font-size: 0.88rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      transition: all 0.15s ease;
+      font-family: var(--font-sans);
+    }
+    .btn-accent { background-color: var(--accent); color: #fff !important; border-color: var(--accent); }
+    .btn-accent:hover { background-color: var(--accent-hover); }
+    .result-card {
+      background-color: var(--bg-tertiary);
+      border: 1px solid var(--border-color);
+      border-left: 4px solid var(--accent);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+    .result-card.success { border-left-color: var(--success); background-color: var(--success-bg); }
+    .result-title {
+      font-size: 0.8rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-secondary);
+    }
+    .result-value-big {
+      font-size: 2.4rem;
+      font-weight: 900;
+      color: var(--success);
+      letter-spacing: -0.02em;
+    }
+    .result-detail-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+      font-size: 0.88rem;
+      border-top: 1px dashed var(--border-color);
+      padding-top: 0.75rem;
+    }
+    .result-detail-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .info-box {
+      background: var(--warning-bg);
+      border: 1px solid rgba(217, 119, 6, 0.3);
+      border-left: 4px solid var(--warning);
+      border-radius: var(--radius-md);
+      padding: 0.875rem 1rem;
+      font-size: 0.85rem;
+      color: #92400e;
+    }
+    .info-box strong { color: #78350f; }
+    .toast {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background-color: var(--accent);
+      color: #fff;
+      padding: 0.75rem 1.5rem;
+      border-radius: var(--radius-md);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      transform: translateY(150%);
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      z-index: 9999;
+      font-weight: 700;
+    }
+    .toast.show { transform: translateY(0); }
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: rgba(255,255,255,0.75);
+      text-decoration: none;
+      transition: color 0.15s ease;
+    }
+    .back-btn:hover { color: #fff; }
+  </style>
+</head>
+<body>
+
+  <div id="toast" class="toast">
+    <span id="toast-msg">Copiado!</span>
+  </div>
+
+  <div class="card">
+    <div class="app-header-bar">
+      <h1>
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+          <path d="M12 2L1 21h22L12 2zm1 14h-2v-2h2v2zm0-4h-2V9h2v3z"/>
+        </svg>
+        Adicional de Periculosidade — Calculadora
+      </h1>
+      <a class="back-btn" href="calculadora.html">
+        ← Voltar à Calculadora RH
+      </a>
+    </div>
+
+    <div class="calc-container">
+      <div style="border-bottom: 1px solid var(--border-color); padding-bottom: 0.75rem;">
+        <h2 style="font-size: 1.05rem; font-weight: 800; color: var(--accent);">Cálculo do Adicional de Periculosidade</h2>
+        <p style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 0.25rem;">Informe o Vencimento Básico. O valor do Adicional de Periculosidade corresponde a <strong>10% (dez por cento) do Vencimento Básico</strong>, conforme legislação vigente.</p>
+      </div>
+
+      <div class="info-box">
+        <strong>📋 Base Legal:</strong> Art. 193 da Lei nº 8.112/90 e art. 68 da Lei nº 8.460/92. O percentual de periculosidade é calculado exclusivamente sobre o <strong>Vencimento Básico</strong>, sem incidência sobre demais parcelas da remuneração. O valor é truncado na 2ª casa decimal, sem arredondamento para cima, conforme prática SIAPE.
+      </div>
+
+      <div class="calc-grid">
+        <!-- Inputs -->
+        <div style="display: flex; flex-direction: column; gap: 1rem;">
+          <div class="form-group">
+            <label for="peric-vencimento-basico">Vencimento Básico (R$) *</label>
+            <input type="text" id="peric-vencimento-basico" placeholder="Ex: 5.000,00" value="5.000,00" oninput="fmtInput(this); calc();">
+          </div>
+
+          <div class="form-group">
+            <label for="peric-percentual">Percentual do Adicional</label>
+            <select id="peric-percentual" onchange="calc();">
+              <option value="10" selected>10% — Periculosidade (Serviço Público / SIAPE)</option>
+              <option value="20">20% — Insalubridade Grau Médio</option>
+              <option value="30">30% — Periculosidade CLT / Insalubridade Grau Máximo</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="peric-dias">Dias Apurados no Mês (para Proporcionalidade)</label>
+            <div style="display: flex; gap: 0.5rem; align-items: center;">
+              <input type="number" id="peric-dias" value="30" min="1" max="31" oninput="calc();">
+              <span style="font-size: 0.85rem; color: var(--text-secondary); min-width: 60px; white-space: nowrap;">de 30 dias</span>
+            </div>
+            <span style="font-size: 0.78rem; color: var(--text-muted); margin-top: 0.2rem;">Preencha com 30 para o valor integral do mês.</span>
+          </div>
+
+          <button class="btn btn-accent" onclick="calc();" style="margin-top: 0.25rem;">
+            🧮 Calcular
+          </button>
+        </div>
+
+        <!-- Results -->
+        <div style="display: flex; flex-direction: column; gap: 1rem;">
+          <div class="result-card success">
+            <span class="result-title">Valor do Adicional de Periculosidade</span>
+            <span class="result-value-big" id="res-valor">R$ 500,00</span>
+
+            <div class="result-detail-list">
+              <div class="result-detail-item">
+                <span>Vencimento Básico:</span>
+                <strong id="det-vencimento">R$ 5.000,00</strong>
+              </div>
+              <div class="result-detail-item">
+                <span>Percentual Aplicado:</span>
+                <strong id="det-percentual">10%</strong>
+              </div>
+              <div class="result-detail-item">
+                <span>Valor Integral (Mês Cheio):</span>
+                <strong id="det-integral">R$ 500,00</strong>
+              </div>
+              <div class="result-detail-item">
+                <span>Dias Apurados:</span>
+                <strong id="det-dias">30 de 30 dias</strong>
+              </div>
+              <div class="result-detail-item" style="border-top: 1px solid rgba(0,0,0,0.08); padding-top: 0.5rem; margin-top: 0.25rem;">
+                <span style="font-weight: 700;">Total (Vencimento + Adicional):</span>
+                <strong id="det-total" style="color: var(--accent); font-size: 1.1rem;">R$ 5.500,00</strong>
+              </div>
+            </div>
+
+            <button class="btn btn-accent" style="margin-top: 0.5rem;" onclick="copiar()">
+              📋 Copiar Resumo para Despacho
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function truncateMoney(val) {
+      if (isNaN(val) || val === null || val === undefined) return 0;
+      const isNeg = val < 0;
+      const abs = Math.abs(val);
+      const str = abs.toFixed(8);
+      const parts = str.split('.');
+      const dec = (parts[1] || '00').substring(0, 2);
+      const trunc = parseFloat(parts[0] + '.' + dec);
+      return isNeg ? -trunc : trunc;
+    }
+
+    function fmtReal(value) {
+      const t = truncateMoney(value);
+      return t.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL', minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    function parseCurrency(s) {
+      if (!s) return 0;
+      let str = s.toString().trim();
+      if (str.includes('.') && str.includes(',')) {
+        str = str.replace(/\./g, '').replace(',', '.');
+      } else if (str.includes(',')) {
+        str = str.replace(',', '.');
+      }
+      return parseFloat(str.replace(/[^\d.-]/g, '')) || 0;
+    }
+
+    function fmtInput(inp) {
+      let v = inp.value.replace(/\D/g, '');
+      if (!v) { inp.value = ''; return; }
+      inp.value = (parseFloat(v) / 100).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      document.getElementById('toast-msg').textContent = msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2500);
+    }
+
+    function calc() {
+      const vencimento = parseCurrency(document.getElementById('peric-vencimento-basico').value);
+      const percentual = parseFloat(document.getElementById('peric-percentual').value) || 10;
+      const dias = parseInt(document.getElementById('peric-dias').value) || 30;
+
+      const valorIntegral = truncateMoney(vencimento * (percentual / 100));
+      const valorProporcional = truncateMoney((valorIntegral / 30) * dias);
+      const valorTotal = truncateMoney(vencimento + valorProporcional);
+
+      document.getElementById('res-valor').textContent = fmtReal(valorProporcional);
+      document.getElementById('det-vencimento').textContent = fmtReal(vencimento);
+      document.getElementById('det-percentual').textContent = `${percentual}%`;
+      document.getElementById('det-integral').textContent = fmtReal(valorIntegral);
+      document.getElementById('det-dias').textContent = `${dias} de 30 dias`;
+      document.getElementById('det-total').textContent = fmtReal(valorTotal);
+    }
+
+    function copiar() {
+      const venc = document.getElementById('det-vencimento').textContent;
+      const perc = document.getElementById('det-percentual').textContent;
+      const integral = document.getElementById('det-integral').textContent;
+      const proporcional = document.getElementById('res-valor').textContent;
+      const dias = document.getElementById('det-dias').textContent;
+      const total = document.getElementById('det-total').textContent;
+
+      const texto =
+        `CÁLCULO DE ADICIONAL DE PERICULOSIDADE (${perc}):\n` +
+        `- Vencimento Básico: ${venc}\n` +
+        `- Percentual Aplicado: ${perc} sobre o Vencimento Básico\n` +
+        `- Valor Integral (Mês Cheio): ${integral}\n` +
+        `- Dias Apurados: ${dias}\n` +
+        `- VALOR DO ADICIONAL DE PERICULOSIDADE: ${proporcional}\n` +
+        `- VALOR TOTAL (Vencimento + Periculosidade): ${total}`;
+
+      navigator.clipboard.writeText(texto).then(() => showToast('Resumo copiado para a área de transferência!'));
+    }
+
+    window.onload = calc;
+  </script>
+</body>
+</html>

@@ -409,13 +409,13 @@
 
     <!-- Tab Bar -->
     <div class="app-tabs-nav">
-      <button class="app-tab-btn active" id="tab-btn-periculosidade" onclick="switchCalcTab('periculosidade')">
+      <a href="periculosidade.html" class="app-tab-btn" style="text-decoration: none;">
         <svg class="icon" viewBox="0 0 24 24">
           <path d="M12 2L1 21h22L12 2zm1 14h-2v-2h2v2zm0-4h-2V9h2v3z" />
         </svg>
-        Adicional de Periculosidade (10%)
-      </button>
-      <button class="app-tab-btn" id="tab-btn-diaria" onclick="switchCalcTab('diaria')">
+        ⚡ Periculosidade (10%)
+      </a>
+      <button class="app-tab-btn active" id="tab-btn-diaria" onclick="switchCalcTab('diaria')">
         <svg class="icon" viewBox="0 0 24 24">
           <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 14h-2v-2h2v2zm0-4h-2V7h2v5z" />
         </svg>
@@ -435,72 +435,9 @@
       </button>
     </div>
 
-    <!-- TAB 0: ADICIONAL DE PERICULOSIDADE (10% VENCIMENTO BÁSICO) -->
-    <div id="view-periculosidade" class="calc-container">
-      <div style="border-bottom: 1px solid var(--border-color); padding-bottom: 0.75rem;">
-        <h2 style="font-size: 1.1rem; font-weight: 800; color: var(--accent);">Cálculo do Adicional de Periculosidade</h2>
-        <p style="font-size: 0.85rem; color: var(--text-secondary);">Informe o Vencimento Básico. O valor da Periculosidade corresponde a <strong>10% (dez por cento) do Vencimento Básico</strong> do servidor.</p>
-      </div>
-
-      <div class="calc-grid">
-        <!-- Inputs -->
-        <div style="display: flex; flex-direction: column; gap: 1rem;">
-          <div class="form-group">
-            <label for="peric-vencimento-basico">Vencimento Básico (R$) *</label>
-            <input type="text" id="peric-vencimento-basico" placeholder="Ex: 5.000,00" value="5.000,00" oninput="formatCurrencyInput(this); calcularPericulosidade();">
-          </div>
-
-          <div class="form-group">
-            <label for="peric-percentual">Percentual do Adicional *</label>
-            <select id="peric-percentual" onchange="calcularPericulosidade();">
-              <option value="10" selected>10% (Padrão Periculosidade Serviço Público / SIAPE)</option>
-              <option value="20">20% (Insalubridade Média)</option>
-              <option value="30">30% (Periculosidade CLT / Insalubridade Máxima)</option>
-            </select>
-          </div>
-
-          <div class="form-group">
-            <label for="peric-dias-trabalhados">Proporcionalidade de Dias (Se houver fração de mês)</label>
-            <div style="display: flex; gap: 0.5rem; align-items: center;">
-              <input type="number" id="peric-dias-trabalhados" value="30" min="1" max="31" oninput="calcularPericulosidade();">
-              <span style="font-size: 0.85rem; color: var(--text-secondary); min-width: 60px;">de 30 dias</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Results -->
-        <div style="display: flex; flex-direction: column; gap: 1rem;">
-          <div class="result-card success">
-            <span class="result-title">Valor do Adicional de Periculosidade</span>
-            <span class="result-value-big" style="color: var(--success);" id="res-peric-valor">R$ 500,00</span>
-            <div class="result-detail-list">
-              <div class="result-detail-item">
-                <span>Vencimento Básico:</span>
-                <strong id="det-peric-vencimento">R$ 5.000,00</strong>
-              </div>
-              <div class="result-detail-item">
-                <span>Percentual Aplicado:</span>
-                <strong id="det-peric-percentual">10%</strong>
-              </div>
-              <div class="result-detail-item">
-                <span>Dias Apurados:</span>
-                <strong id="det-peric-dias">30 de 30 dias</strong>
-              </div>
-              <div class="result-detail-item" style="border-top: 1px solid var(--border-color); padding-top: 0.5rem; margin-top: 0.25rem;">
-                <span>Total (Vencimento + Periculosidade):</span>
-                <strong id="det-peric-total" style="color: var(--accent); font-size: 1.05rem;">R$ 5.500,00</strong>
-              </div>
-            </div>
-            <button class="btn btn-accent" style="margin-top: 0.5rem;" onclick="copiarResumoPericulosidade()">
-              📋 Copiar Resumo da Periculosidade
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-
     <!-- TAB 1: DIÁRIA / REMUNERAÇÃO PROPORCIONAL -->
-    <div id="view-diaria" class="calc-container" style="display: none;">
+    <div id="view-diaria" class="calc-container">
+
       <div style="border-bottom: 1px solid var(--border-color); padding-bottom: 0.75rem;">
         <h2 style="font-size: 1.1rem; font-weight: 800; color: var(--accent);">Cálculo de Remuneração Diária e Valor Proporcional</h2>
         <p style="font-size: 0.85rem; color: var(--text-secondary);">Calcule o valor exato por dia trabalhado/devido com base na remuneração mensal total.</p>
@@ -639,7 +576,7 @@
         <div class="std-calc-grid">
           <button class="calc-btn action" onclick="stdCalcClear()">C</button>
           <button class="calc-btn action" onclick="stdCalcBackspace()">⌫</button>
-          <button class="calc-btn op" onclick="stdCalcOp('%')">%</button>
+          <button class="calc-btn op" onclick="stdCalcOp_percent()">%</button>
           <button class="calc-btn op" onclick="stdCalcOp('/')">÷</button>
 
           <button class="calc-btn" onclick="stdCalcNum('7')">7</button>
@@ -658,7 +595,7 @@
           <button class="calc-btn op" onclick="stdCalcOp('+')">+</button>
 
           <button class="calc-btn" onclick="stdCalcNum('0')">0</button>
-          <button class="calc-btn" onclick="stdCalcNum('.')">,</button>
+          <button class="calc-btn" onclick="stdCalcNum(',')">，</button>
           <button class="calc-btn equals" onclick="stdCalcEqual()">=</button>
         </div>
       </div>
@@ -667,21 +604,15 @@
 
   <script>
     function switchCalcTab(tabName) {
-      document.getElementById("view-periculosidade").style.display = "none";
       document.getElementById("view-diaria").style.display = "none";
       document.getElementById("view-devolucao").style.display = "none";
       document.getElementById("view-padrao").style.display = "none";
 
-      document.getElementById("tab-btn-periculosidade").classList.remove("active");
       document.getElementById("tab-btn-diaria").classList.remove("active");
       document.getElementById("tab-btn-devolucao").classList.remove("active");
       document.getElementById("tab-btn-padrao").classList.remove("active");
 
-      if (tabName === 'diaria') {
-        document.getElementById("view-diaria").style.display = "block";
-        document.getElementById("tab-btn-diaria").classList.add("active");
-        calcularDiaria();
-      } else if (tabName === 'devolucao') {
+      if (tabName === 'devolucao') {
         document.getElementById("view-devolucao").style.display = "block";
         document.getElementById("tab-btn-devolucao").classList.add("active");
         calcularDevolucao();
@@ -689,9 +620,9 @@
         document.getElementById("view-padrao").style.display = "block";
         document.getElementById("tab-btn-padrao").classList.add("active");
       } else {
-        document.getElementById("view-periculosidade").style.display = "block";
-        document.getElementById("tab-btn-periculosidade").classList.add("active");
-        calcularPericulosidade();
+        document.getElementById("view-diaria").style.display = "block";
+        document.getElementById("tab-btn-diaria").classList.add("active");
+        calcularDiaria();
       }
     }
 
@@ -854,77 +785,186 @@
       navigator.clipboard.writeText(texto).then(() => showToast("Despacho copiado!"));
     }
 
-    // TAB 3: CALCULADORA CONVENCIONAL JS
-    let currentCalcExpr = "";
+    // TAB 3: CALCULADORA CONVENCIONAL — modelo Windows (stateful)
+    let calcDisplay = '0';      // valor visível no display
+    let calcOperand = null;     // primeiro operando armazenado
+    let calcOperator = null;    // operador pendente (+, -, *, /)
+    let calcNewNum = true;      // flag: próximo dígito inicia novo número
+    let calcHistory = '';       // linha de histórico
+
+    function stdFmt(val) {
+      // Formata número para exibição sem notação científica
+      let n = parseFloat(val);
+      if (isNaN(n)) return '0';
+      // Detecta se precisa de decimais
+      let s = n.toString();
+      // Limita a 12 dígitos significativos
+      if (s.replace('-','').replace('.','').length > 12) {
+        s = parseFloat(n.toPrecision(12)).toString();
+      }
+      return s.replace('.', ',');
+    }
+
+    function stdSetDisplay(val) {
+      calcDisplay = val;
+      const el = document.getElementById('std-calc-display');
+      const hist = document.getElementById('std-calc-history');
+      if (el) el.textContent = calcDisplay;
+      if (hist) hist.textContent = calcHistory;
+    }
 
     function stdCalcNum(val) {
-      if (currentCalcExpr === "0" && val !== ".") {
-        currentCalcExpr = val;
-      } else {
-        currentCalcExpr += val;
+      if (val === '.' || val === ',') {
+        if (calcNewNum) {
+          calcDisplay = '0,';
+          calcNewNum = false;
+        } else if (!calcDisplay.includes(',')) {
+          calcDisplay += ',';
+        }
+        stdSetDisplay(calcDisplay);
+        return;
       }
-      updateStdDisplay();
+
+      if (calcNewNum) {
+        calcDisplay = val === '0' ? '0' : val;
+        calcNewNum = false;
+      } else {
+        if (calcDisplay === '0') {
+          calcDisplay = val;
+        } else {
+          calcDisplay += val;
+        }
+      }
+      stdSetDisplay(calcDisplay);
+    }
+
+    function stdGetValue() {
+      // Converte display em número (BR: vírgula → ponto)
+      return parseFloat(calcDisplay.replace(',', '.')) || 0;
+    }
+
+    function stdApplyOp() {
+      if (calcOperator === null || calcOperand === null) return stdGetValue();
+      const a = calcOperand;
+      const b = stdGetValue();
+      switch (calcOperator) {
+        case '+': return a + b;
+        case '-': return a - b;
+        case '*': return a * b;
+        case '/': return b === 0 ? NaN : a / b;
+        default: return b;
+      }
     }
 
     function stdCalcOp(op) {
-      if (currentCalcExpr === "" && op === "-") {
-        currentCalcExpr = "-";
-      } else if (currentCalcExpr !== "" && !/[+\-*/%]$/.test(currentCalcExpr)) {
-        currentCalcExpr += op;
+      const cur = stdGetValue();
+
+      if (calcOperator !== null && !calcNewNum) {
+        // Há operação pendente: resolve e encadeia
+        const result = stdApplyOp();
+        if (isNaN(result)) {
+          calcHistory = 'Erro: divisão por zero';
+          calcDisplay = '0';
+          calcOperand = null;
+          calcOperator = null;
+          calcNewNum = true;
+          stdSetDisplay(calcDisplay);
+          return;
+        }
+        calcOperand = result;
+        calcDisplay = stdFmt(result);
+      } else {
+        calcOperand = cur;
       }
-      updateStdDisplay();
+
+      calcOperator = op;
+      calcNewNum = true;
+      const opLabel = { '+': '+', '-': '−', '*': '×', '/': '÷' }[op] || op;
+      calcHistory = stdFmt(calcOperand) + ' ' + opLabel;
+      stdSetDisplay(calcDisplay);
     }
 
-    function stdCalcClear() {
-      currentCalcExpr = "";
-      document.getElementById("std-calc-history").textContent = "";
-      updateStdDisplay();
-    }
-
-    function stdCalcBackspace() {
-      currentCalcExpr = currentCalcExpr.slice(0, -1);
-      updateStdDisplay();
+    function stdCalcOp_percent() {
+      // % no estilo Windows: calcula percentagem do operando armazenado
+      const cur = stdGetValue();
+      let result;
+      if (calcOperand !== null && (calcOperator === '+' || calcOperator === '-')) {
+        result = calcOperand * (cur / 100);
+      } else if (calcOperand !== null && (calcOperator === '*' || calcOperator === '/')) {
+        result = cur / 100;
+      } else {
+        result = cur / 100;
+      }
+      calcDisplay = stdFmt(result);
+      calcNewNum = true;
+      stdSetDisplay(calcDisplay);
     }
 
     function stdCalcEqual() {
-      if (!currentCalcExpr) return;
-      try {
-        let sanitized = currentCalcExpr.replace(/×/g, '*').replace(/÷/g, '/');
-        let res = Function('"use strict";return (' + sanitized + ')')();
-        document.getElementById("std-calc-history").textContent = currentCalcExpr + " =";
-        currentCalcExpr = res.toString();
-        updateStdDisplay();
-      } catch (e) {
-        document.getElementById("std-calc-history").textContent = "Erro na expressão";
+      if (calcOperator === null) return;
+      const result = stdApplyOp();
+
+      if (isNaN(result)) {
+        calcHistory = 'Erro: divisão por zero';
+        calcDisplay = '0';
+      } else {
+        calcHistory = '';
+        calcDisplay = stdFmt(result);
       }
+
+      calcOperand = null;
+      calcOperator = null;
+      calcNewNum = true;
+      stdSetDisplay(calcDisplay);
+    }
+
+    function stdCalcClear() {
+      calcDisplay = '0';
+      calcOperand = null;
+      calcOperator = null;
+      calcNewNum = true;
+      calcHistory = '';
+      stdSetDisplay(calcDisplay);
+    }
+
+    function stdCalcBackspace() {
+      if (calcNewNum) return;
+      if (calcDisplay.length <= 1 || (calcDisplay.startsWith('-') && calcDisplay.length <= 2)) {
+        calcDisplay = '0';
+        calcNewNum = true;
+      } else {
+        calcDisplay = calcDisplay.slice(0, -1);
+        if (calcDisplay === '-') { calcDisplay = '0'; calcNewNum = true; }
+      }
+      stdSetDisplay(calcDisplay);
     }
 
     function updateStdDisplay() {
-      document.getElementById("std-calc-display").textContent = currentCalcExpr || "0";
+      // mantida por compatibilidade
+      stdSetDisplay(calcDisplay);
     }
 
-    // Keyboard shortcuts for standard calculator
-    document.addEventListener("keydown", function (e) {
-      const activeTab = document.getElementById("view-padrao");
-      if (activeTab && activeTab.style.display !== "none") {
-        if (e.key >= "0" && e.key <= "9") stdCalcNum(e.key);
-        else if (e.key === ".") stdCalcNum(".");
-        else if (e.key === "+") stdCalcOp("+");
-        else if (e.key === "-") stdCalcOp("-");
-        else if (e.key === "*") stdCalcOp("*");
-        else if (e.key === "/") { e.preventDefault(); stdCalcOp("/"); }
-        else if (e.key === "Enter" || e.key === "=") { e.preventDefault(); stdCalcEqual(); }
-        else if (e.key === "Backspace") stdCalcBackspace();
-        else if (e.key === "Escape") stdCalcClear();
-      }
+    // Teclado
+    document.addEventListener('keydown', function (e) {
+      const activeTab = document.getElementById('view-padrao');
+      if (!activeTab || activeTab.style.display === 'none') return;
+      if (e.key >= '0' && e.key <= '9') stdCalcNum(e.key);
+      else if (e.key === ',' || e.key === '.') stdCalcNum(',');
+      else if (e.key === '+') stdCalcOp('+');
+      else if (e.key === '-') stdCalcOp('-');
+      else if (e.key === '*') stdCalcOp('*');
+      else if (e.key === '/') { e.preventDefault(); stdCalcOp('/'); }
+      else if (e.key === '%') stdCalcOp_percent();
+      else if (e.key === 'Enter' || e.key === '=') { e.preventDefault(); stdCalcEqual(); }
+      else if (e.key === 'Backspace') stdCalcBackspace();
+      else if (e.key === 'Escape') stdCalcClear();
     });
 
     window.onload = function () {
-      calcularPericulosidade();
       calcularDiaria();
       calcularDevolucao();
+      stdSetDisplay('0');
     };
   </script>
 </body>
-
 </html>
