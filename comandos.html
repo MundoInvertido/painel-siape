@@ -5252,6 +5252,26 @@ matches:
       }
     }
 
+    function mergeAgendamentos(localList, cloudList) {
+      if (!Array.isArray(localList)) localList = [];
+      if (!Array.isArray(cloudList)) cloudList = [];
+
+      const map = new Map();
+      cloudList.forEach(item => {
+        if (item && (item.id || item.numero)) {
+          const key = item.id || (item.numero + '_' + item.prazo);
+          map.set(key, item);
+        }
+      });
+      localList.forEach(item => {
+        if (item && (item.id || item.numero)) {
+          const key = item.id || (item.numero + '_' + item.prazo);
+          map.set(key, item);
+        }
+      });
+      return Array.from(map.values());
+    }
+
     function applyUnifiedCloudData(parsed) {
       if (!parsed) return false;
       let updated = false;
@@ -5286,8 +5306,12 @@ matches:
         }
       }
       if (parsed.agendamentos && Array.isArray(parsed.agendamentos)) {
-        if (typeof agendamentosList !== 'undefined') agendamentosList = parsed.agendamentos;
-        localStorage.setItem("espanso_agendamentos", JSON.stringify(parsed.agendamentos));
+        if (typeof agendamentosList !== 'undefined') {
+          agendamentosList = mergeAgendamentos(agendamentosList, parsed.agendamentos);
+          localStorage.setItem("espanso_agendamentos", JSON.stringify(agendamentosList));
+        } else {
+          localStorage.setItem("espanso_agendamentos", JSON.stringify(parsed.agendamentos));
+        }
         updated = true;
       }
 

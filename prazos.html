@@ -877,6 +877,26 @@
       localStorage.setItem("github_token", DEFAULT_GITHUB_TOKEN);
     }
 
+    function mergeAgendamentos(localList, cloudList) {
+      if (!Array.isArray(localList)) localList = [];
+      if (!Array.isArray(cloudList)) cloudList = [];
+
+      const map = new Map();
+      cloudList.forEach(item => {
+        if (item && (item.id || item.numero)) {
+          const key = item.id || (item.numero + '_' + item.prazo);
+          map.set(key, item);
+        }
+      });
+      localList.forEach(item => {
+        if (item && (item.id || item.numero)) {
+          const key = item.id || (item.numero + '_' + item.prazo);
+          map.set(key, item);
+        }
+      });
+      return Array.from(map.values());
+    }
+
     window.onload = async function () {
       const isAdmin = localStorage.getItem("admin_session") === "true";
       updateAdminStateUI(isAdmin);
@@ -885,7 +905,7 @@
 
       const cloudData = await cloudGet();
       if (cloudData && Array.isArray(cloudData.agendamentos)) {
-        agendamentosList = cloudData.agendamentos;
+        agendamentosList = mergeAgendamentos(agendamentosList, cloudData.agendamentos);
         localStorage.setItem("espanso_agendamentos", JSON.stringify(agendamentosList));
       }
 
@@ -1112,7 +1132,12 @@
       renderPrazosTable();
       updatePrazosAlertsBanner();
 
-      await syncUpload();
+      const success = await syncUpload();
+      if (success) {
+        alert("✅ Prazo salvo localmente e sincronizado na nuvem com sucesso!");
+      } else {
+        alert("⚠️ Prazo salvo localmente, porém houve falha ao sincronizar com a nuvem.");
+      }
     }
 
     async function deleteAgendamento(id) {
@@ -1121,7 +1146,12 @@
       localStorage.setItem("espanso_agendamentos", JSON.stringify(agendamentosList));
       renderPrazosTable();
       updatePrazosAlertsBanner();
-      await syncUpload();
+      const success = await syncUpload();
+      if (success) {
+        alert("✅ Prazo excluído e sincronizado na nuvem com sucesso!");
+      } else {
+        alert("⚠️ Prazo excluído localmente, porém houve falha ao sincronizar com a nuvem.");
+      }
     }
 
     // Admin Login
@@ -1180,12 +1210,14 @@
       let procs = []; try { procs = JSON.parse(localStorage.getItem("sgp_nuap_procedures") || "[]"); } catch (e) { }
       let cats = []; try { cats = JSON.parse(localStorage.getItem("sgp_nuap_categories") || "[]"); } catch (e) { }
       let yamlStr = localStorage.getItem("espanso_siape_yaml") || "";
+      let kanbanState = { cards: [] }; try { kanbanState = JSON.parse(localStorage.getItem("espanso_kanban_processos") || '{"cards":[]}'); } catch (e) { }
 
       const payload = {
         procedures: procs,
         categories: cats,
         yaml: yamlStr,
         agendamentos: agendamentosList,
+        kanban: kanbanState,
         updatedAt: new Date().toISOString()
       };
 
@@ -1197,7 +1229,7 @@
             "Content-Type": "application/json"
           },
           body: JSON.stringify({
-            description: "SGP-PA & SIAPE Unified Cloud Data (Procedimentos, Comandos, Prazos)",
+            description: "SGP-PA & SIAPE Unified Cloud Data (Procedimentos, Comandos, Prazos e Kanban)",
             files: {
               "siape_unified_data.json": {
                 "content": JSON.stringify(payload, null, 2)
