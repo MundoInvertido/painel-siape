@@ -4,146 +4,193 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Controle de Prazos e Alertas — SGP-PA / PRF</title>
-  <meta name="description"
-    content="Painel de Controle de Prazos, Agendamentos Institucionais e Alertas de Vencimento SGP/NUAP PRF.">
+  <title>Controle de Prazos e Alertas — Central PRF</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap"
-    rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg-primary: #f8fafc;
+      --bg-primary: #eef2f7;
       --bg-secondary: #ffffff;
-      --bg-tertiary: #f1f5f9;
+      --bg-tertiary: #f8fafc;
       --text-primary: #0f172a;
-      --text-secondary: #475569;
+      --text-secondary: #64748b;
+      --text-muted: #94a3b8;
       --accent: #0057a8;
+      --accent-light: #1a7fd4;
       --accent-hover: #004080;
-      --accent-light: #e0f2fe;
-      --border-color: #e2e8f0;
-      --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
-      --font-main: 'Inter', system-ui, -apple-system, sans-serif;
-      --font-mono: 'JetBrains Mono', monospace;
-      --sidebar-width: 250px;
-      --danger: #ef4444;
-      --warning: #f59e0b;
-      --success: #10b981;
+      --accent-glow: rgba(0, 87, 168, 0.12);
+      --danger: #dc2626;
+      --danger-glow: rgba(220, 38, 38, 0.12);
+      --success: #059669;
+      --warning: #d97706;
+      --border-color: #dde3ec;
+      --card-shadow: 0 2px 8px rgba(15, 23, 42, 0.04), 0 1px 2px rgba(15, 23, 42, 0.06);
+      --card-shadow-hover: 0 12px 24px -4px rgba(0, 87, 168, 0.12), 0 4px 12px -2px rgba(15, 23, 42, 0.06);
+      --accent-gradient: linear-gradient(135deg, #0057a8 0%, #1a7fd4 100%);
+      --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Courier New", monospace;
+      --font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      --radius-sm: 0.375rem;
+      --radius-md: 0.625rem;
+      --radius-lg: 0.875rem;
+
+      --sidebar-width: 260px;
+      --sidebar-bg: #ffffff;
+      --sidebar-border: #e2e8f0;
+      --sidebar-text: #475569;
+      --sidebar-active-bg: #eff6ff;
+      --sidebar-active-text: #0057a8;
+      --sidebar-icon-color: #94a3b8;
+
+      --header-bg: #0b1340;
+      --header-height: 54px;
+
+      --panel-header-bg: #eff6ff;
+      --panel-header-text: #1e4d8c;
     }
 
     [data-theme="dark"] {
-      --bg-primary: #0f172a;
-      --bg-secondary: #1e293b;
-      --bg-tertiary: #334155;
-      --text-primary: #f8fafc;
+      --bg-primary: #080e1f;
+      --bg-secondary: #0f1830;
+      --bg-tertiary: #162040;
+      --text-primary: #f1f5f9;
       --text-secondary: #94a3b8;
-      --accent: #38bdf8;
-      --accent-hover: #7dd3fc;
-      --accent-light: #1e3a8a;
-      --border-color: #334155;
-      --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+      --text-muted: #64748b;
+      --accent: #f59e0b;
+      --accent-light: #fbbf24;
+      --accent-hover: #d97706;
+      --accent-glow: rgba(245, 158, 11, 0.15);
+      --danger: #f87171;
+      --border-color: #1e2f5a;
+      --card-shadow: 0 2px 8px rgba(0, 0, 0, 0.4), 0 8px 24px rgba(0, 0, 0, 0.25);
+
+      --sidebar-bg: #0f1830;
+      --sidebar-border: #1e2f5a;
+      --sidebar-text: #94a3b8;
+      --sidebar-active-bg: #1c2d5a;
+      --sidebar-active-text: #f59e0b;
+      --sidebar-icon-color: #64748b;
+
+      --header-bg: #060d1e;
+      --panel-header-bg: #162040;
+      --panel-header-text: #f59e0b;
     }
 
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
+      transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
     }
 
     body {
-      font-family: var(--font-main);
+      font-family: var(--font-sans);
       background-color: var(--bg-primary);
       color: var(--text-primary);
-      display: flex;
+      line-height: 1.5;
       min-height: 100vh;
-      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
     }
 
-    /* Top Bar Header */
-    .top-bar {
-      position: fixed;
-      top: 0;
-      left: var(--sidebar-width);
-      right: 0;
-      height: 60px;
-      background: var(--bg-secondary);
-      border-bottom: 1px solid var(--border-color);
+    /* Top Header Bar */
+    .top-header {
+      background: linear-gradient(135deg, #0b1340 0%, #0e1a50 100%);
+      color: #ffffff;
+      height: var(--header-height);
       display: flex;
-      align-items: center;
       justify-content: space-between;
+      align-items: center;
       padding: 0 1.5rem;
-      z-index: 90;
-      transition: left 0.3s ease;
+      box-shadow: 0 2px 16px rgba(0, 0, 0, 0.25);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
     }
 
-    .top-bar-left {
+    .header-left {
       display: flex;
       align-items: center;
       gap: 1rem;
     }
 
-    .top-bar-title {
-      font-weight: 700;
-      font-size: 1rem;
-      color: var(--text-primary);
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
+    .logo-prf {
+      font-family: 'Inter', 'Times New Roman', Georgia, serif;
+      font-weight: 900;
+      color: #fbbf24;
+      font-size: 1.25rem;
+      letter-spacing: 0.06em;
+      line-height: 1;
+      text-shadow: 0 1px 8px rgba(251, 191, 36, 0.3);
     }
 
-    .top-bar-actions {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
+    .header-subtitle {
+      font-size: 0.78rem;
+      color: rgba(255, 255, 255, 0.5);
+      font-weight: 500;
+      letter-spacing: 0.02em;
     }
 
-    /* Sidebar Styles */
+    .menu-icon {
+      display: flex;
+      align-items: center;
+      color: #ffffff;
+      cursor: pointer;
+    }
+
+    /* App Layout */
+    .app-layout {
+      display: flex;
+      min-height: calc(100vh - 54px);
+    }
+
+    /* Sidebar Navigation */
     .sidebar {
       width: var(--sidebar-width);
-      background-color: var(--bg-secondary);
-      border-right: 1px solid var(--border-color);
+      background-color: var(--sidebar-bg);
+      border-right: 1px solid var(--sidebar-border);
       display: flex;
       flex-direction: column;
-      position: fixed;
-      top: 0;
-      bottom: 0;
-      left: 0;
-      z-index: 100;
-      transition: transform 0.3s ease;
+      flex-shrink: 0;
+      position: sticky;
+      top: var(--header-height);
+      height: calc(100vh - var(--header-height));
+      overflow-y: auto;
     }
 
-    .sidebar-header {
-      padding: 1.25rem 1.5rem;
+    .sidebar-logo {
+      padding: 1.25rem 1.25rem 1rem;
+      border-bottom: 1px solid var(--sidebar-border);
       display: flex;
       align-items: center;
       gap: 0.75rem;
-      border-bottom: 1px solid var(--border-color);
     }
 
     .sidebar-logo-icon {
-      width: 32px;
-      height: 32px;
-      background: linear-gradient(135deg, #0b1a40, #0057a8);
-      border-radius: 8px;
+      width: 2.25rem;
+      height: 2.25rem;
+      background: var(--accent);
+      border-radius: var(--radius-sm);
       display: flex;
       align-items: center;
       justify-content: center;
-      color: #fbbf24;
-      font-weight: 800;
-      font-size: 0.9rem;
+      color: #ffffff;
+      font-weight: 900;
+      font-size: 0.95rem;
+      box-shadow: 0 4px 12px var(--accent-glow);
     }
 
-    .sidebar-title h1 {
-      font-size: 1rem;
+    .sidebar-logo h1 {
+      font-size: 0.95rem;
       font-weight: 800;
       color: var(--text-primary);
       line-height: 1.2;
     }
 
-    .sidebar-title p {
+    .sidebar-logo p {
       font-size: 0.72rem;
       color: var(--text-secondary);
+      font-weight: 500;
     }
 
     .sidebar-nav {
@@ -152,93 +199,79 @@
       flex-direction: column;
       gap: 0.25rem;
       flex: 1;
-      overflow-y: auto;
     }
 
     .sidebar-section-label {
       font-size: 0.68rem;
       font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 0.05em;
-      color: var(--text-secondary);
-      padding: 0.75rem 0.75rem 0.25rem 0.75rem;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      padding: 0.5rem 0.625rem 0.25rem;
     }
 
     .nav-item {
       display: flex;
       align-items: center;
       gap: 0.75rem;
-      padding: 0.65rem 0.75rem;
-      border-radius: 0.5rem;
-      color: var(--text-secondary);
+      padding: 0.625rem 0.75rem;
+      border-radius: var(--radius-sm);
+      color: var(--sidebar-text);
       font-weight: 500;
-      font-size: 0.88rem;
+      font-size: 0.875rem;
       cursor: pointer;
       border: none;
       background: transparent;
       width: 100%;
       text-align: left;
       text-decoration: none;
-      transition: all 0.15s ease;
     }
 
     .nav-item:hover {
-      background-color: var(--bg-tertiary);
+      background-color: var(--bg-primary);
       color: var(--text-primary);
     }
 
     .nav-item.active {
-      background-color: var(--accent-light);
-      color: var(--accent);
+      background-color: var(--sidebar-active-bg);
+      color: var(--sidebar-active-text);
       font-weight: 700;
     }
 
     .nav-item .icon {
-      width: 18px;
-      height: 18px;
+      width: 1.125rem;
+      height: 1.125rem;
       fill: currentColor;
     }
 
     .nav-divider {
       height: 1px;
-      background-color: var(--border-color);
-      margin: 0.5rem 0.75rem;
+      background-color: var(--sidebar-border);
+      margin: 0.5rem 0.625rem;
       border: none;
     }
 
-    /* Main Content Area */
-    .app-container {
-      margin-left: var(--sidebar-width);
-      margin-top: 60px;
-      padding: 1.5rem;
-      width: calc(100% - var(--sidebar-width));
+    /* Main Content */
+    .main-content {
       flex: 1;
+      padding: 1.5rem;
       display: flex;
       flex-direction: column;
       gap: 1.5rem;
+      max-width: 1400px;
+      margin: 0 auto;
+      width: 100%;
     }
 
-    /* Hero Banner for Prazos */
+    /* Hero Banner */
     .hero {
       background: linear-gradient(135deg, #0b1a40 0%, #0057a8 100%);
-      border-radius: 1rem;
-      padding: 2rem;
+      border-radius: var(--radius-md);
+      padding: 1.75rem 2rem;
       color: #ffffff;
-      box-shadow: 0 10px 25px -5px rgba(11, 26, 64, 0.2);
+      box-shadow: 0 10px 25px -5px rgba(11, 26, 64, 0.25);
       position: relative;
       overflow: hidden;
-    }
-
-    .hero::before {
-      content: '';
-      position: absolute;
-      top: -50%;
-      right: -10%;
-      width: 400px;
-      height: 400px;
-      background: radial-gradient(circle, rgba(251, 191, 36, 0.15) 0%, rgba(255, 255, 255, 0) 70%);
-      border-radius: 50%;
-      pointer-events: none;
     }
 
     .hero-content {
@@ -253,141 +286,105 @@
 
     .hero-badge {
       display: inline-block;
-      padding: 0.25rem 0.75rem;
+      padding: 0.2rem 0.65rem;
       background: rgba(251, 191, 36, 0.2);
       border: 1px solid #fbbf24;
       color: #fbbf24;
       border-radius: 20px;
-      font-size: 0.75rem;
+      font-size: 0.72rem;
       font-weight: 700;
       letter-spacing: 0.05em;
-      margin-bottom: 0.75rem;
+      margin-bottom: 0.5rem;
     }
 
     .hero-title {
-      font-size: 1.85rem;
+      font-size: 1.75rem;
       font-weight: 800;
-      margin-bottom: 0.5rem;
+      margin-bottom: 0.35rem;
       letter-spacing: -0.02em;
     }
 
     .hero-subtitle {
-      font-size: 0.95rem;
+      font-size: 0.9rem;
       color: rgba(255, 255, 255, 0.85);
       max-width: 600px;
-      line-height: 1.5;
     }
 
     .hero-stat-card {
       background: rgba(255, 255, 255, 0.1);
       backdrop-filter: blur(10px);
       border: 1px solid rgba(255, 255, 255, 0.2);
-      border-radius: 0.75rem;
-      padding: 1rem 1.75rem;
+      border-radius: var(--radius-sm);
+      padding: 0.875rem 1.5rem;
       text-align: center;
-      min-width: 170px;
+      min-width: 160px;
     }
 
     .hero-stat-number {
-      font-size: 2.2rem;
+      font-size: 2rem;
       font-weight: 800;
       color: #fbbf24;
       line-height: 1;
     }
 
     .hero-stat-label {
-      font-size: 0.72rem;
+      font-size: 0.7rem;
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.05em;
       color: rgba(255, 255, 255, 0.8);
-      margin-top: 0.35rem;
+      margin-top: 0.25rem;
     }
 
     /* Cards and Table */
     .card {
       background: var(--bg-secondary);
-      border-radius: 0.75rem;
+      border-radius: var(--radius-md);
       border: 1px solid var(--border-color);
       box-shadow: var(--card-shadow);
       overflow: hidden;
     }
 
-    .card-header {
-      padding: 1.25rem 1.5rem;
+    .panel-header-blue {
+      background-color: var(--panel-header-bg);
+      color: var(--panel-header-text);
+      padding: 0.875rem 1.25rem;
+      font-weight: 700;
+      font-size: 0.9rem;
       border-bottom: 1px solid var(--border-color);
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      flex-wrap: wrap;
-      gap: 1rem;
+      justify-content: space-between;
     }
 
-    .card-title-group h2 {
-      font-size: 1.15rem;
-      font-weight: 700;
-      color: var(--text-primary);
-    }
-
-    .card-title-group p {
-      font-size: 0.82rem;
-      color: var(--text-secondary);
-      margin-top: 0.15rem;
-    }
-
-    /* Search & Controls */
     .controls-bar {
       display: flex;
       gap: 1rem;
       flex-wrap: wrap;
       align-items: center;
+      padding: 1rem 1.25rem;
+      border-bottom: 1px solid var(--border-color);
     }
 
-    .search-box {
+    .search-input-wrapper {
       position: relative;
       flex: 1;
-      min-width: 280px;
-    }
-
-    .search-input {
-      width: 100%;
-      padding: 0.65rem 1rem 0.65rem 2.5rem;
-      border-radius: 0.5rem;
-      border: 1px solid var(--border-color);
-      background-color: var(--bg-primary);
-      color: var(--text-primary);
-      font-size: 0.88rem;
-    }
-
-    .search-input:focus {
-      outline: none;
-      border-color: var(--accent);
-    }
-
-    .search-icon {
-      position: absolute;
-      left: 0.85rem;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 16px;
-      height: 16px;
-      fill: var(--text-secondary);
+      min-width: 260px;
     }
 
     .btn {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 0.5rem;
-      padding: 0.6rem 1.2rem;
-      border-radius: 0.5rem;
+      gap: 0.4rem;
+      padding: 0.5rem 1rem;
+      border-radius: var(--radius-sm);
       font-weight: 600;
-      font-size: 0.88rem;
+      font-size: 0.85rem;
       cursor: pointer;
       border: 1px solid var(--border-color);
       background-color: var(--bg-secondary);
       color: var(--text-primary);
-      transition: all 0.15s ease;
     }
 
     .btn:hover {
@@ -404,10 +401,10 @@
       background-color: var(--accent-hover);
     }
 
-    /* Status Badges */
+    /* Badges */
     .badge-status {
       display: inline-block;
-      padding: 0.25rem 0.65rem;
+      padding: 0.2rem 0.6rem;
       border-radius: 12px;
       font-size: 0.78rem;
       font-weight: 700;
@@ -429,7 +426,7 @@
       color: #991b1b;
     }
 
-    /* Table Styles */
+    /* Table */
     .table-container {
       width: 100%;
       overflow-x: auto;
@@ -439,22 +436,22 @@
       width: 100%;
       border-collapse: collapse;
       text-align: left;
-      font-size: 0.88rem;
+      font-size: 0.875rem;
     }
 
     th {
       background-color: var(--bg-tertiary);
       color: var(--text-secondary);
       font-weight: 700;
-      padding: 0.85rem 1.25rem;
+      padding: 0.75rem 1.25rem;
       border-bottom: 1px solid var(--border-color);
-      font-size: 0.78rem;
+      font-size: 0.75rem;
       text-transform: uppercase;
       letter-spacing: 0.05em;
     }
 
     td {
-      padding: 1rem 1.25rem;
+      padding: 0.875rem 1.25rem;
       border-bottom: 1px solid var(--border-color);
       color: var(--text-primary);
     }
@@ -463,16 +460,16 @@
       background-color: var(--bg-tertiary);
     }
 
-    /* Alerts Banner Component */
+    /* Alerts Banner */
     .alerts-banner-card {
       background-color: #fffbeb;
       border: 1px solid #fef3c7;
       border-left: 5px solid #f59e0b;
-      border-radius: 0.5rem;
-      padding: 1.25rem;
+      border-radius: var(--radius-sm);
+      padding: 1rem 1.25rem;
       display: flex;
       flex-direction: column;
-      gap: 0.75rem;
+      gap: 0.5rem;
     }
 
     .alerts-banner-card.has-expired {
@@ -483,7 +480,7 @@
 
     .alerts-banner-header {
       font-weight: 800;
-      font-size: 0.95rem;
+      font-size: 0.9rem;
       color: #92400e;
     }
 
@@ -494,11 +491,10 @@
     .alerts-banner-list {
       list-style-type: disc;
       padding-left: 1.25rem;
-      font-size: 0.88rem;
-      color: var(--text-primary);
+      font-size: 0.85rem;
       display: flex;
       flex-direction: column;
-      gap: 0.35rem;
+      gap: 0.25rem;
     }
 
     /* Modals & Overlays */
@@ -523,9 +519,9 @@
 
     .panel-content {
       background: var(--bg-secondary);
-      border-radius: 0.75rem;
+      border-radius: var(--radius-md);
       width: 100%;
-      max-width: 520px;
+      max-width: 500px;
       border: 1px solid var(--border-color);
       box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
       overflow: hidden;
@@ -534,7 +530,7 @@
     }
 
     .panel-header {
-      padding: 1.25rem 1.5rem;
+      padding: 1rem 1.25rem;
       border-bottom: 1px solid var(--border-color);
       display: flex;
       justify-content: space-between;
@@ -542,53 +538,26 @@
     }
 
     .panel-header h3 {
-      font-size: 1.1rem;
+      font-size: 1rem;
       font-weight: 700;
     }
 
     .panel-body {
-      padding: 1.5rem;
+      padding: 1.25rem;
       display: flex;
       flex-direction: column;
-      gap: 1.25rem;
-    }
-
-    .form-group {
-      display: flex;
-      flex-direction: column;
-      gap: 0.35rem;
-    }
-
-    .form-group label {
-      font-size: 0.85rem;
-      font-weight: 600;
-      color: var(--text-primary);
-    }
-
-    .form-input {
-      padding: 0.65rem 0.85rem;
-      border-radius: 0.375rem;
-      border: 1px solid var(--border-color);
-      background: var(--bg-primary);
-      color: var(--text-primary);
-      font-size: 0.88rem;
-    }
-
-    .form-input:focus {
-      outline: none;
-      border-color: var(--accent);
+      gap: 1rem;
     }
 
     .panel-footer {
-      padding: 1rem 1.5rem;
+      padding: 0.875rem 1.25rem;
       background-color: var(--bg-tertiary);
       border-top: 1px solid var(--border-color);
       display: flex;
       justify-content: flex-end;
-      gap: 0.75rem;
+      gap: 0.5rem;
     }
 
-    /* Admin Login Box */
     .login-overlay {
       position: fixed;
       top: 0;
@@ -609,26 +578,26 @@
 
     .login-box {
       background: var(--bg-secondary);
-      border-radius: 0.75rem;
-      padding: 2rem;
+      border-radius: var(--radius-md);
+      padding: 1.75rem;
       width: 100%;
       max-width: 380px;
       border: 1px solid var(--border-color);
       box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
       display: flex;
       flex-direction: column;
-      gap: 1rem;
+      gap: 0.875rem;
     }
 
     .login-box h2 {
-      font-size: 1.2rem;
+      font-size: 1.15rem;
       font-weight: 700;
       color: var(--accent);
     }
 
     .login-box input {
-      padding: 0.7rem;
-      border-radius: 0.375rem;
+      padding: 0.65rem;
+      border-radius: var(--radius-sm);
       border: 1px solid var(--border-color);
       background: var(--bg-primary);
       color: var(--text-primary);
@@ -636,170 +605,219 @@
 
     .login-error {
       color: var(--danger);
-      font-size: 0.82rem;
+      font-size: 0.8rem;
       display: none;
+    }
+
+    .sidebar-overlay {
+      display: none;
+      position: fixed;
+      top: 54px;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.4);
+      z-index: 1000;
+    }
+
+    .sidebar-overlay.active {
+      display: block;
     }
 
     /* Mobile Responsive */
     @media (max-width: 768px) {
       .sidebar {
-        transform: translateX(-100%);
+        position: fixed;
+        left: -280px;
+        top: 54px;
+        width: 280px;
+        height: calc(100vh - 54px);
+        z-index: 1001;
+        transition: left 0.3s ease;
       }
 
       .sidebar.open {
-        transform: translateX(0);
-      }
-
-      .top-bar {
         left: 0;
-      }
-
-      .app-container {
-        margin-left: 0;
-        width: 100%;
       }
     }
   </style>
 </head>
 
 <body>
-  <!-- Sidebar -->
-  <aside class="sidebar">
-    <div class="sidebar-header">
-      <div class="sidebar-logo-icon">PRF</div>
-      <div class="sidebar-title">
-        <h1>Painel SGP</h1>
-        <p>Comandos &amp; Atalhos SIAPE</p>
+  <!-- Top Header Bar matching Screenshot -->
+  <header class="top-header">
+    <div class="header-left">
+      <div class="menu-icon" onclick="toggleMobileSidebar(true)" style="cursor: pointer; margin-right: 0.25rem;">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+          <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z" />
+        </svg>
       </div>
+      <span class="logo-prf">SGP-PA</span>
+      <span class="header-subtitle" style="display: none; margin-left: 0.5rem;" id="header-subtitle-text">Controle de Prazos PRF</span>
     </div>
-    <nav class="sidebar-nav">
-      <span class="sidebar-section-label">Navegação</span>
-      <a href="procedimentos.html" class="nav-item">
-        <svg class="icon" viewBox="0 0 24 24">
-          <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
-        </svg>
-        Procedimentos
-      </a>
-      <a href="comandos.html" class="nav-item">
-        <svg class="icon" viewBox="0 0 24 24">
-          <path
-            d="M19.14 12.94c.04-.3.06-.61.06-.94s-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6-3.6z" />
-        </svg>
-        Comandos
-      </a>
-      <a href="prazos.html" class="nav-item active">
-        <svg class="icon" viewBox="0 0 24 24">
-          <path
-            d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zm0-12H5V6h14v2zm-7 5h5v5h-5z" />
-        </svg>
-        Prazos
-      </a>
-      <a href="processos.html" class="nav-item">
-        <svg class="icon" viewBox="0 0 24 24">
-          <path d="M4 4h4v16H4V4zm6 0h4v10h-4V4zm6 0h4v6h-4V4z" />
-        </svg>
-        Processos SEI
-      </a>
-      <a href="apps.html" class="nav-item">
-        <svg class="icon" viewBox="0 0 24 24">
-          <path
-            d="M4 8h4V4H4v4zm6 12h4v-4h-4v4zm-6 0h4v-4H4v4zm0-6h4v-4H4v4zm6 0h4v-4h-4v4zm6-10v4h4V4h-4zm-6 4h4V4h-4v4zm6 6h4v-4h-4v4zm0 6h4v-4h-4v4z" />
-        </svg>
-        Apps
-      </a>
-    </nav>
-  </aside>
-
-  <!-- Top Bar -->
-  <header class="top-bar">
-    <div class="top-bar-left">
-      <div class="top-bar-title">
-        <span>📅</span>
-        <span>SGP-PA / PRF — Gestão de Prazos Institucionais</span>
-      </div>
-    </div>
-    <div class="top-bar-actions">
-      <button class="btn" id="header-admin-login" onclick="adminLogin()" style="font-size: 0.82rem;">
-        🔐 Modo Admin
+    <div class="header-right" style="display: flex; align-items: center; gap: 0.75rem;">
+      <button class="btn" id="header-admin-login" onclick="adminLogin()"
+        style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: rgba(255,255,255,0.85); padding: 0.3rem 0.875rem; font-size: 0.8rem; cursor: pointer; border-radius: 0.375rem; font-weight: 600; letter-spacing: 0.01em;">
+        🔐 Login Admin
       </button>
       <button class="btn" id="header-admin-logout" onclick="adminLogout()"
-        style="display: none; font-size: 0.82rem; color: var(--danger); border-color: var(--danger);">
-        🚪 Sair (Admin)
-      </button>
-      <button class="btn" onclick="toggleTheme()" style="padding: 0.4rem 0.6rem;">
-        🌙
+        style="background: rgba(220,38,38,0.8); border: 1px solid rgba(220,38,38,0.5); color: #fff; padding: 0.3rem 0.875rem; font-size: 0.8rem; cursor: pointer; border-radius: 0.375rem; font-weight: 600; display: none;">
+        🚪 Sair Admin
       </button>
     </div>
   </header>
 
-  <!-- App Main Area -->
-  <main class="app-container">
-    <!-- Standalone Hero Header for Prazos -->
-    <header class="hero">
-      <div class="hero-content">
-        <div class="hero-text">
-          <span class="hero-badge">PRF · SIAPE &amp; ESPANSO</span>
-          <h1 class="hero-title">Controle de Prazos e Alertas</h1>
-          <p class="hero-subtitle">Acompanhamento de processos, requerimentos institucionais e alertas de vencimento da SGP/NUAP.</p>
-        </div>
-        <div class="hero-stat-card">
-          <div class="hero-stat-number" id="stat-prazos-count">0</div>
-          <div class="hero-stat-label">PRAZOS MONITORADOS</div>
-        </div>
-      </div>
-    </header>
+  <!-- Sidebar Overlay Backdrop for Mobile -->
+  <div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleMobileSidebar(false)"></div>
 
-    <!-- Alerts Notification Banner -->
-    <div id="prazos-alerts-container" style="display: none;"></div>
-
-    <!-- Main Table Card -->
-    <div class="card">
-      <div class="card-header">
-        <div class="card-title-group">
-          <h2>Processos e Requerimentos Monitorados</h2>
-          <p>Consulte a lista completa de alertas de prazos salvos e acompanhe os vencimentos.</p>
-        </div>
-        <button class="btn btn-accent" id="btn-novo-prazo" onclick="openAgendamentoModal()" style="display: none;">
-          ➕ Adicionar Alerta
-        </button>
-      </div>
-
-      <div style="padding: 1rem 1.5rem; border-bottom: 1px solid var(--border-color);" class="controls-bar">
-        <div class="search-box">
-          <svg class="search-icon" viewBox="0 0 24 24">
-            <path
-              d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" />
+  <!-- App Main Layout -->
+  <div class="app-layout">
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+      <div class="sidebar-logo">
+        <div class="sidebar-logo-icon">
+          <svg viewBox="0 0 24 24" fill="white" width="18" height="18">
+            <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" />
           </svg>
-          <input type="text" id="search-prazos" class="search-input"
-            placeholder="Pesquise por número do processo ou descrição..." oninput="renderPrazosTable()">
         </div>
-        <select id="filter-status" class="form-input" style="width: auto;" onchange="renderPrazosTable()">
-          <option value="ALL">Todos os Status</option>
-          <option value="EXPIRADOS">Vencidos / Expirados</option>
-          <option value="PROXIMOS">Próximos de Expirar (<= 7 dias)</option>
-          <option value="NO_PRAZO">No Prazo (> 7 dias)</option>
-        </select>
+        <div>
+          <h1>Painel SGP</h1>
+          <p>Comandos &amp; Atalhos SIAPE</p>
+        </div>
       </div>
+      <nav class="sidebar-nav">
+        <span class="sidebar-section-label">Navegação</span>
+        <a href="procedimentos.html" class="nav-item" style="text-decoration: none;">
+          <svg class="icon" viewBox="0 0 24 24">
+            <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
+          </svg>
+          Procedimentos
+        </a>
+        <a href="comandos.html" class="nav-item" style="text-decoration: none;">
+          <svg class="icon" viewBox="0 0 24 24">
+            <path
+              d="M19.14 12.94c.04-.3.06-.61.06-.94s-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6-3.6z" />
+          </svg>
+          Comandos
+        </a>
+        <a href="prazos.html" class="nav-item active" style="text-decoration: none;">
+          <svg class="icon" viewBox="0 0 24 24">
+            <path
+              d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zm0-12H5V6h14v2zm-7 5h5v5h-5z" />
+          </svg>
+          Prazos
+        </a>
+        <a href="processos.html" class="nav-item" style="text-decoration: none;">
+          <svg class="icon" viewBox="0 0 24 24">
+            <path d="M4 4h4v16H4V4zm6 0h4v10h-4V4zm6 0h4v6h-4V4z" />
+          </svg>
+          Processos SEI
+        </a>
+        <a href="apps.html" class="nav-item" style="text-decoration: none;">
+          <svg class="icon" viewBox="0 0 24 24">
+            <path
+              d="M4 8h4V4H4v4zm6 12h4v-4h-4v4zm-6 0h4v-4H4v4zm0-6h4v-4H4v4zm6 0h4v-4h-4v4zm6-10v4h4V4h-4zm-6 4h4V4h-4v4zm6 6h4v-4h-4v4zm0 6h4v-4h-4v4z" />
+          </svg>
+          Apps
+        </a>
 
-      <div class="table-container">
-        <table>
-          <thead>
-            <tr>
-              <th style="width: 220px;">Número do Processo</th>
-              <th>Descrição</th>
-              <th style="width: 140px; text-align: center;">Prazo</th>
-              <th style="width: 160px; text-align: center;">Status</th>
-              <th style="width: 150px; text-align: center;">Dias Restantes</th>
-              <th style="width: 140px; text-align: center;" class="admin-only-col">Ações</th>
-            </tr>
-          </thead>
-          <tbody id="tbody-prazos">
-            <!-- Populated dynamically -->
-          </tbody>
-        </table>
+        <hr class="nav-divider">
+        <span class="sidebar-section-label">Sistema</span>
+        <a href="comandos.html?tab=settings" class="nav-item" style="text-decoration: none;">
+          <svg class="icon" viewBox="0 0 24 24">
+            <path d="M19.43 12.98c.04-.32.07-.64.07-.98s-.03-.66-.07-.98l2.11-1.65c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.4-1.08-.73-1.69-.98l-.38-2.65C14.46 2.18 14.25 2 14 2h-4c-.25 0-.46.18-.49.42l-.38 2.65c-.61.25-1.17.59-1.69.98l-2.49-1c-.23-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64l2.11 1.65c-.04.32-.07.65-.07.98s.03.66.07.98l-2.11 1.65c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1c.52.4 1.08.73 1.69.98l.38 2.65c.03.24.24.42.49.42h4c.25 0 .46-.18.49-.42l.38-2.65c.61-.25 1.17-.59 1.69-.98l2.49 1c.23.09.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.65zM12 15.5c-1.93 0-3.5-1.57-3.5-3.5s1.57-3.5 3.5-3.5 3.5 1.57 3.5 3.5-1.57 3.5-3.5-3.5z" />
+          </svg>
+          Configurações
+        </a>
+
+        <!-- Admin Login / Logout bottom -->
+        <div style="margin-top: auto; padding-top: 0.75rem;">
+          <hr class="nav-divider">
+          <button class="nav-item" id="btn-admin-login" onclick="adminLogin()"
+            style="font-size: 0.78rem; color: var(--text-muted); opacity: 0.7;">
+            <svg class="icon" viewBox="0 0 24 24" style="width: 1rem; height: 1rem;">
+              <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z" />
+            </svg>
+            Acesso Admin
+          </button>
+          <button class="nav-item" id="btn-admin-logout" onclick="adminLogout()"
+            style="font-size: 0.78rem; color: var(--danger); display: none;">
+            <svg class="icon" viewBox="0 0 24 24" style="width: 1rem; height: 1rem;">
+              <path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z" />
+            </svg>
+            Sair do Modo Admin
+          </button>
+        </div>
+      </nav>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+      <!-- Standalone Hero Header for Prazos -->
+      <header class="hero">
+        <div class="hero-content">
+          <div class="hero-text">
+            <span class="hero-badge">PRF · SIAPE &amp; ESPANSO</span>
+            <h1 class="hero-title">Controle de Prazos e Alertas</h1>
+            <p class="hero-subtitle">Acompanhamento de processos, requerimentos institucionais e alertas de vencimento da SGP/NUAP.</p>
+          </div>
+          <div class="hero-stat-card">
+            <div class="hero-stat-number" id="stat-prazos-count">0</div>
+            <div class="hero-stat-label">PRAZOS MONITORADOS</div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Alerts Notification Banner -->
+      <div id="prazos-alerts-container" style="display: none;"></div>
+
+      <!-- Main Table Card -->
+      <div class="card">
+        <div class="panel-header-blue">
+          <div style="display: flex; align-items: center; gap: 0.5rem;">
+            <svg class="icon" viewBox="0 0 24 24" style="width: 1.1rem; height: 1.1rem; fill: currentColor;">
+              <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11z" />
+            </svg>
+            Processos e Requerimentos Monitorados
+          </div>
+          <button class="btn btn-accent" id="btn-novo-prazo" onclick="openAgendamentoModal()" style="display: none; padding: 0.35rem 0.75rem; font-size: 0.8rem;">
+            ➕ Adicionar Alerta
+          </button>
+        </div>
+
+        <div class="controls-bar">
+          <div class="search-input-wrapper">
+            <input type="text" id="search-prazos"
+              placeholder="Pesquise por número do processo ou descrição..." oninput="renderPrazosTable()">
+          </div>
+          <select id="filter-status" style="width: auto; min-width: 180px;" onchange="renderPrazosTable()">
+            <option value="ALL">Todos os Status</option>
+            <option value="EXPIRADOS">Vencidos / Expirados</option>
+            <option value="PROXIMOS">Próximos de Expirar (<= 7 dias)</option>
+            <option value="NO_PRAZO">No Prazo (> 7 dias)</option>
+          </select>
+        </div>
+
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th style="width: 220px;">Número do Processo</th>
+                <th>Descrição</th>
+                <th style="width: 130px; text-align: center;">Prazo</th>
+                <th style="width: 150px; text-align: center;">Status</th>
+                <th style="width: 130px; text-align: center;">Dias Restantes</th>
+                <th style="width: 140px; text-align: center;" class="admin-only-col">Ações</th>
+              </tr>
+            </thead>
+            <tbody id="tbody-prazos">
+              <!-- Populated dynamically -->
+            </tbody>
+          </table>
+        </div>
       </div>
-    </div>
-  </main>
+    </main>
+  </div>
 
   <!-- Modal Adicionar / Editar Prazo -->
   <div class="panel-overlay" id="agendamento-modal">
@@ -855,7 +873,6 @@
 
     let agendamentosList = [];
 
-    // Ensure GitHub token default is set
     if (!localStorage.getItem("github_token")) {
       localStorage.setItem("github_token", DEFAULT_GITHUB_TOKEN);
     }
@@ -864,10 +881,8 @@
       const isAdmin = localStorage.getItem("admin_session") === "true";
       updateAdminStateUI(isAdmin);
 
-      // Load saved local agendamentos
       loadLocalAgendamentos();
 
-      // Cloud Fetch
       const cloudData = await cloudGet();
       if (cloudData && Array.isArray(cloudData.agendamentos)) {
         agendamentosList = cloudData.agendamentos;
@@ -878,9 +893,22 @@
       updatePrazosAlertsBanner();
     };
 
+    function toggleMobileSidebar(show) {
+      const sidebar = document.querySelector('.sidebar');
+      const overlay = document.getElementById('sidebar-overlay');
+      if (sidebar) sidebar.classList.toggle('open', show);
+      if (overlay) overlay.classList.toggle('active', show);
+    }
+
     function updateAdminStateUI(isAdmin) {
       document.getElementById("header-admin-login").style.display = isAdmin ? "none" : "flex";
       document.getElementById("header-admin-logout").style.display = isAdmin ? "flex" : "none";
+
+      const btnLoginSide = document.getElementById("btn-admin-login");
+      const btnLogoutSide = document.getElementById("btn-admin-logout");
+      if (btnLoginSide) btnLoginSide.style.display = isAdmin ? "none" : "flex";
+      if (btnLogoutSide) btnLogoutSide.style.display = isAdmin ? "flex" : "none";
+
       document.getElementById("btn-novo-prazo").style.display = isAdmin ? "inline-flex" : "none";
 
       const actionCols = document.querySelectorAll(".admin-only-col");
@@ -910,7 +938,8 @@
 
     function renderPrazosTable() {
       const tbody = document.getElementById("tbody-prazos");
-      const search = document.getElementById("search-prazos").value.toLowerCase().trim();
+      const searchInput = document.getElementById("search-prazos");
+      const search = searchInput ? searchInput.value.toLowerCase().trim() : "";
       const filterStatus = document.getElementById("filter-status").value;
       const isAdmin = localStorage.getItem("admin_session") === "true";
 
@@ -929,7 +958,6 @@
         return true;
       });
 
-      // Sort by deadline ascending
       filtered.sort((a, b) => new Date(a.prazo) - new Date(b.prazo));
 
       if (filtered.length === 0) {
@@ -1123,12 +1151,6 @@
       localStorage.removeItem("admin_session");
       updateAdminStateUI(false);
       renderPrazosTable();
-    }
-
-    function toggleTheme() {
-      const current = document.documentElement.getAttribute("data-theme");
-      const next = current === "dark" ? "light" : "dark";
-      document.documentElement.setAttribute("data-theme", next);
     }
 
     // Cloud Sync
