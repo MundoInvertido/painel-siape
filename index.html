@@ -909,13 +909,19 @@
     /* Modal de Procedimento Centralizado */
     #procedure-panel,
     #add-modal,
-    #categories-modal {
+    #categories-modal,
+    #image-upload-modal {
       justify-content: center;
+    }
+
+    #image-upload-modal {
+      z-index: 10050 !important;
     }
 
     #procedure-panel .panel-content,
     #add-modal .panel-content,
-    #categories-modal .panel-content {
+    #categories-modal .panel-content,
+    #image-upload-modal .panel-content {
       background-color: #ffffff !important;
       background: #ffffff !important;
       height: auto;
@@ -931,9 +937,14 @@
       overflow: hidden;
     }
 
+    #image-upload-modal .panel-content {
+      max-width: 540px !important;
+    }
+
     #procedure-panel.open .panel-content,
     #add-modal.open .panel-content,
-    #categories-modal.open .panel-content {
+    #categories-modal.open .panel-content,
+    #image-upload-modal.open .panel-content {
       transform: translateY(0) scale(1);
       opacity: 1;
     }
@@ -1882,7 +1893,7 @@
       </div>
     </div>
   <!-- Modal de Upload / Inserção de Imagem (PC / Drag&Drop / Ctrl+V / URL) -->
-  <div class="panel-overlay" id="image-upload-modal">
+  <div class="panel-overlay" id="image-upload-modal" onclick="closeImageUploadModal()">
     <div class="panel-content" style="max-width: 520px; border-radius: 10px; overflow: hidden;" onclick="event.stopPropagation()">
       <div class="panel-header" style="background-color: var(--bg-tertiary); padding: 1rem 1.25rem;">
         <h3 style="margin: 0; font-size: 1.1rem; font-weight: 700; color: var(--text-primary); display: flex; align-items: center; gap: 0.5rem;">
