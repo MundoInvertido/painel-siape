@@ -3106,53 +3106,53 @@
                     <label>Descrição do Passo</label>
                     <div class="step-editor-toolbar">
                         <!-- Estilos de Fonte -->
-                        <button type="button" class="tb-btn" style="font-weight: bold;" onclick="insertFormattingHelper(this.closest('.form-group').querySelector('textarea'), '**', '**', 'negrito')" title="Negrito">B</button>
-                        <button type="button" class="tb-btn" style="font-style: italic;" onclick="insertFormattingHelper(this.closest('.form-group').querySelector('textarea'), '*', '*', 'itálico')" title="Itálico">I</button>
-                        <button type="button" class="tb-btn" style="text-decoration: underline;" onclick="insertFormattingHelper(this.closest('.form-group').querySelector('textarea'), '++', '++', 'sublinhado')" title="Sublinhado">U</button>
+                        <button type="button" class="tb-btn" style="font-weight: bold;" onmousedown="event.preventDefault()" onclick="formatStepText(this, 'bold', '**', '**', 'negrito')" title="Negrito">B</button>
+                        <button type="button" class="tb-btn" style="font-style: italic;" onmousedown="event.preventDefault()" onclick="formatStepText(this, 'italic', '*', '*', 'itálico')" title="Itálico">I</button>
+                        <button type="button" class="tb-btn" style="text-decoration: underline;" onmousedown="event.preventDefault()" onclick="formatStepText(this, 'underline', '++', '++', 'sublinhado')" title="Sublinhado">U</button>
                         
                         <div class="tb-divider"></div>
                         
                         <!-- Cor do Texto -->
                         <div class="tb-color-picker-wrapper">
-                            <button type="button" class="tb-btn" onclick="toggleColorPicker(this)" title="Cor do Texto" style="color: #dc2626; font-weight: bold;">A ▾</button>
+                            <button type="button" class="tb-btn" onmousedown="event.preventDefault()" onclick="toggleColorPicker(this)" title="Cor do Texto" style="color: #dc2626; font-weight: bold;">A ▾</button>
                             <div class="tb-color-dropdown">
-                                <div class="color-dot" style="background-color: #dc2626;" onclick="chooseTextColor(this, '#dc2626')" title="Vermelho"></div>
-                                <div class="color-dot" style="background-color: #d97706;" onclick="chooseTextColor(this, '#d97706')" title="Laranja/Amarelo"></div>
-                                <div class="color-dot" style="background-color: #2563eb;" onclick="chooseTextColor(this, '#2563eb')" title="Azul"></div>
-                                <div class="color-dot" style="background-color: #10b981;" onclick="chooseTextColor(this, '#10b981')" title="Verde"></div>
-                                <div class="color-dot" style="background-color: var(--text-primary);" onclick="chooseTextColor(this, 'var(--text-primary)')" title="Cor Padrão"></div>
+                                <div class="color-dot" style="background-color: #dc2626;" onmousedown="event.preventDefault()" onclick="chooseTextColor(this, '#dc2626')" title="Vermelho"></div>
+                                <div class="color-dot" style="background-color: #d97706;" onmousedown="event.preventDefault()" onclick="chooseTextColor(this, '#d97706')" title="Laranja/Amarelo"></div>
+                                <div class="color-dot" style="background-color: #2563eb;" onmousedown="event.preventDefault()" onclick="chooseTextColor(this, '#2563eb')" title="Azul"></div>
+                                <div class="color-dot" style="background-color: #10b981;" onmousedown="event.preventDefault()" onclick="chooseTextColor(this, '#10b981')" title="Verde"></div>
+                                <div class="color-dot" style="background-color: var(--text-primary);" onmousedown="event.preventDefault()" onclick="chooseTextColor(this, 'var(--text-primary)')" title="Cor Padrão"></div>
                             </div>
                         </div>
                         
                         <div class="tb-divider"></div>
                         
                         <!-- Alinhamento -->
-                        <button type="button" class="tb-btn" onclick="insertFormattingHelper(this.closest('.form-group').querySelector('textarea'), '<div style=&quot;text-align: left;&quot;>', '</div>', 'texto')" title="Alinhar à Esquerda">
+                        <button type="button" class="tb-btn" onmousedown="event.preventDefault()" onclick="formatStepText(this, 'justifyLeft', '<div style=&quot;text-align: left;&quot;>', '</div>', 'texto')" title="Alinhar à Esquerda">
                             <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor"><path d="M15 15H3v2h12v-2zm0-8H3v2h12V7zM3 13h18v-2H3v2zm0 8h18v-2H3v2zM3 3v2h18V3H3z"/></svg>
                         </button>
-                        <button type="button" class="tb-btn" onclick="insertFormattingHelper(this.closest('.form-group').querySelector('textarea'), '<div style=&quot;text-align: center;&quot;>', '</div>', 'texto')" title="Centralizar">
+                        <button type="button" class="tb-btn" onmousedown="event.preventDefault()" onclick="formatStepText(this, 'justifyCenter', '<div style=&quot;text-align: center;&quot;>', '</div>', 'texto')" title="Centralizar">
                             <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor"><path d="M3 15h18v2H3v-2zm0-8h18v2H3V7zm3 4h12v2H6v-2zm4 4h4v2h-4v-2zm-7-8h14v2H3V3z"/></svg>
                         </button>
-                        <button type="button" class="tb-btn" onclick="insertFormattingHelper(this.closest('.form-group').querySelector('textarea'), '<div style=&quot;text-align: right;&quot;>', '</div>', 'texto')" title="Alinhar à Direita">
+                        <button type="button" class="tb-btn" onmousedown="event.preventDefault()" onclick="formatStepText(this, 'justifyRight', '<div style=&quot;text-align: right;&quot;>', '</div>', 'texto')" title="Alinhar à Direita">
                             <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor"><path d="M9 15h12v2H9v-2zm0-8h12v2H9V7zm-6 6h18v-2H3v2zm0 8h18v-2H3v2zM3 3v2h18V3H3z"/></svg>
                         </button>
                         
                         <div class="tb-divider"></div>
                         
                         <!-- Listas -->
-                        <button type="button" class="tb-btn" onclick="insertBulletHelper(this)" title="Lista com Marcadores">• Marcadores</button>
-                        <button type="button" class="tb-btn" onclick="insertNumberListHelper(this)" title="Lista Numerada">1. Numerada</button>
+                        <button type="button" class="tb-btn" onmousedown="event.preventDefault()" onclick="formatStepText(this, 'insertUnorderedList', '- ', '', 'Item')" title="Lista com Marcadores">• Marcadores</button>
+                        <button type="button" class="tb-btn" onmousedown="event.preventDefault()" onclick="formatStepText(this, 'insertOrderedList', '1. ', '', 'Item')" title="Lista Numerada">1. Numerada</button>
                         
                         <div class="tb-divider"></div>
                         
                         <!-- Helpers Especiais -->
-                        <button type="button" class="tb-btn" style="color: var(--accent); font-weight: 600;" onclick="insertCodeHelper(this)" title="Inserir Código Copiável">+ Código</button>
-                        <button type="button" class="tb-btn" style="color: #10b981; font-weight: 600;" onclick="insertImageHelper(this)" title="Inserir Imagem">+ Imagem</button>
+                        <button type="button" class="tb-btn" style="color: var(--accent); font-weight: 600;" onmousedown="event.preventDefault()" onclick="insertCodeHelper(this)" title="Inserir Código Copiável">+ Código</button>
+                        <button type="button" class="tb-btn" style="color: #10b981; font-weight: 600;" onmousedown="event.preventDefault()" onclick="insertImageHelper(this)" title="Inserir Imagem">+ Imagem</button>
 
                         <!-- Alternar de Modo -->
                         <div class="tb-divider" style="margin-left: auto;"></div>
-                        <button type="button" class="tb-btn toggle-view-btn active-mode" onclick="toggleStepEditorMode(this, 'visual')" title="Modo Visual Edição Limpa">👁️ Visual</button>
-                        <button type="button" class="tb-btn toggle-view-btn" onclick="toggleStepEditorMode(this, 'code')" title="Editar Código HTML/Markdown diretamente">&lt;/&gt; Código</button>
+                        <button type="button" class="tb-btn toggle-view-btn active-mode" onmousedown="event.preventDefault()" onclick="toggleStepEditorMode(this, 'visual')" title="Modo Visual Edição Limpa">👁️ Visual</button>
+                        <button type="button" class="tb-btn toggle-view-btn" onmousedown="event.preventDefault()" onclick="toggleStepEditorMode(this, 'code')" title="Editar Código HTML/Markdown diretamente">&lt;/&gt; Código</button>
                     </div>
                     <div class="step-desc-preview" contenteditable="true" onfocus="clearPreviewPlaceholder(this)" oninput="syncVisualToTextarea(this)" onblur="syncVisualToTextarea(this)" title="Edite a descrição do passo diretamente aqui em modo visual"></div>
                     <textarea class="form-control step-desc-input" rows="3" placeholder="Escreva a descrição do passo..." style="display: none; border-top-left-radius: 0; border-top-right-radius: 0; border-top: none; border-color: var(--border-color);" oninput="updateStepPreview(this)">${stepDesc}</textarea>
@@ -3247,70 +3247,119 @@
 
     function chooseTextColor(dot, color) {
       const formGroup = dot.closest(".form-group");
-      const textarea = formGroup.querySelector("textarea");
       const dropdown = dot.closest(".tb-color-dropdown");
-      dropdown.classList.remove("show");
+      if (dropdown) dropdown.classList.remove("show");
 
-      insertFormattingHelper(textarea, `<span style="color: ${color};">`, '</span>', 'texto');
+      formatStepText(dot, 'foreColor', color, '', 'texto');
     }
 
-    function insertFormattingHelper(textarea, before, after, defaultText = "") {
-      const startPos = textarea.selectionStart;
-      const endPos = textarea.selectionEnd;
-      const text = textarea.value;
-      const selectedText = text.substring(startPos, endPos) || defaultText;
-      const insertText = before + selectedText + after;
-
-      textarea.value = text.substring(0, startPos) + insertText + text.substring(endPos);
-      textarea.focus();
-
-      const newCursorPos = startPos + before.length + selectedText.length + after.length;
-      textarea.setSelectionRange(newCursorPos, newCursorPos);
-      textarea.dispatchEvent(new Event('input'));
-    }
-
-    function insertBulletHelper(buttonEl) {
-      const formGroup = buttonEl.closest(".form-group");
+    function formatStepText(btnEl, command, tagBefore = "", tagAfter = "", defaultText = "") {
+      const formGroup = btnEl.closest(".form-group");
+      if (!formGroup) return;
+      const previewDiv = formGroup.querySelector(".step-desc-preview");
       const textarea = formGroup.querySelector("textarea");
-      const startPos = textarea.selectionStart;
-      const text = textarea.value;
+      const isVisual = previewDiv && previewDiv.style.display !== "none";
 
-      const prefix = (startPos === 0 || text.charAt(startPos - 1) === '\n') ? '- ' : '\n- ';
+      if (isVisual) {
+        clearPreviewPlaceholder(previewDiv);
+        previewDiv.focus();
 
-      insertFormattingHelper(textarea, prefix, '', 'Item');
-    }
+        if (command === 'bold') {
+          document.execCommand('bold', false, null);
+        } else if (command === 'italic') {
+          document.execCommand('italic', false, null);
+        } else if (command === 'underline') {
+          document.execCommand('underline', false, null);
+        } else if (command === 'foreColor') {
+          document.execCommand('foreColor', false, tagBefore);
+        } else if (command === 'justifyLeft') {
+          document.execCommand('justifyLeft', false, null);
+        } else if (command === 'justifyCenter') {
+          document.execCommand('justifyCenter', false, null);
+        } else if (command === 'justifyRight') {
+          document.execCommand('justifyRight', false, null);
+        } else if (command === 'insertUnorderedList') {
+          document.execCommand('insertUnorderedList', false, null);
+        } else if (command === 'insertOrderedList') {
+          document.execCommand('insertOrderedList', false, null);
+        } else {
+          const sel = window.getSelection();
+          let selectedText = defaultText;
+          if (sel && sel.rangeCount > 0 && sel.toString().trim().length > 0) {
+            selectedText = sel.toString();
+          }
+          const html = tagBefore + selectedText + tagAfter;
+          document.execCommand('insertHTML', false, html);
+        }
+        syncVisualToTextarea(previewDiv);
+      } else {
+        // Code Mode (textarea)
+        const startPos = textarea.selectionStart;
+        const endPos = textarea.selectionEnd;
+        const text = textarea.value;
+        const selectedText = text.substring(startPos, endPos) || defaultText;
+        let insertText = "";
 
-    function insertNumberListHelper(buttonEl) {
-      const formGroup = buttonEl.closest(".form-group");
-      const textarea = formGroup.querySelector("textarea");
-      const startPos = textarea.selectionStart;
-      const text = textarea.value;
+        if (command === 'bold') insertText = `**${selectedText}**`;
+        else if (command === 'italic') insertText = `*${selectedText}*`;
+        else if (command === 'underline') insertText = `++${selectedText}++`;
+        else if (command === 'foreColor') insertText = `<span style="color: ${tagBefore};">${selectedText}</span>`;
+        else if (command === 'justifyLeft') insertText = `<div style="text-align: left;">${selectedText}</div>`;
+        else if (command === 'justifyCenter') insertText = `<div style="text-align: center;">${selectedText}</div>`;
+        else if (command === 'justifyRight') insertText = `<div style="text-align: right;">${selectedText}</div>`;
+        else if (command === 'insertUnorderedList') insertText = (startPos === 0 || text.charAt(startPos - 1) === '\n') ? `- ${selectedText}` : `\n- ${selectedText}`;
+        else if (command === 'insertOrderedList') insertText = (startPos === 0 || text.charAt(startPos - 1) === '\n') ? `1. ${selectedText}` : `\n1. ${selectedText}`;
+        else insertText = tagBefore + selectedText + tagAfter;
 
-      const prefix = (startPos === 0 || text.charAt(startPos - 1) === '\n') ? '1. ' : '\n1. ';
+        textarea.value = text.substring(0, startPos) + insertText + text.substring(endPos);
+        textarea.focus();
 
-      insertFormattingHelper(textarea, prefix, '', 'Item');
+        const newCursorPos = startPos + insertText.length;
+        textarea.setSelectionRange(newCursorPos, newCursorPos);
+        textarea.dispatchEvent(new Event('input'));
+      }
     }
 
     function insertCodeHelper(buttonEl) {
       const formGroup = buttonEl.closest(".form-group");
+      const previewDiv = formGroup.querySelector(".step-desc-preview");
       const textarea = formGroup.querySelector("textarea");
-      const startPos = textarea.selectionStart;
-      const endPos = textarea.selectionEnd;
-      const text = textarea.value;
+      const isVisual = previewDiv && previewDiv.style.display !== "none";
 
-      let code = text.substring(startPos, endPos);
+      let code = "";
+      if (isVisual) {
+        const sel = window.getSelection();
+        if (sel && sel.rangeCount > 0 && sel.toString().trim().length > 0) {
+          code = sel.toString();
+        }
+      } else {
+        const startPos = textarea.selectionStart;
+        const endPos = textarea.selectionEnd;
+        code = textarea.value.substring(startPos, endPos);
+      }
+
       if (!code) {
         code = prompt("Qual código/comando deseja inserir? (Ex: >FPATMOVFIN ou 00136)");
         if (!code) return;
       }
 
-      const insertText = `<code class="code-copy" onclick="copyText('${code}')">${code}</code>`;
+      const insertHtml = `<code class="code-copy" onclick="copyText('${code}')">${code}</code>`;
 
-      textarea.value = text.substring(0, startPos) + insertText + text.substring(endPos);
-      textarea.focus();
-      const newCursorPos = startPos + insertText.length;
-      textarea.setSelectionRange(newCursorPos, newCursorPos);
-      textarea.dispatchEvent(new Event('input'));
+      if (isVisual) {
+        clearPreviewPlaceholder(previewDiv);
+        previewDiv.focus();
+        document.execCommand('insertHTML', false, insertHtml);
+        syncVisualToTextarea(previewDiv);
+      } else {
+        const startPos = textarea.selectionStart;
+        const endPos = textarea.selectionEnd;
+        const text = textarea.value;
+        textarea.value = text.substring(0, startPos) + insertHtml + text.substring(endPos);
+        textarea.focus();
+        const newCursorPos = startPos + insertHtml.length;
+        textarea.setSelectionRange(newCursorPos, newCursorPos);
+        textarea.dispatchEvent(new Event('input'));
+      }
     }
 
     // --- GERENCIADOR DE UPLOAD / INSERÇÃO DE IMAGENS ---
