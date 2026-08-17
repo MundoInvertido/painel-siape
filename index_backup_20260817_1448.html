@@ -1370,35 +1370,6 @@
       background-color: var(--accent-glow);
       border-color: var(--accent-light);
     }
-
-    /* Prévia Visual do Passo (Modo sem código) */
-    .step-desc-preview {
-      background-color: var(--bg-secondary);
-      border: 1px solid var(--border-color);
-      border-top: none;
-      border-radius: 0 0 0.375rem 0.375rem;
-      padding: 0.85rem;
-      min-height: 80px;
-      font-size: 0.9rem;
-      color: var(--text-primary);
-      cursor: text;
-      transition: all 0.2s ease;
-      word-break: break-word;
-    }
-    .step-desc-preview:hover {
-      border-color: var(--accent-light);
-    }
-    .step-desc-preview.empty-preview {
-      color: var(--text-muted);
-      font-style: italic;
-    }
-
-    .tb-btn.active-mode {
-      background-color: var(--accent-glow) !important;
-      border-color: var(--accent) !important;
-      color: var(--accent) !important;
-      font-weight: 700 !important;
-    }
   </style>
 </head>
 
@@ -3148,66 +3119,11 @@
                         <!-- Helpers Especiais -->
                         <button type="button" class="tb-btn" style="color: var(--accent); font-weight: 600;" onclick="insertCodeHelper(this)" title="Inserir Código Copiável">+ Código</button>
                         <button type="button" class="tb-btn" style="color: #10b981; font-weight: 600;" onclick="insertImageHelper(this)" title="Inserir Imagem">+ Imagem</button>
-
-                        <!-- Alternar de Modo -->
-                        <div class="tb-divider" style="margin-left: auto;"></div>
-                        <button type="button" class="tb-btn toggle-view-btn active-mode" onclick="toggleStepEditorMode(this, 'visual')" title="Prévia Limpa (Sem código por padrão)">👁️ Visual</button>
-                        <button type="button" class="tb-btn toggle-view-btn" onclick="toggleStepEditorMode(this, 'code')" title="Editar Código HTML/Markdown diretamente">&lt;/&gt; Código</button>
                     </div>
-                    <div class="step-desc-preview" onclick="focusStepTextarea(this)" title="Clique para editar este passo"></div>
-                    <textarea class="form-control step-desc-input" rows="3" placeholder="Escreva a descrição do passo..." style="display: none; border-top-left-radius: 0; border-top-right-radius: 0; border-top: none; border-color: var(--border-color);" oninput="updateStepPreview(this)">${stepDesc}</textarea>
+                    <textarea class="form-control step-desc-input" rows="3" placeholder="Escreva a descrição do passo usando Markdown ou botões de formatação." style="border-top-left-radius: 0; border-top-right-radius: 0; border-top: none; border-color: var(--border-color);">${stepDesc}</textarea>
                 </div>
             `;
       container.appendChild(div);
-
-      const textarea = div.querySelector("textarea");
-      updateStepPreview(textarea);
-    }
-
-    function toggleStepEditorMode(btn, mode) {
-      const formGroup = btn.closest(".form-group");
-      const previewDiv = formGroup.querySelector(".step-desc-preview");
-      const textarea = formGroup.querySelector("textarea");
-      const toolbar = formGroup.querySelector(".step-editor-toolbar");
-
-      toolbar.querySelectorAll(".toggle-view-btn").forEach(b => b.classList.remove("active-mode"));
-      btn.classList.add("active-mode");
-
-      if (mode === 'visual') {
-        updateStepPreview(textarea);
-        previewDiv.style.display = "block";
-        textarea.style.display = "none";
-      } else {
-        previewDiv.style.display = "none";
-        textarea.style.display = "block";
-        textarea.focus();
-      }
-    }
-
-    function updateStepPreview(textarea) {
-      if (!textarea) return;
-      const formGroup = textarea.closest(".form-group");
-      if (!formGroup) return;
-      const previewDiv = formGroup.querySelector(".step-desc-preview");
-      if (!previewDiv) return;
-
-      const val = textarea.value.trim();
-      if (!val) {
-        previewDiv.innerHTML = `<span style="color: var(--text-muted); font-style: italic;">Clique nos botões acima ou no botão Código para escrever a descrição do passo...</span>`;
-        previewDiv.classList.add("empty-preview");
-      } else {
-        previewDiv.innerHTML = renderStepDescription(textarea.value);
-        previewDiv.classList.remove("empty-preview");
-      }
-    }
-
-    function focusStepTextarea(previewDiv) {
-      const formGroup = previewDiv.closest(".form-group");
-      const toolbar = formGroup.querySelector(".step-editor-toolbar");
-      const codeBtn = toolbar.querySelectorAll(".toggle-view-btn")[1];
-      if (codeBtn) {
-        toggleStepEditorMode(codeBtn, 'code');
-      }
     }
 
     function toggleColorPicker(button) {
