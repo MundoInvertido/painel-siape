@@ -5456,13 +5456,7 @@ matches:
               description: "SGP-PA & SIAPE Dados Unificados (Procedimentos, Comandos e Prazos)",
               files: {
                 "siape_unified_data.json": {
-                  "content": JSON.stringify(payload, null, 2)
-                },
-                "procedures_data.json": {
-                  "content": JSON.stringify({ procedures: procs, categories: cats }, null, 2)
-                },
-                "comandos_data.json": {
-                  "content": JSON.stringify({ yaml: yamlStr, agendamentos: agend }, null, 2)
+                  "content": JSON.stringify(payload)
                 }
               }
             })

@@ -96,6 +96,8 @@
 
     /* Top Header Styling */
     .top-header {
+      width: 100%;
+      box-sizing: border-box;
       background: linear-gradient(135deg, #0b1a40 0%, #1e3a8a 100%);
       color: #ffffff;
       height: var(--header-height);
@@ -3276,7 +3278,7 @@
           const canvas = document.createElement('canvas');
           let width = img.width;
           let height = img.height;
-          const maxDim = 1200;
+          const maxDim = 960;
 
           if (width > maxDim || height > maxDim) {
             if (width > height) {
@@ -3293,8 +3295,8 @@
           const ctx = canvas.getContext('2d');
           ctx.drawImage(img, 0, 0, width, height);
 
-          // Otimiza para JPEG com qualidade 0.82
-          const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.82);
+          // Otimiza para JPEG ultra-leve com qualidade 0.76
+          const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.76);
           selectedImageBase64 = compressedDataUrl;
 
           const head = 'data:image/jpeg;base64,';
@@ -4120,13 +4122,7 @@
               description: "SGP-PA & SIAPE Dados Unificados (Procedimentos, Comandos e Prazos)",
               files: {
                 "siape_unified_data.json": {
-                  "content": JSON.stringify(payload, null, 2)
-                },
-                "procedures_data.json": {
-                  "content": JSON.stringify({ procedures: procs, categories: cats }, null, 2)
-                },
-                "comandos_data.json": {
-                  "content": JSON.stringify({ yaml: yamlStr, agendamentos: agend }, null, 2)
+                  "content": JSON.stringify(payload)
                 }
               }
             })
