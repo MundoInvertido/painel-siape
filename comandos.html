@@ -5593,10 +5593,10 @@ matches:
           const now = new Date().toLocaleTimeString();
           statusEl.textContent = `Salvo às ${now}`;
         }
-        alert("✅ Sincronização Unificada concluída com sucesso!\n\nProcedimentos, Comandos e Prazos foram salvos na nuvem.");
+        showToast("✅ Sincronização concluída! Procedimentos, Comandos e Prazos salvos.");
       } else {
         if (statusEl) statusEl.textContent = "Erro ao salvar";
-        alert("❌ Falha na sincronização!\n\nNão foi possível salvar os dados na nuvem. Verifique seu Token do GitHub e ID do Gist nas Configurações.");
+        showToast("❌ Falha na sincronização. Verifique o Token e o Gist ID.");
       }
     }
 

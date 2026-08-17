@@ -641,10 +641,42 @@
         left: 0;
       }
     }
+    /* Toast de Sincronização */
+    .toast {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background-color: var(--accent);
+      color: #ffffff;
+      padding: 0.75rem 1.5rem;
+      border-radius: 0.5rem;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.18);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      transform: translateY(150%);
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      z-index: 9999;
+      font-weight: 700;
+      font-size: 0.9rem;
+      max-width: 380px;
+    }
+    .toast.toast-error {
+      background-color: var(--danger);
+    }
+    .toast.show {
+      transform: translateY(0);
+    }
   </style>
 </head>
 
 <body>
+  <!-- Toast de Sincronização -->
+  <div id="toast" class="toast">
+    <span id="toast-icon">✅</span>
+    <span id="toast-message">Sincronizado com sucesso!</span>
+  </div>
+
   <!-- Top Header Bar matching Screenshot -->
   <header class="top-header">
     <div class="header-left">
@@ -1168,11 +1200,12 @@
       renderPrazosTable();
       updatePrazosAlertsBanner();
 
+      showToast("⏳ Sincronizando com a nuvem...", false);
       const success = await syncUpload();
       if (success) {
-        alert("✅ Prazo salvo localmente e sincronizado na nuvem com sucesso!");
+        showToast("✅ Prazo salvo e sincronizado com sucesso!");
       } else {
-        alert("⚠️ Prazo salvo localmente, porém houve falha ao sincronizar com a nuvem.");
+        showToast("⚠️ Salvo localmente, mas houve falha na sincronização.", true);
       }
     }
 
@@ -1182,11 +1215,12 @@
       localStorage.setItem("espanso_agendamentos", JSON.stringify(agendamentosList));
       renderPrazosTable();
       updatePrazosAlertsBanner();
+      showToast("⏳ Sincronizando com a nuvem...", false);
       const success = await syncUpload();
       if (success) {
-        alert("✅ Prazo excluído e sincronizado na nuvem com sucesso!");
+        showToast("✅ Prazo excluído e sincronizado com sucesso!");
       } else {
-        alert("⚠️ Prazo excluído localmente, porém houve falha ao sincronizar com a nuvem.");
+        showToast("⚠️ Excluído localmente, mas houve falha na sincronização.", true);
       }
     }
 
@@ -1197,6 +1231,16 @@
 
     function closeLoginModal() {
       document.getElementById("login-modal").classList.remove("open");
+    }
+
+    function showToast(message, isError = false) {
+      const toast = document.getElementById("toast");
+      document.getElementById("toast-message").textContent = message;
+      document.getElementById("toast-icon").textContent = isError ? "⚠️" : "✅";
+      toast.classList.toggle("toast-error", isError);
+      toast.classList.add("show");
+      clearTimeout(toast._hideTimer);
+      toast._hideTimer = setTimeout(() => toast.classList.remove("show"), 3000);
     }
 
     function submitAdminLogin() {
