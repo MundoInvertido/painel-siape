@@ -5273,15 +5273,22 @@ matches:
       if (!Array.isArray(cloudList)) cloudList = [];
 
       const map = new Map();
-      cloudList.forEach(item => {
+      localList.forEach(item => {
         if (item && (item.id || item.numero)) {
-          const key = item.id || (item.numero + '_' + item.prazo);
+          const key = item.id || item.numero;
           map.set(key, item);
         }
       });
-      localList.forEach(item => {
+      cloudList.forEach(item => {
         if (item && (item.id || item.numero)) {
-          const key = item.id || (item.numero + '_' + item.prazo);
+          const key = item.id || item.numero;
+          if (item.numero) {
+            for (const [k, v] of map.entries()) {
+              if (v && v.numero === item.numero) {
+                map.delete(k);
+              }
+            }
+          }
           map.set(key, item);
         }
       });
@@ -5344,36 +5351,39 @@ matches:
     async function cloudGet() {
       const method = localStorage.getItem("sync_method") || "gist";
       if (method === "gist") {
-        const token = localStorage.getItem("github_token");
+        const token = localStorage.getItem("github_token") || DEFAULT_GITHUB_TOKEN;
         let gistId = localStorage.getItem("github_gist_id_unified") || 
                      localStorage.getItem("github_gist_id") || 
-                     localStorage.getItem("github_gist_id_procedures");
-        if (!gistId || gistId.length < 20) gistId = SITE_GIST_ID;
+                     localStorage.getItem("github_gist_id_procedures") || DEFAULT_GIST_ID;
+        if (!gistId || gistId.length < 20) gistId = DEFAULT_GIST_ID;
 
         try {
-          let rawUrl = `https://gist.githubusercontent.com/raw/${gistId}/siape_unified_data.json?t=${Date.now()}`;
-          let res = await fetch(rawUrl);
-          if (res.ok) {
-            return await res.json();
-          }
-
-          // Automatic Fallback to default SITE_GIST_ID if custom gist returns 404
-          if (gistId !== SITE_GIST_ID) {
-            gistId = SITE_GIST_ID;
-            rawUrl = `https://gist.githubusercontent.com/raw/${gistId}/siape_unified_data.json?t=${Date.now()}`;
-            res = await fetch(rawUrl);
-            if (res.ok) {
-              return await res.json();
-            }
-          }
-
+          // 1. Tenta API do GitHub primeiro para dados em tempo real (sem cache de CDN)
           const headers = {};
           if (token) headers["Authorization"] = `Bearer ${token}`;
-          const apiRes = await fetch(`https://api.github.com/gists/${gistId}`, { headers });
+          const apiRes = await fetch(`https://api.github.com/gists/${gistId}`, {
+            headers,
+            cache: "no-store"
+          });
           if (apiRes.ok) {
             const data = await apiRes.json();
             if (data.files && data.files["siape_unified_data.json"]) {
               return JSON.parse(data.files["siape_unified_data.json"].content);
+            }
+          }
+
+          // 2. Fallback para URL raw do Gist com cache: "no-store"
+          let rawUrl = `https://gist.githubusercontent.com/raw/${gistId}/siape_unified_data.json?t=${Date.now()}`;
+          let res = await fetch(rawUrl, { cache: "no-store" });
+          if (res.ok) {
+            return await res.json();
+          }
+
+          if (gistId !== DEFAULT_GIST_ID) {
+            rawUrl = `https://gist.githubusercontent.com/raw/${DEFAULT_GIST_ID}/siape_unified_data.json?t=${Date.now()}`;
+            res = await fetch(rawUrl, { cache: "no-store" });
+            if (res.ok) {
+              return await res.json();
             }
           }
         } catch (e) {
