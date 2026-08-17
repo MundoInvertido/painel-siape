@@ -929,14 +929,24 @@
 
       loadLocalAgendamentos();
 
-      const cloudData = await cloudGet();
-      if (cloudData && Array.isArray(cloudData.agendamentos)) {
-        agendamentosList = mergeAgendamentos(agendamentosList, cloudData.agendamentos);
-        localStorage.setItem("espanso_agendamentos", JSON.stringify(agendamentosList));
-      }
-
+      // Renderiza com dados locais primeiro para resposta rápida
       renderPrazosTable();
       updatePrazosAlertsBanner();
+
+      // Busca dados atualizados da nuvem (sempre usa API sem cache para dados em tempo real)
+      try {
+        const cloudData = await cloudGet();
+        if (cloudData && Array.isArray(cloudData.agendamentos)) {
+          // Dados da nuvem têm prioridade absoluta sobre dados locais
+          agendamentosList = cloudData.agendamentos;
+          localStorage.setItem("espanso_agendamentos", JSON.stringify(agendamentosList));
+          // Re-renderiza com dados atualizados da nuvem
+          renderPrazosTable();
+          updatePrazosAlertsBanner();
+        }
+      } catch(e) {
+        console.warn("Erro ao carregar dados da nuvem:", e);
+      }
     };
 
     function toggleMobileSidebar(show) {
