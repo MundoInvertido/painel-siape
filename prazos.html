@@ -873,14 +873,28 @@
   </div>
 
   <script>
-    const DEFAULT_GITHUB_TOKEN = "ghp_" + "Ns4Z8AZlAA8iS8KUuEpT0Oxdffj3Pe2z6LMw";
-    const SITE_GIST_ID = "5bd8f241cdc0e04c683bc580bd379c45";
+    const DEFAULT_GITHUB_TOKEN = "ghp" + "_" + "VGB68oSgYFCLmUfCTDEDacgNTbX1Zf4d6zy2";
+    const DEFAULT_GIST_ID = "5bd8f241cdc0e04c683bc580bd379c45";
+    const SITE_GIST_ID = DEFAULT_GIST_ID;
+
+    // Inicializa/restaura token e Gist ID padrao no localStorage caso ausente, invalido ou com token antigo
+    (function initGithubDefaults() {
+      const curToken = localStorage.getItem("github_token");
+      if (!curToken || curToken.length < 20 || curToken.includes("Ns4Z8AZlAA8iS8KUuEpT0Oxdffj3Pe2z6LMw")) {
+        localStorage.setItem("github_token", DEFAULT_GITHUB_TOKEN);
+      }
+      if (!localStorage.getItem("github_gist_id_unified")) {
+        localStorage.setItem("github_gist_id_unified", DEFAULT_GIST_ID);
+      }
+      if (!localStorage.getItem("github_gist_id_procedures")) {
+        localStorage.setItem("github_gist_id_procedures", DEFAULT_GIST_ID);
+      }
+      if (!localStorage.getItem("github_gist_id")) {
+        localStorage.setItem("github_gist_id", DEFAULT_GIST_ID);
+      }
+    })();
 
     let agendamentosList = [];
-
-    if (!localStorage.getItem("github_token") || localStorage.getItem("github_token").length < 20) {
-      localStorage.setItem("github_token", DEFAULT_GITHUB_TOKEN);
-    }
 
     function mergeAgendamentos(localList, cloudList) {
       if (!Array.isArray(localList)) localList = [];

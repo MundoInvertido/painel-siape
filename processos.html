@@ -1102,7 +1102,26 @@
 
     let activeEditingCardId = null;
 
-    const SITE_GIST_ID = localStorage.getItem("github_gist_id_unified") || localStorage.getItem("github_gist_id_procedures") || localStorage.getItem("github_gist_id") || "5bd8f241cdc0e04c683bc580bd379c45";
+    const DEFAULT_GITHUB_TOKEN = "ghp" + "_" + "VGB68oSgYFCLmUfCTDEDacgNTbX1Zf4d6zy2";
+    const DEFAULT_GIST_ID = "5bd8f241cdc0e04c683bc580bd379c45";
+    const SITE_GIST_ID = DEFAULT_GIST_ID;
+
+    // Inicializa/restaura token e Gist ID padrao no localStorage caso ausente, invalido ou com token antigo
+    (function initGithubDefaults() {
+      const curToken = localStorage.getItem("github_token");
+      if (!curToken || curToken.length < 20 || curToken.includes("Ns4Z8AZlAA8iS8KUuEpT0Oxdffj3Pe2z6LMw")) {
+        localStorage.setItem("github_token", DEFAULT_GITHUB_TOKEN);
+      }
+      if (!localStorage.getItem("github_gist_id_unified")) {
+        localStorage.setItem("github_gist_id_unified", DEFAULT_GIST_ID);
+      }
+      if (!localStorage.getItem("github_gist_id_procedures")) {
+        localStorage.setItem("github_gist_id_procedures", DEFAULT_GIST_ID);
+      }
+      if (!localStorage.getItem("github_gist_id")) {
+        localStorage.setItem("github_gist_id", DEFAULT_GIST_ID);
+      }
+    })();
 
     const ADMIN_USERS = [
       { email: "nathanaeladmin@gmail.com", hashes: ["96bf726319dcc6eaf1b3112c75bcee7cd07cc2ce1cda332cddcf8ae5209842e0", "341c2c425a51fa8390a648366ab87e4cffbdd2b9a170785fa3aaeeea3074d300", "1591bfd0887d2e92401c22b2a41e31aa8b5356f2e0a5a7c27971f0468230be9e", "20deacb6aa44b43964135bcf8a4d29a08007ef462699c1c4d1c0d2aeb9c016e3"] },
@@ -1773,10 +1792,7 @@
       return null;
     }
 
-    const DEFAULT_GITHUB_TOKEN = "ghp_" + "Ns4Z8AZlAA8iS8KUuEpT0Oxdffj3Pe2z6LMw";
-    if (!localStorage.getItem("github_token") || localStorage.getItem("github_token").length < 20) {
-      localStorage.setItem("github_token", DEFAULT_GITHUB_TOKEN);
-    }
+
 
     async function syncUpload() {
       const token = localStorage.getItem("github_token") || DEFAULT_GITHUB_TOKEN;

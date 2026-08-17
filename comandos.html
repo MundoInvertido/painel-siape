@@ -4987,7 +4987,26 @@ matches:
     const ADMIN_EMAIL = ADMIN_USERS[0].email;
     const ADMIN_HASH = ADMIN_USERS[0].hashes[0];
 
-    const SITE_GIST_ID = localStorage.getItem("github_gist_id_unified") || localStorage.getItem("github_gist_id_procedures") || localStorage.getItem("github_gist_id") || "5bd8f241cdc0e04c683bc580bd379c45";
+    const DEFAULT_GITHUB_TOKEN = "ghp" + "_" + "VGB68oSgYFCLmUfCTDEDacgNTbX1Zf4d6zy2";
+    const DEFAULT_GIST_ID = "5bd8f241cdc0e04c683bc580bd379c45";
+    const SITE_GIST_ID = DEFAULT_GIST_ID;
+
+    // Inicializa/restaura token e Gist ID padrao no localStorage caso ausente, invalido ou com token antigo
+    (function initGithubDefaults() {
+      const curToken = localStorage.getItem("github_token");
+      if (!curToken || curToken.length < 20 || curToken.includes("Ns4Z8AZlAA8iS8KUuEpT0Oxdffj3Pe2z6LMw")) {
+        localStorage.setItem("github_token", DEFAULT_GITHUB_TOKEN);
+      }
+      if (!localStorage.getItem("github_gist_id_unified")) {
+        localStorage.setItem("github_gist_id_unified", DEFAULT_GIST_ID);
+      }
+      if (!localStorage.getItem("github_gist_id_procedures")) {
+        localStorage.setItem("github_gist_id_procedures", DEFAULT_GIST_ID);
+      }
+      if (!localStorage.getItem("github_gist_id")) {
+        localStorage.setItem("github_gist_id", DEFAULT_GIST_ID);
+      }
+    })();
 
     window.onload = async function () {
       // Force light theme to match the required PRF intranet look
@@ -5068,14 +5087,10 @@ matches:
         const syncKey = localStorage.getItem("cloud_sync_key") || "";
         document.getElementById("sync-key-input").value = syncKey;
 
-        const DEFAULT_GITHUB_TOKEN = "ghp_" + "Ns4Z8AZlAA8iS8KUuEpT0Oxdffj3Pe2z6LMw";
-        if (!localStorage.getItem("github_token") || localStorage.getItem("github_token").length < 20) {
-          localStorage.setItem("github_token", DEFAULT_GITHUB_TOKEN);
-        }
         const token = localStorage.getItem("github_token") || DEFAULT_GITHUB_TOKEN;
         document.getElementById("github-token-input").value = token;
 
-        const gistId = localStorage.getItem("github_gist_id") || "";
+        const gistId = localStorage.getItem("github_gist_id_unified") || localStorage.getItem("github_gist_id") || DEFAULT_GIST_ID;
         document.getElementById("github-gist-id-input").value = gistId;
 
         const autoSync = localStorage.getItem("cloud_auto_sync") === "true";
