@@ -3151,10 +3151,10 @@
 
                         <!-- Alternar de Modo -->
                         <div class="tb-divider" style="margin-left: auto;"></div>
-                        <button type="button" class="tb-btn toggle-view-btn active-mode" onclick="toggleStepEditorMode(this, 'visual')" title="Prévia Limpa (Sem código por padrão)">👁️ Visual</button>
+                        <button type="button" class="tb-btn toggle-view-btn active-mode" onclick="toggleStepEditorMode(this, 'visual')" title="Modo Visual Edição Limpa">👁️ Visual</button>
                         <button type="button" class="tb-btn toggle-view-btn" onclick="toggleStepEditorMode(this, 'code')" title="Editar Código HTML/Markdown diretamente">&lt;/&gt; Código</button>
                     </div>
-                    <div class="step-desc-preview" onclick="focusStepTextarea(this)" title="Clique para editar este passo"></div>
+                    <div class="step-desc-preview" contenteditable="true" onfocus="clearPreviewPlaceholder(this)" oninput="syncVisualToTextarea(this)" onblur="syncVisualToTextarea(this)" title="Edite a descrição do passo diretamente aqui em modo visual"></div>
                     <textarea class="form-control step-desc-input" rows="3" placeholder="Escreva a descrição do passo..." style="display: none; border-top-left-radius: 0; border-top-right-radius: 0; border-top: none; border-color: var(--border-color);" oninput="updateStepPreview(this)">${stepDesc}</textarea>
                 </div>
             `;
@@ -3162,6 +3162,13 @@
 
       const textarea = div.querySelector("textarea");
       updateStepPreview(textarea);
+    }
+
+    function clearPreviewPlaceholder(previewDiv) {
+      if (previewDiv && previewDiv.classList.contains("empty-preview")) {
+        previewDiv.innerHTML = "";
+        previewDiv.classList.remove("empty-preview");
+      }
     }
 
     function toggleStepEditorMode(btn, mode) {
@@ -3174,14 +3181,31 @@
       btn.classList.add("active-mode");
 
       if (mode === 'visual') {
-        updateStepPreview(textarea);
+        if (textarea.style.display !== "none") {
+          updateStepPreview(textarea);
+        }
         previewDiv.style.display = "block";
         textarea.style.display = "none";
       } else {
+        syncVisualToTextarea(previewDiv);
         previewDiv.style.display = "none";
         textarea.style.display = "block";
         textarea.focus();
       }
+    }
+
+    function syncVisualToTextarea(previewDiv) {
+      if (!previewDiv) return;
+      const formGroup = previewDiv.closest(".form-group");
+      if (!formGroup) return;
+      const textarea = formGroup.querySelector("textarea");
+      if (!textarea) return;
+
+      if (previewDiv.classList.contains("empty-preview")) {
+        textarea.value = "";
+        return;
+      }
+      textarea.value = previewDiv.innerHTML;
     }
 
     function updateStepPreview(textarea) {
@@ -3193,20 +3217,11 @@
 
       const val = textarea.value.trim();
       if (!val) {
-        previewDiv.innerHTML = `<span style="color: var(--text-muted); font-style: italic;">Clique nos botões acima ou no botão Código para escrever a descrição do passo...</span>`;
+        previewDiv.innerHTML = `<span style="color: var(--text-muted); font-style: italic;">Digite a descrição do passo ou use os botões da barra de ferramentas...</span>`;
         previewDiv.classList.add("empty-preview");
       } else {
         previewDiv.innerHTML = renderStepDescription(textarea.value);
         previewDiv.classList.remove("empty-preview");
-      }
-    }
-
-    function focusStepTextarea(previewDiv) {
-      const formGroup = previewDiv.closest(".form-group");
-      const toolbar = formGroup.querySelector(".step-editor-toolbar");
-      const codeBtn = toolbar.querySelectorAll(".toggle-view-btn")[1];
-      if (codeBtn) {
-        toggleStepEditorMode(codeBtn, 'code');
       }
     }
 
