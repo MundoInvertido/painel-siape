@@ -1342,6 +1342,21 @@
     .step-description {
       word-break: break-word;
     }
+
+    /* Drop zone para upload de imagens */
+    .drop-zone {
+      border: 2px dashed var(--accent);
+      border-radius: 8px;
+      padding: 1.5rem 1rem;
+      text-align: center;
+      background-color: var(--bg-tertiary);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .drop-zone:hover, .drop-zone.dragover {
+      background-color: var(--accent-glow);
+      border-color: var(--accent-light);
+    }
   </style>
 </head>
 
@@ -1866,8 +1881,58 @@
         <button class="btn btn-accent" onclick="saveCategories()">Salvar Alterações</button>
       </div>
     </div>
-  </div>
+  <!-- Modal de Upload / Inserção de Imagem (PC / Drag&Drop / Ctrl+V / URL) -->
+  <div class="panel-overlay" id="image-upload-modal">
+    <div class="panel-content" style="max-width: 520px; border-radius: 10px; overflow: hidden;" onclick="event.stopPropagation()">
+      <div class="panel-header" style="background-color: var(--bg-tertiary); padding: 1rem 1.25rem;">
+        <h3 style="margin: 0; font-size: 1.1rem; font-weight: 700; color: var(--text-primary); display: flex; align-items: center; gap: 0.5rem;">
+          📷 Inserir / Enviar Imagem
+        </h3>
+        <button class="close-btn" onclick="closeImageUploadModal()">&times;</button>
+      </div>
+      <div class="panel-body" style="padding: 1.25rem;">
+        <!-- Seletor de Aba -->
+        <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem;">
+          <button type="button" class="btn" id="tab-img-pc" onclick="switchImageTab('pc')" style="font-size: 0.85rem; font-weight: 700; border-color: var(--accent);">📁 Do PC / Cola (Ctrl+V)</button>
+          <button type="button" class="btn" id="tab-img-url" onclick="switchImageTab('url')" style="font-size: 0.85rem;">🔗 Link da Web (URL)</button>
+        </div>
 
+        <!-- Área Upload PC / Drag & Drop -->
+        <div id="img-area-pc">
+          <div id="image-drop-zone" class="drop-zone" onclick="document.getElementById('image-file-input').click()">
+            <svg viewBox="0 0 24 24" width="38" height="38" fill="var(--accent)" style="margin-bottom: 0.25rem;"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"/></svg>
+            <div style="font-weight: 700; font-size: 0.95rem; color: var(--text-primary);">Clique para escolher a imagem do computador</div>
+            <div style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 0.25rem;">
+              Ou arraste um arquivo de imagem aqui ou cole com <kbd style="background:var(--bg-primary); border:1px solid var(--border-color); padding: 2px 6px; border-radius: 4px; font-weight: 700;">Ctrl + V</kbd>
+            </div>
+            <input type="file" id="image-file-input" accept="image/*" style="display: none;" onchange="if(this.files && this.files[0]) handleImageFileSelect(this.files[0])">
+          </div>
+        </div>
+
+        <!-- Área URL Externa -->
+        <div id="img-area-url" style="display: none;">
+          <label style="font-size: 0.85rem; font-weight: 700; color: var(--text-secondary); display: block; margin-bottom: 0.35rem;">URL / Link da Imagem:</label>
+          <input type="text" id="image-url-input" class="form-control" placeholder="https://site.com/imagem.png" oninput="handleImageUrlInput(this.value)">
+        </div>
+
+        <!-- Preview da Imagem -->
+        <div id="image-preview-container" style="display: none; margin-top: 1rem; text-align: center; background: var(--bg-tertiary); padding: 0.75rem; border-radius: 6px; border: 1px solid var(--border-color);">
+          <img id="image-preview-element" src="" style="max-width: 100%; max-height: 180px; border-radius: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.12);" />
+          <div id="image-file-info" style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.35rem; font-weight: 600;"></div>
+        </div>
+
+        <!-- Legenda Opcional -->
+        <div style="margin-top: 1rem;">
+          <label style="font-size: 0.85rem; font-weight: 700; color: var(--text-secondary); display: block; margin-bottom: 0.35rem;">Legenda da Imagem (opcional):</label>
+          <input type="text" id="image-caption-input" class="form-control" placeholder="Ex: Tela inicial do sistema SIAPE">
+        </div>
+      </div>
+      <div class="panel-footer" style="padding: 0.85rem 1.25rem; display: flex; justify-content: flex-end; gap: 0.5rem; background-color: var(--bg-primary); border-top: 1px solid var(--border-color);">
+        <button class="btn" onclick="closeImageUploadModal()">Cancelar</button>
+        <button class="btn btn-accent" id="btn-insert-image" onclick="confirmInsertImage()" disabled>Inserir Imagem</button>
+      </div>
+    </div>
+  </div>
 
   <script>
     // Procedures database
@@ -3134,22 +3199,135 @@
       textarea.dispatchEvent(new Event('input'));
     }
 
+    // --- GERENCIADOR DE UPLOAD / INSERÇÃO DE IMAGENS ---
+    let currentImageTargetTextarea = null;
+    let selectedImageBase64 = null;
+
     function insertImageHelper(buttonEl) {
       const formGroup = buttonEl.closest(".form-group");
-      const textarea = formGroup.querySelector("textarea");
+      currentImageTargetTextarea = formGroup.querySelector("textarea");
 
-      const url = prompt("Cole o Link/URL da imagem (ex: https://site.com/foto.png):");
-      if (!url) return;
+      selectedImageBase64 = null;
+      document.getElementById("image-file-input").value = "";
+      document.getElementById("image-url-input").value = "";
+      document.getElementById("image-caption-input").value = "";
+      document.getElementById("image-preview-container").style.display = "none";
+      document.getElementById("btn-insert-image").disabled = true;
 
-      const legenda = prompt("Digite uma legenda curta para a imagem (opcional):");
+      switchImageTab('pc');
+
+      const modal = document.getElementById("image-upload-modal");
+      modal.classList.add("open");
+    }
+
+    function closeImageUploadModal() {
+      const modal = document.getElementById("image-upload-modal");
+      modal.classList.remove("open");
+    }
+
+    function switchImageTab(tab) {
+      const pcArea = document.getElementById("img-area-pc");
+      const urlArea = document.getElementById("img-area-url");
+      const tabPc = document.getElementById("tab-img-pc");
+      const tabUrl = document.getElementById("tab-img-url");
+
+      if (tab === 'pc') {
+        pcArea.style.display = "block";
+        urlArea.style.display = "none";
+        tabPc.style.fontWeight = "700";
+        tabPc.style.borderColor = "var(--accent)";
+        tabUrl.style.fontWeight = "400";
+        tabUrl.style.borderColor = "transparent";
+      } else {
+        pcArea.style.display = "none";
+        urlArea.style.display = "block";
+        tabUrl.style.fontWeight = "700";
+        tabUrl.style.borderColor = "var(--accent)";
+        tabPc.style.fontWeight = "400";
+        tabPc.style.borderColor = "transparent";
+      }
+    }
+
+    function handleImageFileSelect(file) {
+      if (!file || !file.type.startsWith('image/')) {
+        showToast("⚠️ Por favor, selecione um arquivo de imagem válido.");
+        return;
+      }
+
+      const origSizeKb = (file.size / 1024).toFixed(1);
+      const reader = new FileReader();
+
+      reader.onload = function (e) {
+        const img = new Image();
+        img.onload = function () {
+          const canvas = document.createElement('canvas');
+          let width = img.width;
+          let height = img.height;
+          const maxDim = 1200;
+
+          if (width > maxDim || height > maxDim) {
+            if (width > height) {
+              height = Math.round((height * maxDim) / width);
+              width = maxDim;
+            } else {
+              width = Math.round((width * maxDim) / height);
+              height = maxDim;
+            }
+          }
+
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, width, height);
+
+          // Otimiza para JPEG com qualidade 0.82
+          const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.82);
+          selectedImageBase64 = compressedDataUrl;
+
+          const head = 'data:image/jpeg;base64,';
+          const sizeInBytes = Math.round((compressedDataUrl.length - head.length) * 3 / 4);
+          const newSizeKb = (sizeInBytes / 1024).toFixed(1);
+
+          const previewImg = document.getElementById("image-preview-element");
+          previewImg.src = compressedDataUrl;
+          document.getElementById("image-preview-container").style.display = "block";
+          document.getElementById("image-file-info").textContent = `✓ Imagem otimizada (${width}x${height}px) — Original: ${origSizeKb}KB ➜ Otimizada: ${newSizeKb}KB`;
+          document.getElementById("btn-insert-image").disabled = false;
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function handleImageUrlInput(val) {
+      const url = val.trim();
+      if (url.length > 5) {
+        selectedImageBase64 = url;
+        const previewImg = document.getElementById("image-preview-element");
+        previewImg.src = url;
+        document.getElementById("image-preview-container").style.display = "block";
+        document.getElementById("image-file-info").textContent = `Link externo informado: ${url.substring(0, 45)}...`;
+        document.getElementById("btn-insert-image").disabled = false;
+      } else {
+        selectedImageBase64 = null;
+        document.getElementById("image-preview-container").style.display = "none";
+        document.getElementById("btn-insert-image").disabled = true;
+      }
+    }
+
+    function confirmInsertImage() {
+      if (!selectedImageBase64 || !currentImageTargetTextarea) return;
+
+      const legenda = document.getElementById("image-caption-input").value.trim();
 
       let imgHtml = `\n<div class="proc-img-wrapper" style="text-align: center; margin: 0.75rem 0;">`;
-      imgHtml += `<img src="${url}" alt="${legenda || 'Imagem do procedimento'}" class="proc-step-img" style="max-width: 100%; max-height: 280px; border-radius: 6px; border: 1px solid var(--border-color); cursor: pointer;" onclick="zoomImage(this)" />`;
+      imgHtml += `<img src="${selectedImageBase64}" alt="${legenda || 'Imagem do procedimento'}" class="proc-step-img" style="max-width: 100%; max-height: 280px; border-radius: 6px; border: 1px solid var(--border-color); cursor: pointer;" onclick="zoomImage(this)" />`;
       if (legenda) {
         imgHtml += `<div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.25rem;">${legenda}</div>`;
       }
       imgHtml += `</div>\n`;
 
+      const textarea = currentImageTargetTextarea;
       const startPos = textarea.selectionStart;
       const endPos = textarea.selectionEnd;
       const text = textarea.value;
@@ -3160,7 +3338,55 @@
       const newCursorPos = startPos + imgHtml.length;
       textarea.setSelectionRange(newCursorPos, newCursorPos);
       textarea.dispatchEvent(new Event('input'));
+
+      closeImageUploadModal();
+      showToast("📷 Imagem do computador inserida com sucesso!");
     }
+
+    // Inicialização de eventos para Drag & Drop e Cola (Ctrl+V)
+    document.addEventListener("DOMContentLoaded", function () {
+      const dropZone = document.getElementById("image-drop-zone");
+      if (dropZone) {
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+          dropZone.addEventListener(eventName, function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+          }, false);
+        });
+
+        ['dragenter', 'dragover'].forEach(eventName => {
+          dropZone.addEventListener(eventName, () => dropZone.classList.add('dragover'), false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+          dropZone.addEventListener(eventName, () => dropZone.classList.remove('dragover'), false);
+        });
+
+        dropZone.addEventListener('drop', function (e) {
+          const dt = e.dataTransfer;
+          const files = dt.files;
+          if (files && files.length > 0) {
+            handleImageFileSelect(files[0]);
+          }
+        }, false);
+      }
+
+      // Suporte global a Ctrl+V quando o modal de imagem está aberto
+      document.addEventListener('paste', function (e) {
+        const modal = document.getElementById("image-upload-modal");
+        if (modal && modal.classList.contains('open')) {
+          const items = (e.clipboardData || e.originalEvent.clipboardData).items;
+          for (let item of items) {
+            if (item.kind === 'file' && item.type.startsWith('image/')) {
+              const blob = item.getAsFile();
+              handleImageFileSelect(blob);
+              showToast("📋 Imagem colada da área de transferência!");
+              break;
+            }
+          }
+        }
+      });
+    });
 
     function renderInlineMarkdown(text) {
       if (!text) return "";
