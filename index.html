@@ -3403,20 +3403,31 @@
 
     function renderInlineMarkdown(text) {
       if (!text) return "";
-      let html = text;
+
+      // 0. Protege todas as tags HTML (incluindo tags <img> com dados Base64) de serem corrompidas por regex de Markdown
+      const htmlBlocks = [];
+      let tokenized = text.replace(/<[^>]+>/g, function (match) {
+        htmlBlocks.push(match);
+        return `@@@HTML_BLOCK_${htmlBlocks.length - 1}@@@`;
+      });
 
       // 1. Negrito: **texto** ou __texto__ -> <strong>texto</strong>
-      html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-      html = html.replace(/__(.*?)__/g, '<strong>$1</strong>');
+      tokenized = tokenized.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+      tokenized = tokenized.replace(/__(.*?)__/g, '<strong>$1</strong>');
 
       // 2. Itálico: *texto* ou _texto_ -> <em>texto</em>
-      html = html.replace(/\*(.*?)\*/g, '<em>$1</em>');
-      html = html.replace(/\b_(.*?)_\b/g, '<em>$1</em>');
+      tokenized = tokenized.replace(/\*(.*?)\*/g, '<em>$1</em>');
+      tokenized = tokenized.replace(/\b_(.*?)_\b/g, '<em>$1</em>');
 
       // 3. Sublinhado: ++texto++ -> <u>texto</u>
-      html = html.replace(/\+\+(.*?)\+\+/g, '<u>$1</u>');
+      tokenized = tokenized.replace(/\+\+(.*?)\+\+/g, '<u>$1</u>');
 
-      return html;
+      // 4. Restaura os blocos HTML intactos
+      tokenized = tokenized.replace(/@@@HTML_BLOCK_(\d+)@@@/g, function (_, index) {
+        return htmlBlocks[parseInt(index, 10)];
+      });
+
+      return tokenized;
     }
 
     function renderStepDescription(text) {
