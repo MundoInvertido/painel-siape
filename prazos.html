@@ -1255,10 +1255,24 @@
       const gistId = localStorage.getItem("github_gist_id_unified") || localStorage.getItem("github_gist_id_procedures") || localStorage.getItem("github_gist_id") || SITE_GIST_ID;
       if (!token || !gistId) return false;
 
-      let procs = []; try { procs = JSON.parse(localStorage.getItem("sgp_nuap_procedures") || "[]"); } catch (e) { }
-      let cats = []; try { cats = JSON.parse(localStorage.getItem("sgp_nuap_categories") || "[]"); } catch (e) { }
-      let yamlStr = localStorage.getItem("espanso_siape_yaml") || "";
-      let kanbanState = { cards: [] }; try { kanbanState = JSON.parse(localStorage.getItem("espanso_kanban_processos") || '{"cards":[]}'); } catch (e) { }
+      // Busca dados da nuvem primeiro para não apagar dados gerenciados por outras páginas
+      let cloudData = null;
+      try { cloudData = await cloudGet(); } catch(e) {}
+
+      let procs = null; try { procs = JSON.parse(localStorage.getItem("sgp_nuap_procedures")); } catch (e) { }
+      if (!procs || procs.length === 0) procs = (cloudData && cloudData.procedures) || [];
+
+      let cats = null; try { cats = JSON.parse(localStorage.getItem("sgp_nuap_categories")); } catch (e) { }
+      if (!cats || cats.length === 0) cats = (cloudData && cloudData.categories) || [];
+
+      let yamlStr = localStorage.getItem("espanso_siape_yaml");
+      if (!yamlStr) yamlStr = (cloudData && cloudData.yaml) || "";
+
+      // Preserva o kanban existente na nuvem se não houver um local válido
+      let kanbanState = null; try { kanbanState = JSON.parse(localStorage.getItem("espanso_kanban_processos")); } catch (e) { }
+      if (!kanbanState || !Array.isArray(kanbanState.columns)) {
+        kanbanState = (cloudData && cloudData.kanban) || { columns: [], cards: [] };
+      }
 
       const payload = {
         procedures: procs,

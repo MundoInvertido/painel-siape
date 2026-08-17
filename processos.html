@@ -1136,18 +1136,18 @@
       // Load saved state
       loadLocalState();
 
-      // Cloud Fetch
-      const gistToLoad = localStorage.getItem("github_gist_id_unified") || localStorage.getItem("github_gist_id_procedures") || localStorage.getItem("github_gist_id") || SITE_GIST_ID;
-      if (gistToLoad) {
-        try {
-          const cloudData = await cloudGet();
-          if (cloudData && cloudData.kanban) {
-            kanbanState = cloudData.kanban;
-            saveLocalState();
-          }
-        } catch(e) {
-          console.warn("Erro ao carregar dados da nuvem:", e);
+      // Cloud Fetch - robusto: sempre garante columns e cards
+      try {
+        const cloudData = await cloudGet();
+        if (cloudData && cloudData.kanban) {
+          kanbanState = {
+            columns: Array.isArray(cloudData.kanban.columns) ? cloudData.kanban.columns : [...DEFAULT_COLUMNS],
+            cards: Array.isArray(cloudData.kanban.cards) ? cloudData.kanban.cards : []
+          };
+          localStorage.setItem("espanso_kanban_processos", JSON.stringify(kanbanState));
         }
+      } catch(e) {
+        console.warn("Erro ao carregar dados da nuvem:", e);
       }
 
       renderKanbanBoard();
@@ -1167,9 +1167,15 @@
           const parsed = JSON.parse(saved);
           if (parsed && Array.isArray(parsed.columns) && Array.isArray(parsed.cards)) {
             kanbanState = parsed;
+            return;
           }
         } catch(e){}
       }
+      // Fallback para defaults se localStorage inválido ou ausente
+      kanbanState = {
+        columns: [...DEFAULT_COLUMNS],
+        cards: [...DEFAULT_CARDS]
+      };
     }
 
     function saveLocalState() {
@@ -1810,10 +1816,21 @@
       const gistId = localStorage.getItem("github_gist_id_unified") || localStorage.getItem("github_gist_id_procedures") || localStorage.getItem("github_gist_id") || SITE_GIST_ID;
       if (!token || !gistId) return false;
 
-      let procs = []; try { procs = JSON.parse(localStorage.getItem("sgp_nuap_procedures") || "[]"); } catch(e){}
-      let cats = []; try { cats = JSON.parse(localStorage.getItem("sgp_nuap_categories") || "[]"); } catch(e){}
-      let yamlStr = localStorage.getItem("espanso_siape_yaml") || "";
-      let agend = []; try { agend = JSON.parse(localStorage.getItem("espanso_agendamentos") || "[]"); } catch(e){}
+      // Busca dados da nuvem primeiro para não apagar dados gerenciados por outras páginas
+      let cloudData = null;
+      try { cloudData = await cloudGet(); } catch(e) {}
+
+      let procs = null; try { procs = JSON.parse(localStorage.getItem("sgp_nuap_procedures")); } catch(e){}
+      if (!procs || procs.length === 0) procs = (cloudData && cloudData.procedures) || [];
+
+      let cats = null; try { cats = JSON.parse(localStorage.getItem("sgp_nuap_categories")); } catch(e){}
+      if (!cats || cats.length === 0) cats = (cloudData && cloudData.categories) || [];
+
+      let yamlStr = localStorage.getItem("espanso_siape_yaml");
+      if (!yamlStr) yamlStr = (cloudData && cloudData.yaml) || "";
+
+      let agend = null; try { agend = JSON.parse(localStorage.getItem("espanso_agendamentos")); } catch(e){}
+      if (!agend || agend.length === 0) agend = (cloudData && cloudData.agendamentos) || [];
 
       const payload = {
         procedures: procs,

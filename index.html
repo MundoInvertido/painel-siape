@@ -3814,24 +3814,41 @@
     }
 
     async function cloudPut(procedures, categories) {
+      // Busca dados da nuvem primeiro para não apagar dados gerenciados por outras páginas
+      let cloudData = null;
+      try { cloudData = await cloudGet(); } catch(e) {}
+
       let procs = procedures;
       if (!procs) {
-        try { procs = typeof PROCEDURES !== 'undefined' ? PROCEDURES : JSON.parse(localStorage.getItem("sgp_nuap_procedures") || "[]"); } catch (e) { }
+        try { procs = typeof PROCEDURES !== 'undefined' ? PROCEDURES : JSON.parse(localStorage.getItem("sgp_nuap_procedures")); } catch (e) { }
       }
+      if (!procs || procs.length === 0) procs = (cloudData && cloudData.procedures) || [];
+
       let cats = categories;
       if (!cats) {
-        try { cats = typeof CATEGORIES !== 'undefined' ? CATEGORIES : JSON.parse(localStorage.getItem("sgp_nuap_categories") || "[]"); } catch (e) { }
+        try { cats = typeof CATEGORIES !== 'undefined' ? CATEGORIES : JSON.parse(localStorage.getItem("sgp_nuap_categories")); } catch (e) { }
       }
+      if (!cats || cats.length === 0) cats = (cloudData && cloudData.categories) || [];
+
       let yamlStr = "";
-      try { yamlStr = typeof rawYaml !== 'undefined' ? rawYaml : (localStorage.getItem("espanso_siape_yaml") || ""); } catch (e) { }
+      try { yamlStr = typeof rawYaml !== 'undefined' ? rawYaml : localStorage.getItem("espanso_siape_yaml"); } catch (e) { }
+      if (!yamlStr) yamlStr = (cloudData && cloudData.yaml) || "";
+
       let agend = [];
-      try { agend = typeof agendamentosList !== 'undefined' ? agendamentosList : JSON.parse(localStorage.getItem("espanso_agendamentos") || "[]"); } catch (e) { }
+      try { agend = typeof agendamentosList !== 'undefined' ? agendamentosList : JSON.parse(localStorage.getItem("espanso_agendamentos")); } catch (e) { }
+      if (!agend || agend.length === 0) agend = (cloudData && cloudData.agendamentos) || [];
+
+      // Preserva kanban da nuvem
+      let kanban = null;
+      try { kanban = JSON.parse(localStorage.getItem("espanso_kanban_processos")); } catch(e) {}
+      if (!kanban || !Array.isArray(kanban.columns)) kanban = (cloudData && cloudData.kanban) || { columns: [], cards: [] };
 
       const payload = {
         procedures: procs,
         categories: cats,
         yaml: yamlStr,
         agendamentos: agend,
+        kanban: kanban,
         updatedAt: new Date().toISOString()
       };
 
