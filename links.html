@@ -740,8 +740,17 @@
           <p>Acesso rápido aos sistemas governamentais, portais da PRF, legislação e ferramentas de IA.</p>
         </div>
         <div class="btn-group" id="admin-actions-bar" style="display: none;">
-          <button class="btn btn-accent" onclick="openAddLinkModal()">
+          <button class="btn btn-accent" onclick="openAddLinkModal()"
+            style="background: linear-gradient(135deg, #0057a8 0%, #004080 100%);">
             ➕ Incluir Novo Link
+          </button>
+          <button class="btn btn-accent" onclick="syncDownloadLinks()"
+            style="background: linear-gradient(135deg, #0b5e30 0%, #145a32 100%); border: none;" title="Baixar links da nuvem para este dispositivo">
+            ⬇️ Baixar
+          </button>
+          <button class="btn" onclick="syncSendLinks()"
+            style="border-color: var(--accent); color: var(--accent); font-weight: 700;" title="Enviar links locais para a nuvem">
+            ⬆️ Enviar
           </button>
         </div>
       </div>
@@ -1164,6 +1173,46 @@
         }
       } catch (e) {
         console.warn("Erro ao buscar links da nuvem:", e);
+      }
+    }
+
+    // ⬇️ BAIXAR: Puxa os links da nuvem e aplica localmente
+    async function syncDownloadLinks() {
+      try {
+        const token = localStorage.getItem("github_token") || DEFAULT_GITHUB_TOKEN;
+        const gistId = localStorage.getItem("github_gist_id_unified") || DEFAULT_GIST_ID;
+        const res = await fetch(`https://api.github.com/gists/${gistId}`, {
+          headers: { "Authorization": `Bearer ${token}` }
+        });
+        if (res.ok) {
+          const gist = await res.json();
+          if (gist.files && gist.files["siape_unified_data.json"]) {
+            const parsed = JSON.parse(gist.files["siape_unified_data.json"].content);
+            if (parsed && Array.isArray(parsed.links) && parsed.links.length > 0) {
+              LINKS = parsed.links;
+              localStorage.setItem("sgp_nuap_links", JSON.stringify(LINKS));
+              renderCategoryPills();
+              renderLinks();
+              showToast("⬇️ Links baixados da nuvem com sucesso!");
+              return;
+            }
+          }
+        }
+        showToast("ℹ️ Nenhum link encontrado na nuvem.");
+      } catch (e) {
+        console.error("Erro ao baixar links da nuvem:", e);
+        showToast("❌ Erro ao conectar com a nuvem.");
+      }
+    }
+
+    // ⬆️ ENVIAR: Sobe os links locais para a nuvem
+    async function syncSendLinks() {
+      try {
+        await syncUploadLinks();
+        showToast("⬆️ Links enviados para a nuvem com sucesso!");
+      } catch (e) {
+        console.error("Erro ao enviar links para a nuvem:", e);
+        showToast("❌ Erro ao enviar para a nuvem.");
       }
     }
 
