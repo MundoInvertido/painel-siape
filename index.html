@@ -1356,6 +1356,61 @@
       word-break: break-word;
     }
 
+    /* Estilização e Recuo Garantido de Listas (Bullets / Numeradas) no Editor e na Exibição */
+    .step-desc-preview ul,
+    .step-desc-preview ol,
+    .step-description ul,
+    .step-description ol,
+    .procedure-card ul,
+    .procedure-card ol,
+    .procedure-alert ul,
+    .procedure-alert ol,
+    .procedure-extra ul,
+    .procedure-extra ol,
+    ul.markdown-ul,
+    ol.markdown-ol {
+      margin-top: 0.5rem !important;
+      margin-bottom: 0.5rem !important;
+      padding-left: 1.75rem !important;
+      list-style-position: outside !important;
+    }
+
+    .step-desc-preview ul,
+    .step-description ul,
+    .procedure-card ul,
+    .procedure-alert ul,
+    .procedure-extra ul,
+    ul.markdown-ul {
+      list-style-type: disc !important;
+    }
+
+    .step-desc-preview ol,
+    .step-description ol,
+    .procedure-card ol,
+    .procedure-alert ol,
+    .procedure-extra ol,
+    ol.markdown-ol {
+      list-style-type: decimal !important;
+    }
+
+    .step-desc-preview li,
+    .step-description li,
+    .procedure-card li,
+    .procedure-alert li,
+    .procedure-extra li,
+    li.markdown-li {
+      margin-bottom: 0.25rem !important;
+      line-height: 1.5 !important;
+      display: list-item !important;
+    }
+
+    .step-desc-preview ul ul,
+    .step-description ul ul,
+    ul.markdown-ul ul.markdown-ul {
+      list-style-type: circle !important;
+      padding-left: 1.25rem !important;
+    }
+
     /* Estilização universal para imagens de procedimentos (máximo 280px de altura no modal) */
     .step-description img,
     .step-desc-preview img,
