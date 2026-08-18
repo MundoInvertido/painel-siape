@@ -962,6 +962,12 @@
             <option value="Geral">Geral</option>
           </select>
 
+          <button class="btn" onclick="sendProcessosEmailAlerts()"
+            style="background: rgba(217, 119, 6, 0.9); border: 1px solid rgba(217, 119, 6, 0.4); color: #fff; padding: 0.35rem 0.75rem; font-size: 0.8rem; font-weight: 600; cursor: pointer; border-radius: 0.375rem;"
+            title="Disparar e-mail de alerta para a equipe com os processos SEI críticos">
+            📧 Notificar Equipe por E-mail
+          </button>
+
           <button class="btn btn-primary" id="btn-add-card" onclick="openCardModal()">
             ➕ Novo Processo SEI
           </button>
@@ -2000,11 +2006,55 @@
       document.getElementById("sidebar-overlay").classList.toggle("active", show);
     }
 
-    function showToast(msg) {
-      const toast = document.getElementById("toast");
-      document.getElementById("toast-message").textContent = msg;
-      toast.classList.add("show");
-      setTimeout(() => toast.classList.remove("show"), 2500);
+    // E-mails cadastrados oficialmente para notificações de alerta de processos SEI
+    const OFFICIAL_ALERT_RECIPIENTS = [
+      "ana.silva@prf.gov.br",
+      "gustavo.aquino@prf.gov.br",
+      "sgp.pa@prf.gov.br",
+      "nuap.pa@prf.gov.br",
+      "nathanael.lacerda@prf.gov.br",
+      "rafael.guimaraes@prf.gov.br",
+      "silvana.socorro@prf.gov.br"
+    ];
+
+    function sendProcessosEmailAlerts() {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      const cards = (kanbanState && kanbanState.cards) ? kanbanState.cards : [];
+      const criticalCards = cards.filter(card => {
+        if (!card.deadline) return false;
+        const [y, m, d] = card.deadline.split("-");
+        const itemDate = new Date(parseInt(y, 10), parseInt(m, 10) - 1, parseInt(d, 10));
+        const diffDays = Math.ceil((itemDate - today) / (1000 * 60 * 60 * 24));
+        return diffDays <= 3;
+      });
+
+      if (criticalCards.length === 0) {
+        showToast("✅ Nenhum processo SEI vencido ou próximo de vencer (<= 3 dias).");
+        return;
+      }
+
+      let emailBody = `Atenção Equipe SGP/NUAP,\n\nRelatório de Processos SEI Próximos do Vencimento (Painel SGP-PA PRF):\n\n`;
+
+      criticalCards.forEach((card, index) => {
+        const [y, m, d] = card.deadline.split("-");
+        const itemDate = new Date(parseInt(y, 10), parseInt(m, 10) - 1, parseInt(d, 10));
+        const diffDays = Math.ceil((itemDate - today) / (1000 * 60 * 60 * 24));
+        const statusText = diffDays < 0 ? "VENCIDO!" : (diffDays === 0 ? "VENCE HOJE!" : `vence em ${diffDays} dia(s)`);
+
+        emailBody += `${index + 1}. [SEI ${card.sei || 'S/N'}] - ${card.title || 'Processo SEI'}\n`;
+        emailBody += `   • Tag: ${card.tag || 'Geral'}\n`;
+        emailBody += `   • Vencimento: ${d}/${m}/${y} (${statusText})\n`;
+        emailBody += `   • Responsável: ${card.assignee || 'SGP/NUAP'}\n\n`;
+      });
+
+      emailBody += `Acesse o Painel Kanban SEI para atualização: ${window.location.href}\n`;
+
+      const mailtoLink = `mailto:${OFFICIAL_ALERT_RECIPIENTS.join(",")}?subject=${encodeURIComponent("⚠️ [ALERTA PROCESSO SEI] SGP-PA PRF - " + criticalCards.length + " processo(s) crítico(s)")}&body=${encodeURIComponent(emailBody)}`;
+
+      window.open(mailtoLink, '_blank');
+      showToast(`📧 Notificação de processos iniciada para os ${OFFICIAL_ALERT_RECIPIENTS.length} e-mails oficiais!`);
     }
   </script>
 </body>

@@ -1,0 +1,26 @@
+name: Notificação Diária de Prazos SGP-PA
+
+on:
+  schedule:
+    # Executa todos os dias às 11:00 UTC (08:00 AM BRT)
+    - cron: '0 11 * * *'
+  workflow_dispatch:
+
+jobs:
+  check-deadlines:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout do Repositório
+        uses: actions/checkout@v3
+
+      - name: Configurar Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      - name: Verificar Prazos Críticos e Gerar Relatório
+        env:
+          GITHUB_TOKEN_GIST: ${{ secrets.GIST_SYNC_TOKEN }}
+        run: |
+          python .github/scripts/check_deadlines.py
