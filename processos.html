@@ -1252,6 +1252,9 @@
       }
 
       renderKanbanBoard();
+
+      // Notificação automática se houver processos SEI com prazos críticos no sistema
+      setTimeout(checkAndAutoNotifyProcessos, 1500);
     };
 
     function updateAdminUI(isAdmin) {
@@ -1774,6 +1777,12 @@
       renderKanbanBoard();
       closeCardModal();
       showToast("Processo salvo com sucesso!");
+
+      // Notificação automática quando o processo SEI é inserido/atualizado com campo de prazo
+      if (deadline) {
+        showToast("📧 Notificação automática: Processo SEI com prazo inserido!", false);
+        sendProcessosEmailAlerts(false, card);
+      }
     }
 
     function deleteCurrentCard() {
@@ -2017,7 +2026,11 @@
       "silvana.socorro@prf.gov.br"
     ];
 
-    function sendProcessosEmailAlerts() {
+    function checkAndAutoNotifyProcessos() {
+      const todayStr = new Date().toISOString().slice(0, 10);
+      const lastNotify = localStorage.getItem("last_auto_notify_processos_date");
+      if (lastNotify === todayStr) return; // Já notificado automaticamente hoje
+
       const today = new Date();
       today.setHours(0, 0, 0, 0);
 
@@ -2030,14 +2043,43 @@
         return diffDays <= 3;
       });
 
-      if (criticalCards.length === 0) {
-        showToast("✅ Nenhum processo SEI vencido ou próximo de vencer (<= 3 dias).");
+      if (criticalCards.length > 0) {
+        localStorage.setItem("last_auto_notify_processos_date", todayStr);
+        showToast(`⚠️ ATENÇÃO: ${criticalCards.length} processo(s) SEI com prazo crítico! Notificando equipe...`, true);
+        sendProcessosEmailAlerts(true);
+      }
+    }
+
+    function sendProcessosEmailAlerts(isAuto = false, singleCard = null) {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      let targetCards = [];
+      if (singleCard) {
+        targetCards = [singleCard];
+      } else {
+        const cards = (kanbanState && kanbanState.cards) ? kanbanState.cards : [];
+        targetCards = cards.filter(card => {
+          if (!card.deadline) return false;
+          const [y, m, d] = card.deadline.split("-");
+          const itemDate = new Date(parseInt(y, 10), parseInt(m, 10) - 1, parseInt(d, 10));
+          const diffDays = Math.ceil((itemDate - today) / (1000 * 60 * 60 * 24));
+          return diffDays <= 3;
+        });
+      }
+
+      if (targetCards.length === 0) {
+        if (!isAuto) showToast("✅ Nenhum processo SEI vencido ou próximo de vencer (<= 3 dias).");
         return;
       }
 
-      let emailBody = `Atenção Equipe SGP/NUAP,\n\nRelatório de Processos SEI Próximos do Vencimento (Painel SGP-PA PRF):\n\n`;
+      const subjectText = singleCard ? 
+        `⚠️ [PROCESSO SEI CADASTRADO COM PRAZO] SEI ${singleCard.sei || 'S/N'}: ${singleCard.title}` :
+        `⚠️ [ALERTA AUTOMÁTICO DE PROCESSOS SEI] SGP-PA PRF - ${targetCards.length} processo(s) em alerta`;
 
-      criticalCards.forEach((card, index) => {
+      let emailBody = `Atenção Equipe SGP/NUAP,\n\n${singleCard ? 'Notificação de Inclusão/Atualização de Processo SEI com Prazo:' : 'Relatório Automático de Processos SEI Próximos do Vencimento (Painel SGP-PA PRF):'}\n\n`;
+
+      targetCards.forEach((card, index) => {
         const [y, m, d] = card.deadline.split("-");
         const itemDate = new Date(parseInt(y, 10), parseInt(m, 10) - 1, parseInt(d, 10));
         const diffDays = Math.ceil((itemDate - today) / (1000 * 60 * 60 * 24));
@@ -2051,7 +2093,7 @@
 
       emailBody += `Acesse o Painel Kanban SEI para atualização: ${window.location.href}\n`;
 
-      const mailtoLink = `mailto:${OFFICIAL_ALERT_RECIPIENTS.join(",")}?subject=${encodeURIComponent("⚠️ [ALERTA PROCESSO SEI] SGP-PA PRF - " + criticalCards.length + " processo(s) crítico(s)")}&body=${encodeURIComponent(emailBody)}`;
+      const mailtoLink = `mailto:${OFFICIAL_ALERT_RECIPIENTS.join(",")}?subject=${encodeURIComponent(subjectText)}&body=${encodeURIComponent(emailBody)}`;
 
       window.open(mailtoLink, '_blank');
       showToast(`📧 Notificação de processos iniciada para os ${OFFICIAL_ALERT_RECIPIENTS.length} e-mails oficiais!`);

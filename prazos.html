@@ -1011,6 +1011,9 @@
       } catch (e) {
         console.warn("Erro ao carregar dados da nuvem:", e);
       }
+
+      // Notificação automática se houver prazos críticos no sistema
+      setTimeout(checkAndAutoNotifyPrazos, 1200);
     };
 
     function toggleMobileSidebar(show) {
@@ -1232,6 +1235,17 @@
       renderPrazosTable();
       updatePrazosAlertsBanner();
 
+      // Checa se o prazo inserido/editado é crítico (<= 3 dias) para notificar automaticamente
+      const [y, m, d] = prazo.split("-");
+      const itemDate = new Date(parseInt(y, 10), parseInt(m, 10) - 1, parseInt(d, 10));
+      const todayDate = new Date(); todayDate.setHours(0, 0, 0, 0);
+      const diffDays = Math.ceil((itemDate - todayDate) / (1000 * 60 * 60 * 24));
+
+      if (diffDays <= 3) {
+        showToast("⚠️ Prazo crítico inserido! Disparando notificação...", true);
+        sendDeadlineEmailAlerts(false, itemObj);
+      }
+
       showToast("⏳ Sincronizando com a nuvem...", false);
       const success = await syncUpload();
       if (success) {
@@ -1445,7 +1459,11 @@
       "silvana.socorro@prf.gov.br"
     ];
 
-    function sendDeadlineEmailAlerts() {
+    function checkAndAutoNotifyPrazos() {
+      const todayStr = new Date().toISOString().slice(0, 10);
+      const lastNotify = localStorage.getItem("last_auto_notify_prazos_date");
+      if (lastNotify === todayStr) return; // Já notificado automaticamente hoje
+
       const today = new Date();
       today.setHours(0, 0, 0, 0);
 
@@ -1458,31 +1476,62 @@
         return diffDays <= 3;
       });
 
-      if (criticalPrazos.length === 0) {
-        showToast("✅ Nenhum prazo vencido ou próximo de vencer (<= 3 dias).");
+      if (criticalPrazos.length > 0) {
+        localStorage.setItem("last_auto_notify_prazos_date", todayStr);
+        showToast(`⚠️ ATENÇÃO: ${criticalPrazos.length} prazo(s) crítico(s) encontrado(s)! Notificando equipe...`, true);
+        sendDeadlineEmailAlerts(true);
+      }
+    }
+
+    function sendDeadlineEmailAlerts(isAuto = false, singleItem = null) {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      let targetItems = [];
+      if (singleItem) {
+        targetItems = [singleItem];
+      } else {
+        targetItems = agendamentosList.filter(item => {
+          const dtStr = item.data || item.dataLimite || item.prazo;
+          if (!dtStr) return false;
+          const [y, m, d] = dtStr.split("-");
+          const itemDate = new Date(parseInt(y, 10), parseInt(m, 10) - 1, parseInt(d, 10));
+          const diffDays = Math.ceil((itemDate - today) / (1000 * 60 * 60 * 24));
+          return diffDays <= 3;
+        });
+      }
+
+      if (targetItems.length === 0) {
+        if (!isAuto) showToast("✅ Nenhum prazo vencido ou próximo de vencer (<= 3 dias).");
         return;
       }
 
-      let emailBody = `Atenção Equipe SGP/NUAP,\n\nRelatório de Prazos Próximos do Vencimento (Painel SGP-PA PRF):\n\n`;
+      const subjectText = singleItem ? 
+        `⚠️ [NOVO PRAZO CADASTRADO] SEI/SGP: ${singleItem.numero || singleItem.descricao}` :
+        `⚠️ [ALERTA AUTOMÁTICO DE PRAZOS] SGP-PA PRF - ${targetItems.length} item(ns) em alerta`;
 
-      criticalPrazos.forEach((item, index) => {
+      let emailBody = `Atenção Equipe SGP/NUAP,\n\n${singleItem ? 'Notificação de Inclusão/Atualização de Prazo:' : 'Relatório Automático de Prazos Próximos do Vencimento (Painel SGP-PA PRF):'}\n\n`;
+
+      targetItems.forEach((item, index) => {
         const dtStr = item.data || item.dataLimite || item.prazo;
-        const [y, m, d] = dtStr.split("-");
-        const itemDate = new Date(parseInt(y, 10), parseInt(m, 10) - 1, parseInt(d, 10));
-        const diffDays = Math.ceil((itemDate - today) / (1000 * 60 * 60 * 24));
-        const statusText = diffDays < 0 ? "VENCIDO!" : (diffDays === 0 ? "VENCE HOJE!" : `vence em ${diffDays} dia(s)`);
-
-        emailBody += `${index + 1}. [${item.numero || 'S/N'}] - ${item.descricao || item.obs || 'Prazo SGP'}\n`;
-        emailBody += `   • Data Limite: ${d}/${m}/${y} (${statusText})\n`;
-        emailBody += `   • Responsável: ${item.responsavel || item.servidor || 'SGP/NUAP'}\n\n`;
+        let statusText = "";
+        if (dtStr) {
+          const [y, m, d] = dtStr.split("-");
+          const itemDate = new Date(parseInt(y, 10), parseInt(m, 10) - 1, parseInt(d, 10));
+          const diffDays = Math.ceil((itemDate - today) / (1000 * 60 * 60 * 24));
+          statusText = diffDays < 0 ? "VENCIDO!" : (diffDays === 0 ? "VENCE HOJE!" : `vence em ${diffDays} dia(s)`);
+          emailBody += `${index + 1}. [${item.numero || 'S/N'}] - ${item.descricao || item.obs || 'Prazo SGP'}\n`;
+          emailBody += `   • Data Limite: ${d}/${m}/${y} (${statusText})\n`;
+          emailBody += `   • Responsável: ${item.responsavel || item.servidor || 'SGP/NUAP'}\n\n`;
+        }
       });
 
       emailBody += `Acesse o Painel SGP-PA para detalhes e atualização: ${window.location.href}\n`;
 
-      const mailtoLink = `mailto:${OFFICIAL_ALERT_RECIPIENTS.join(",")}?subject=${encodeURIComponent("⚠️ [ALERTA DE PRAZOS] SGP-PA PRF - " + criticalPrazos.length + " item(ns) crítico(s)")}&body=${encodeURIComponent(emailBody)}`;
+      const mailtoLink = `mailto:${OFFICIAL_ALERT_RECIPIENTS.join(",")}?subject=${encodeURIComponent(subjectText)}&body=${encodeURIComponent(emailBody)}`;
 
       window.open(mailtoLink, '_blank');
-      showToast(`📧 Notificação iniciada para os ${OFFICIAL_ALERT_RECIPIENTS.length} e-mails oficiais!`);
+      showToast(`📧 Notificação automática enviada para ${OFFICIAL_ALERT_RECIPIENTS.length} e-mails oficiais!`);
     }
   </script>
 </body>
