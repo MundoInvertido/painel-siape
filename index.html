@@ -1356,6 +1356,30 @@
       word-break: break-word;
     }
 
+    /* Estilização universal para imagens de procedimentos (máximo 280px de altura no modal) */
+    .step-description img,
+    .step-desc-preview img,
+    .proc-step-img,
+    .procedure-extra img,
+    .procedure-details img {
+      max-width: 100% !important;
+      max-height: 280px !important;
+      object-fit: contain !important;
+      border-radius: 6px !important;
+      border: 1px solid var(--border-color) !important;
+      cursor: pointer !important;
+      margin: 0.5rem auto !important;
+      display: block !important;
+      transition: transform 0.15s ease, box-shadow 0.15s ease !important;
+    }
+
+    .step-description img:hover,
+    .step-desc-preview img:hover,
+    .proc-step-img:hover {
+      transform: scale(1.015);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+
     /* Drop zone para upload de imagens */
     .drop-zone {
       border: 2px dashed var(--accent);
@@ -1783,19 +1807,6 @@
       <div style="width: 100%; height: calc(100% - 55px); background: #f8fafc;">
         <iframe id="app-runner-iframe" src="" style="width: 100%; height: 100%; border: none;"></iframe>
       </div>
-    </div>
-  </div>
-
-  <!-- Image Lightbox Modal -->
-  <div class="panel-overlay" id="lightbox-modal" onclick="closeLightbox()"
-    style="background-color: rgba(0,0,0,0.92); z-index: 10000; cursor: zoom-out;">
-    <span
-      style="position: absolute; top: 1.5rem; right: 2rem; color: #fff; font-size: 2.5rem; font-weight: bold; cursor: pointer;"
-      onclick="closeLightbox()">&times;</span>
-    <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; padding: 2rem;">
-      <img id="lightbox-img" src=""
-        style="max-width: 95%; max-height: 95%; border-radius: 6px; box-shadow: 0 10px 35px rgba(0,0,0,0.8); cursor: default;"
-        onclick="event.stopPropagation()" />
     </div>
   </div>
 
@@ -4501,11 +4512,31 @@
       `;
     }
 
+    // Listener global para permitir clique e zoom em qualquer imagem de procedimento
+    document.addEventListener("click", function (e) {
+      if (e.target && e.target.tagName === "IMG" && (e.target.closest(".step-description") || e.target.closest(".step-desc-preview") || e.target.closest(".procedure-extra") || e.target.classList.contains("proc-step-img"))) {
+        zoomImage(e.target);
+      }
+    });
+
     // Initial render
     renderCategoryFilters();
     renderProcedures();
     updateMainPageAlerts();
   </script>
+
+  <!-- Modal de Zoom de Imagens (Lightbox) no topo de todas as camadas -->
+  <div class="panel-overlay" id="lightbox-modal" onclick="closeLightbox()"
+    style="background-color: rgba(0,0,0,0.92); z-index: 11000 !important; cursor: zoom-out;">
+    <span
+      style="position: absolute; top: 1.5rem; right: 2rem; color: #fff; font-size: 2.5rem; font-weight: bold; cursor: pointer; z-index: 11001;"
+      onclick="closeLightbox()">&times;</span>
+    <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; padding: 2rem;">
+      <img id="lightbox-img" src=""
+        style="max-width: 95vw; max-height: 92vh; object-fit: contain; border-radius: 8px; box-shadow: 0 10px 35px rgba(0,0,0,0.8); cursor: default;"
+        onclick="event.stopPropagation()" />
+    </div>
+  </div>
 </body>
 
 </html>
