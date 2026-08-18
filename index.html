@@ -1411,6 +1411,36 @@
       padding-left: 1.25rem !important;
     }
 
+    /* Estilização para Códigos Copiáveis */
+    code, .code-copy {
+      font-family: 'JetBrains Mono', 'Fira Code', 'Courier New', Courier, monospace !important;
+      background-color: rgba(2, 132, 199, 0.1) !important;
+      color: #0284c7 !important;
+      border: 1px solid rgba(2, 132, 199, 0.25) !important;
+      padding: 0.15rem 0.45rem !important;
+      border-radius: 0.375rem !important;
+      font-size: 0.85em !important;
+      font-weight: 700 !important;
+      cursor: pointer !important;
+      transition: all 0.15s ease !important;
+      display: inline-block !important;
+      margin: 0 0.15rem !important;
+    }
+
+    code:hover, .code-copy:hover {
+      background-color: rgba(2, 132, 199, 0.2) !important;
+      border-color: #0284c7 !important;
+      color: #0369a1 !important;
+      transform: translateY(-1px) !important;
+      box-shadow: 0 2px 5px rgba(2, 132, 199, 0.2) !important;
+    }
+
+    code:active, .code-copy:active {
+      transform: translateY(0) !important;
+      background-color: #0284c7 !important;
+      color: #ffffff !important;
+    }
+
     /* Estilização universal para imagens de procedimentos (máximo 280px de altura no modal) */
     .step-description img,
     .step-desc-preview img,
@@ -3527,20 +3557,22 @@
       if (isVisual) {
         const sel = window.getSelection();
         if (sel && sel.rangeCount > 0 && sel.toString().trim().length > 0) {
-          code = sel.toString();
+          code = sel.toString().trim();
         }
       } else {
         const startPos = textarea.selectionStart;
         const endPos = textarea.selectionEnd;
-        code = textarea.value.substring(startPos, endPos);
+        code = textarea.value.substring(startPos, endPos).trim();
       }
 
       if (!code) {
         code = prompt("Qual código/comando deseja inserir? (Ex: >FPATMOVFIN ou 00136)");
         if (!code) return;
+        code = code.trim();
       }
 
-      const insertHtml = `<code class="code-copy" onclick="copyText('${code}')">${code}</code>`;
+      const escapedCode = code.replace(/'/g, "\\'");
+      const insertHtml = `<code class="code-copy" data-code="${escapedCode}" onclick="copyText('${escapedCode}')">${code}</code>`;
 
       if (isVisual) {
         clearPreviewPlaceholder(previewDiv);
@@ -3748,6 +3780,52 @@
       });
     });
 
+    // Função global de Cópia de Código / Texto para a Área de Transferência
+    function copyText(text) {
+      if (!text) return;
+      const cleanText = text.replace(/<[^>]*>?/gm, '').trim();
+
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(cleanText).then(() => {
+          showToast(`📋 Código copiado: "${cleanText}"`);
+        }).catch(() => {
+          fallbackCopyText(cleanText);
+        });
+      } else {
+        fallbackCopyText(cleanText);
+      }
+    }
+
+    function fallbackCopyText(text) {
+      const textarea = document.createElement("textarea");
+      textarea.value = text;
+      textarea.style.position = "fixed";
+      textarea.style.left = "-9999px";
+      document.body.appendChild(textarea);
+      textarea.select();
+      try {
+        document.execCommand("copy");
+        showToast(`📋 Código copiado: "${text}"`);
+      } catch (err) {
+        showToast("❌ Erro ao copiar texto.");
+      }
+      document.body.removeChild(textarea);
+    }
+
+    // Listener global de clique para tornar QUALQUER tag <code> ou classe .code-copy instantaneamente copiável
+    document.addEventListener("click", function (e) {
+      const codeTarget = e.target.closest("code, .code-copy");
+      if (codeTarget) {
+        if (codeTarget.closest("[contenteditable='true']")) {
+          return; // Não interfere na edição visual
+        }
+        const textToCopy = codeTarget.getAttribute("data-code") || codeTarget.innerText || codeTarget.textContent;
+        if (textToCopy && textToCopy.trim().length > 0) {
+          copyText(textToCopy.trim());
+        }
+      }
+    });
+
     function renderInlineMarkdown(text) {
       if (!text) return "";
 
@@ -3769,7 +3847,10 @@
       // 3. Sublinhado: ++texto++ -> <u>texto</u>
       tokenized = tokenized.replace(/\+\+(.*?)\+\+/g, '<u>$1</u>');
 
-      // 4. Restaura os blocos HTML intactos
+      // 4. Códigos em crases: `código` -> <code class="code-copy">código</code>
+      tokenized = tokenized.replace(/`([^`]+)`/g, '<code class="code-copy">$1</code>');
+
+      // 5. Restaura os blocos HTML intactos
       tokenized = tokenized.replace(/@@@HTML_BLOCK_(\d+)@@@/g, function (_, index) {
         return htmlBlocks[parseInt(index, 10)];
       });
