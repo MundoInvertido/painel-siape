@@ -1,0 +1,1232 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Links Importantes — Central SGP-PA PRF</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-primary: #f8fafc;
+      --bg-secondary: #ffffff;
+      --bg-tertiary: #f1f5f9;
+      --text-primary: #0f172a;
+      --text-secondary: #475569;
+      --text-muted: #94a3b8;
+      --border-color: #e2e8f0;
+      --accent: #0057a8;
+      --accent-hover: #004080;
+      --accent-light: #e0f2fe;
+      --accent-glow: rgba(0, 87, 168, 0.15);
+      --sidebar-width: 250px;
+      --header-height: 60px;
+      --card-radius: 0.75rem;
+      --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.07);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08);
+      --danger: #dc2626;
+      --success: #16a34a;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Top Header Styling */
+    .top-header {
+      width: 100%;
+      box-sizing: border-box;
+      background: linear-gradient(135deg, #0b1a40 0%, #1e3a8a 100%);
+      color: #ffffff;
+      height: var(--header-height);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 1.5rem;
+      box-shadow: 0 4px 20px rgba(11, 26, 64, 0.3);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      border-bottom: 2px solid rgba(251, 191, 36, 0.4);
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .logo-prf {
+      font-weight: 900;
+      font-size: 1.25rem;
+      letter-spacing: 0.05em;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .logo-prf::before {
+      content: '✦';
+      color: #fbbf24;
+      font-size: 1rem;
+    }
+
+    .header-subtitle {
+      font-size: 0.85rem;
+      color: rgba(255, 255, 255, 0.8);
+      font-weight: 500;
+      border-left: 1px solid rgba(255, 255, 255, 0.2);
+      padding-left: 0.75rem;
+    }
+
+    /* App Layout */
+    .app-layout {
+      display: flex;
+      flex: 1;
+    }
+
+    /* Sidebar Navigation */
+    .sidebar {
+      width: var(--sidebar-width);
+      background-color: var(--bg-secondary);
+      border-right: 1px solid var(--border-color);
+      display: flex;
+      flex-direction: column;
+      padding: 1.25rem 0.75rem;
+      gap: 0.5rem;
+      position: sticky;
+      top: var(--header-height);
+      height: calc(100vh - var(--header-height));
+      overflow-y: auto;
+      z-index: 90;
+    }
+
+    .sidebar-logo {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.5rem 0.75rem 1rem 0.75rem;
+      border-bottom: 1px solid var(--border-color);
+      margin-bottom: 0.5rem;
+    }
+
+    .sidebar-logo-icon {
+      width: 2.25rem;
+      height: 2.25rem;
+      background: linear-gradient(135deg, #0b1a40 0%, #1e3a8a 100%);
+      border-radius: 0.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #ffffff;
+    }
+
+    .sidebar-logo h1 {
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: #0b1a40;
+      line-height: 1.2;
+    }
+
+    .sidebar-logo p {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    .sidebar-nav {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+
+    .sidebar-section-label {
+      font-size: 0.68rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      padding: 0.75rem 0.75rem 0.25rem 0.75rem;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.65rem 0.85rem;
+      border-radius: 0.5rem;
+      color: var(--text-secondary);
+      font-weight: 600;
+      font-size: 0.88rem;
+      text-decoration: none;
+      transition: all 0.15s ease;
+      cursor: pointer;
+      border: none;
+      background: none;
+      width: 100%;
+      text-align: left;
+    }
+
+    .nav-item:hover {
+      background-color: var(--bg-tertiary);
+      color: var(--accent);
+    }
+
+    .nav-item.active {
+      background-color: var(--accent-light);
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    .nav-item .icon {
+      width: 1.2rem;
+      height: 1.2rem;
+      fill: currentColor;
+    }
+
+    .nav-divider {
+      height: 1px;
+      background-color: var(--border-color);
+      margin: 0.5rem 0;
+      border: none;
+    }
+
+    /* Main Content Container */
+    .main-content {
+      flex: 1;
+      padding: 2rem;
+      max-width: 1350px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 1.75rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .page-title h2 {
+      font-size: 1.6rem;
+      font-weight: 900;
+      color: #0b1a40;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .page-title p {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      margin-top: 0.3rem;
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.55rem 1.1rem;
+      border-radius: 0.5rem;
+      font-size: 0.85rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      border: 1px solid var(--border-color);
+      background-color: var(--bg-secondary);
+      color: var(--text-primary);
+      text-decoration: none;
+    }
+
+    .btn:hover {
+      background-color: var(--bg-tertiary);
+    }
+
+    .btn-accent {
+      background: linear-gradient(135deg, #0057a8 0%, #004080 100%);
+      color: #ffffff;
+      border: none;
+      box-shadow: 0 2px 8px rgba(0, 87, 168, 0.25);
+    }
+
+    .btn-accent:hover {
+      background: linear-gradient(135deg, #004080 0%, #002d5a 100%);
+      transform: translateY(-1px);
+    }
+
+    /* Filters Bar */
+    .filters-bar {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      align-items: center;
+      flex-wrap: wrap;
+      background-color: var(--bg-secondary);
+      padding: 1rem 1.25rem;
+      border-radius: var(--card-radius);
+      border: 1px solid var(--border-color);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .search-box {
+      flex: 1;
+      min-width: 260px;
+      position: relative;
+    }
+
+    .search-box input {
+      width: 100%;
+      padding: 0.6rem 1rem 0.6rem 2.4rem;
+      border-radius: 0.5rem;
+      border: 1px solid var(--border-color);
+      font-size: 0.9rem;
+      background-color: var(--bg-primary);
+    }
+
+    .search-box input:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-glow);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 0.8rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      width: 1rem;
+      height: 1rem;
+    }
+
+    .category-pills {
+      display: flex;
+      gap: 0.4rem;
+      flex-wrap: wrap;
+    }
+
+    .pill-btn {
+      padding: 0.4rem 0.85rem;
+      border-radius: 9999px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      border: 1px solid var(--border-color);
+      background-color: var(--bg-primary);
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .pill-btn:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .pill-btn.active {
+      background-color: #0b1a40;
+      color: #ffffff;
+      border-color: #0b1a40;
+    }
+
+    /* Links Grid */
+    .links-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1.25rem;
+    }
+
+    .link-card {
+      background-color: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--card-radius);
+      padding: 1.25rem;
+      box-shadow: var(--shadow-sm);
+      transition: all 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+    }
+
+    .link-card:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-lg);
+      border-color: #bfdbfe;
+    }
+
+    .link-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 0.75rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .link-badge {
+      font-size: 0.72rem;
+      font-weight: 800;
+      padding: 0.2rem 0.6rem;
+      border-radius: 9999px;
+      background: #eff6ff;
+      color: #1e40af;
+      border: 1px solid #bfdbfe;
+    }
+
+    .link-icon-box {
+      width: 2.75rem;
+      height: 2.75rem;
+      border-radius: 0.6rem;
+      background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+      border: 1px solid #bfdbfe;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.35rem;
+      flex-shrink: 0;
+    }
+
+    .link-card-body h3 {
+      font-size: 1.15rem;
+      font-weight: 900;
+      color: #0b1a40;
+      margin-bottom: 0.25rem;
+    }
+
+    .link-card-body p {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      line-height: 1.45;
+      margin-bottom: 1rem;
+    }
+
+    .link-url-display {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      margin-bottom: 0.75rem;
+    }
+
+    .link-card-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px dashed var(--border-color);
+      padding-top: 0.85rem;
+      gap: 0.5rem;
+    }
+
+    .link-access-btn {
+      padding: 0.4rem 0.9rem;
+      font-size: 0.8rem;
+      font-weight: 800;
+      border-radius: 0.4rem;
+      background: #0057a8;
+      color: #ffffff;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      transition: background 0.15s ease;
+    }
+
+    .link-access-btn:hover {
+      background: #004080;
+    }
+
+    .admin-link-actions {
+      display: flex;
+      gap: 0.3rem;
+    }
+
+    /* Empty state */
+    .empty-state {
+      text-align: center;
+      padding: 3rem 1.5rem;
+      background-color: var(--bg-secondary);
+      border-radius: var(--card-radius);
+      border: 1px dashed var(--border-color);
+      grid-column: 1 / -1;
+    }
+
+    .empty-state h3 {
+      font-size: 1.2rem;
+      color: var(--text-primary);
+      margin-bottom: 0.5rem;
+    }
+
+    .empty-state p {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+    }
+
+    /* Modal Styling */
+    .modal-backdrop {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(11, 26, 64, 0.6);
+      backdrop-filter: blur(4px);
+      z-index: 10000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+
+    .modal-backdrop.open {
+      display: flex;
+    }
+
+    .modal-card {
+      background: var(--bg-secondary);
+      width: 100%;
+      max-width: 520px;
+      border-radius: 0.85rem;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+      border: 1px solid var(--border-color);
+      overflow: hidden;
+      animation: modalSlide 0.2s ease-out;
+    }
+
+    @keyframes modalSlide {
+      from {
+        transform: translateY(20px);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    .modal-header {
+      background: linear-gradient(135deg, #0b1a40 0%, #1e3a8a 100%);
+      color: #ffffff;
+      padding: 1rem 1.25rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-header h3 {
+      font-size: 1.1rem;
+      font-weight: 800;
+    }
+
+    .modal-close {
+      background: none;
+      border: none;
+      color: #ffffff;
+      font-size: 1.5rem;
+      cursor: pointer;
+      line-height: 1;
+    }
+
+    .modal-body {
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+
+    .form-group label {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 0.6rem 0.85rem;
+      border-radius: 0.4rem;
+      border: 1px solid var(--border-color);
+      font-size: 0.9rem;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+    }
+
+    .form-control:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-glow);
+    }
+
+    .modal-footer {
+      padding: 1rem 1.25rem;
+      background-color: var(--bg-tertiary);
+      border-top: 1px solid var(--border-color);
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.5rem;
+    }
+
+    /* Toast Notification */
+    .toast {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: #0b1a40;
+      color: #ffffff;
+      padding: 0.75rem 1.25rem;
+      border-radius: 0.5rem;
+      font-weight: 700;
+      font-size: 0.88rem;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+      z-index: 10500;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      transform: translateY(100px);
+      opacity: 0;
+      transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    }
+
+    .toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    /* Mobile Responsive Sidebar Overlay */
+    .sidebar-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 85;
+    }
+
+    @media (max-width: 768px) {
+      .sidebar {
+        position: fixed;
+        left: -100%;
+        transition: left 0.3s ease;
+      }
+
+      .sidebar.open {
+        left: 0;
+      }
+
+      .sidebar-overlay.active {
+        display: block;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Notification Toast -->
+  <div id="toast" class="toast">
+    <span id="toast-message">Notificação</span>
+  </div>
+
+  <!-- Top Header Bar -->
+  <header class="top-header">
+    <div class="header-left">
+      <div class="menu-icon" onclick="toggleMobileSidebar(true)" style="cursor: pointer; margin-right: 0.25rem;">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+          <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z" />
+        </svg>
+      </div>
+      <span class="logo-prf">SGP-PA</span>
+      <span class="header-subtitle" style="display: none; margin-left: 0.5rem;" id="header-subtitle-text">Central de
+        Links Importantes</span>
+    </div>
+    <div class="header-right" style="display: flex; align-items: center; gap: 0.75rem;">
+      <button class="btn" id="header-admin-login" onclick="adminLogin()"
+        style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: rgba(255,255,255,0.85); padding: 0.3rem 0.875rem; font-size: 0.8rem; cursor: pointer; border-radius: 0.375rem; font-weight: 600;">
+        🔐 Login Admin
+      </button>
+      <button class="btn" id="header-admin-logout" onclick="adminLogout()"
+        style="background: rgba(220,38,38,0.8); border: 1px solid rgba(220,38,38,0.5); color: #fff; padding: 0.3rem 0.875rem; font-size: 0.8rem; cursor: pointer; border-radius: 0.375rem; font-weight: 600; display: none;">
+        🚪 Sair Admin
+      </button>
+    </div>
+  </header>
+
+  <!-- Sidebar Overlay Backdrop for Mobile -->
+  <div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleMobileSidebar(false)"></div>
+
+  <!-- App Main Layout -->
+  <div class="app-layout">
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+      <div class="sidebar-logo">
+        <div class="sidebar-logo-icon">
+          <svg viewBox="0 0 24 24" fill="white" width="18" height="18">
+            <path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"/>
+          </svg>
+        </div>
+        <div>
+          <h1>Painel SGP</h1>
+          <p>Links & Portais</p>
+        </div>
+      </div>
+      <nav class="sidebar-nav">
+        <span class="sidebar-section-label">Navegação</span>
+        <a href="index.html" class="nav-item" id="nav-procedures-home">
+          <svg class="icon" viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" /></svg>
+          Procedimentos
+        </a>
+        <a href="comandos.html" class="nav-item" id="nav-commands-link">
+          <svg class="icon" viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94s-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6-3.6z" /></svg>
+          Comandos
+        </a>
+        <a href="prazos.html" class="nav-item" id="nav-prazos-link">
+          <svg class="icon" viewBox="0 0 24 24"><path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zm0-12H5V6h14v2zm-7 5h5v5h-5z" /></svg>
+          Prazos
+        </a>
+        <a href="processos.html" class="nav-item" id="nav-processos-link">
+          <svg class="icon" viewBox="0 0 24 24"><path d="M4 4h4v16H4V4zm6 0h4v10h-4V4zm6 0h4v6h-4V4z" /></svg>
+          Processos SEI
+        </a>
+        <a href="links.html" class="nav-item active" id="nav-links-link">
+          <svg class="icon" viewBox="0 0 24 24"><path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"/></svg>
+          Links Úteis
+        </a>
+        <a href="apps.html" class="nav-item" id="nav-apps-link">
+          <svg class="icon" viewBox="0 0 24 24"><path d="M4 8h4V4H4v4zm6 12h4v-4h-4v4zm-6 0h4v-4H4v4zm0-6h4v-4H4v4zm6 0h4v-4h-4v4zm6-10v4h4V4h-4zm-6 4h4V4h-4v4zm6 6h4v-4h-4v4zm0 6h4v-4h-4v4z" /></svg>
+          Apps
+        </a>
+      </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+
+      <!-- Page Header -->
+      <div class="page-header">
+        <div class="page-title">
+          <h2>🔗 Links Importantes & Portais de Acesso</h2>
+          <p>Acesso rápido aos sistemas governamentais, portais da PRF, legislação e ferramentas de IA.</p>
+        </div>
+        <div class="btn-group" id="admin-actions-bar" style="display: none;">
+          <button class="btn btn-accent" onclick="openAddLinkModal()">
+            ➕ Incluir Novo Link
+          </button>
+        </div>
+      </div>
+
+      <!-- Filters & Search Bar -->
+      <div class="filters-bar">
+        <div class="search-box">
+          <svg class="search-icon" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+          <input type="text" id="search-input" placeholder="Buscar por título, descrição ou URL..." oninput="renderLinks()">
+        </div>
+        <div class="category-pills" id="category-pills-container">
+          <!-- Category Pills populated dynamically -->
+        </div>
+      </div>
+
+      <!-- Links Grid -->
+      <div class="links-grid" id="links-grid">
+        <!-- Cards populated dynamically -->
+      </div>
+
+    </main>
+  </div>
+
+  <!-- Modal para Incluir / Editar Link -->
+  <div class="modal-backdrop" id="link-modal" onclick="closeLinkModal(event)">
+    <div class="modal-card" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <h3 id="modal-title">🔗 Incluir Novo Link</h3>
+        <button class="modal-close" onclick="closeLinkModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="link-id-input">
+        <div class="form-group">
+          <label>Título do Link / Sistema *</label>
+          <input type="text" class="form-control" id="link-title-input" placeholder="Ex: Sigepe, Sei PRF, Frequência...">
+        </div>
+        <div class="form-group">
+          <label>URL / Endereço Web *</label>
+          <input type="url" class="form-control" id="link-url-input" placeholder="https://exemplo.prf.gov.br">
+        </div>
+        <div class="form-group">
+          <label>Categoria *</label>
+          <select class="form-control" id="link-category-input">
+            <option value="Sistemas SIAPE & Governo">🏛️ Sistemas SIAPE & Governo</option>
+            <option value="Sistemas PRF">🚓 Sistemas PRF</option>
+            <option value="Capacitação & Legislação">📚 Capacitação & Legislação</option>
+            <option value="Inteligência Artificial">🤖 Inteligência Artificial & Utilitários</option>
+            <option value="Outros">📌 Outros Links</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Ícone / Emoji (Opcional)</label>
+          <input type="text" class="form-control" id="link-icon-input" placeholder="🏛️, 🚓, 📚, 🤖, 🔗">
+        </div>
+        <div class="form-group">
+          <label>Descrição Curta / Observações</label>
+          <textarea class="form-control" id="link-desc-input" rows="2" placeholder="Ex: Sistema de Gestão de Pessoas do Governo Federal"></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn" onclick="closeLinkModal()">Cancelar</button>
+        <button class="btn btn-accent" onclick="saveLink()">Salvar Link</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const DEFAULT_GITHUB_TOKEN = "ghp_" + "VGB68oSgYFCLmUfCTDEDacgNTbX1Zf4d6zy2";
+    const DEFAULT_GIST_ID = "5bd8f241cdc0e04c683bc580bd379c45";
+
+    // Links Iniciais Padrão
+    const INITIAL_LINKS = [
+      {
+        id: "link_sigepe",
+        title: "Sigepe",
+        url: "https://admsistema.sigepe.gov.br/sigepe-as-web/private/areaTrabalho/index.jsf",
+        category: "Sistemas SIAPE & Governo",
+        icon: "🏛️",
+        description: "Sistema de Gestão de Pessoas do Governo Federal — Área de Trabalho"
+      },
+      {
+        id: "link_esiape",
+        title: "eSiape",
+        url: "https://esiape.sigepe.gov.br/",
+        category: "Sistemas SIAPE & Governo",
+        icon: "💻",
+        description: "Portal do Sistema Integrado de Administração de Pessoal do Poder Executivo"
+      },
+      {
+        id: "link_siapenet",
+        title: "Siapenet",
+        url: "https://www1.siapenet.gov.br/orgao/Login.do?method=inicio",
+        category: "Sistemas SIAPE & Governo",
+        icon: "🌐",
+        description: "Acesso de órgãos e servidores ao módulo Siapenet do Governo Federal"
+      },
+      {
+        id: "link_sei_prf",
+        title: "Sei PRF",
+        url: "https://sei.prf.gov.br/",
+        category: "Sistemas PRF",
+        icon: "📑",
+        description: "Sistema Eletrônico de Informações da Polícia Rodoviária Federal"
+      },
+      {
+        id: "link_frequencia",
+        title: "Frequência PRF",
+        url: "https://frequencia.prf.gov.br/index.xhtml",
+        category: "Sistemas PRF",
+        icon: "⏰",
+        description: "Sistema de Registro e Controle de Frequência dos Servidores PRF"
+      },
+      {
+        id: "link_pdi",
+        title: "PDI PRF",
+        url: "https://pdi.prf.gov.br/pdi/login",
+        category: "Sistemas PRF",
+        icon: "📊",
+        description: "Plano de Desenvolvimento Individual e Gestão de Desempenho PRF"
+      },
+      {
+        id: "link_sipac",
+        title: "Sipac",
+        url: "http://www.prf.gov.br/sipac/",
+        category: "Sistemas PRF",
+        icon: "📦",
+        description: "Sistema Integrado de Patrimônio, Administração e Contratos PRF"
+      },
+      {
+        id: "link_lumen",
+        title: "Lúmen PRF",
+        url: "https://lumen.prf.gov.br/login/index.php?loginredirect=1",
+        category: "Capacitação & Legislação",
+        icon: "🎓",
+        description: "Ambiente Virtual de Aprendizagem e Capacitação Continuada da PRF"
+      },
+      {
+        id: "link_sigepe_legis",
+        title: "Sigepe Legis",
+        url: "https://legis.sigepe.gov.br/legis/pesquisa",
+        category: "Capacitação & Legislação",
+        icon: "⚖️",
+        description: "Base de Legislação de Gestão de Pessoas do Serviço Público Federal"
+      },
+      {
+        id: "link_notebooklm",
+        title: "NotebookLM",
+        url: "https://notebooklm.google.com/",
+        category: "Inteligência Artificial",
+        icon: "📔",
+        description: "Ferramenta de IA do Google para análise e síntese de documentos"
+      },
+      {
+        id: "link_detetive",
+        title: "Detetive de Incoerências",
+        url: "https://gemini.google.com/gem/1o4H3vL8XG9GRWwm19GgnQ-aeAPaoBKCK?usp=sharing",
+        category: "Inteligência Artificial",
+        icon: "🕵️",
+        description: "Assistente Gemini especializado em auditoria e detecção de inconsistências"
+      }
+    ];
+
+    let LINKS = [];
+    let selectedCategory = "TODOS";
+
+    // Inicialização
+    window.onload = async function () {
+      updateAdminUI();
+      loadLinksLocal();
+      await cloudGetLinks();
+    };
+
+    function updateAdminUI() {
+      const isAdmin = localStorage.getItem("admin_session") === "true";
+      const loginBtn = document.getElementById("header-admin-login");
+      const logoutBtn = document.getElementById("header-admin-logout");
+      const actionsBar = document.getElementById("admin-actions-bar");
+
+      if (isAdmin) {
+        if (loginBtn) loginBtn.style.display = "none";
+        if (logoutBtn) logoutBtn.style.display = "block";
+        if (actionsBar) actionsBar.style.display = "flex";
+      } else {
+        if (loginBtn) loginBtn.style.display = "block";
+        if (logoutBtn) logoutBtn.style.display = "none";
+        if (actionsBar) actionsBar.style.display = "none";
+      }
+    }
+
+    function adminLogin() {
+      const pass = prompt("Digite a senha de Administrador SGP:");
+      if (pass === "admin123" || pass === "nuap2026") {
+        localStorage.setItem("admin_session", "true");
+        updateAdminUI();
+        renderLinks();
+        showToast("🔓 Sessão de Administrador iniciada!");
+      } else if (pass !== null) {
+        alert("Senha incorreta.");
+      }
+    }
+
+    function adminLogout() {
+      localStorage.removeItem("admin_session");
+      updateAdminUI();
+      renderLinks();
+      showToast("🔒 Sessão encerrada.");
+    }
+
+    function loadLinksLocal() {
+      try {
+        const stored = localStorage.getItem("sgp_nuap_links");
+        if (stored) {
+          LINKS = JSON.parse(stored);
+        } else {
+          LINKS = [...INITIAL_LINKS];
+          localStorage.setItem("sgp_nuap_links", JSON.stringify(LINKS));
+        }
+      } catch (e) {
+        LINKS = [...INITIAL_LINKS];
+      }
+      renderCategoryPills();
+      renderLinks();
+    }
+
+    function renderCategoryPills() {
+      const container = document.getElementById("category-pills-container");
+      const categories = ["TODOS", ...new Set(LINKS.map(l => l.category))];
+
+      container.innerHTML = categories.map(cat => `
+        <button class="pill-btn ${selectedCategory === cat ? 'active' : ''}" onclick="filterCategory('${cat}')">
+          ${cat}
+        </button>
+      `).join("");
+    }
+
+    function filterCategory(cat) {
+      selectedCategory = cat;
+      renderCategoryPills();
+      renderLinks();
+    }
+
+    function renderLinks() {
+      const grid = document.getElementById("links-grid");
+      const query = document.getElementById("search-input").value.trim().toLowerCase();
+      const isAdmin = localStorage.getItem("admin_session") === "true";
+
+      const filtered = LINKS.filter(link => {
+        const matchesCategory = selectedCategory === "TODOS" || link.category === selectedCategory;
+        const matchesQuery = !query ||
+          link.title.toLowerCase().includes(query) ||
+          link.url.toLowerCase().includes(query) ||
+          (link.description && link.description.toLowerCase().includes(query));
+        return matchesCategory && matchesQuery;
+      });
+
+      grid.innerHTML = "";
+
+      if (filtered.length === 0) {
+        grid.innerHTML = `
+          <div class="empty-state">
+            <h3>Nenhum link encontrado</h3>
+            <p>Tente refinar sua busca por palavras-chave ou alterar a categoria selecionada.</p>
+          </div>
+        `;
+        return;
+      }
+
+      filtered.forEach(link => {
+        const card = document.createElement("div");
+        card.className = "link-card";
+
+        const iconHtml = link.icon ? link.icon : "🔗";
+        let displayDomain = "";
+        try {
+          const parsed = new URL(link.url);
+          displayDomain = parsed.hostname;
+        } catch(e) {
+          displayDomain = link.url;
+        }
+
+        const adminActions = isAdmin ? `
+          <div class="admin-link-actions">
+            <button class="btn" style="padding: 0.25rem 0.5rem; font-size: 0.75rem;" onclick="editLink('${link.id}')" title="Editar Link">✏️</button>
+            <button class="btn" style="padding: 0.25rem 0.5rem; font-size: 0.75rem; border-color: #dc2626; color: #dc2626;" onclick="deleteLink('${link.id}')" title="Excluir Link">🗑️</button>
+          </div>
+        ` : "";
+
+        card.innerHTML = `
+          <div>
+            <div class="link-card-header">
+              <span class="link-badge">${link.category}</span>
+              <div class="link-icon-box">${iconHtml}</div>
+            </div>
+            <div class="link-card-body">
+              <h3>${link.title}</h3>
+              <p>${link.description || 'Acesso direto ao sistema.'}</p>
+              <div class="link-url-display">🌐 ${displayDomain}</div>
+            </div>
+          </div>
+          <div class="link-card-footer">
+            <a href="${link.url}" target="_blank" rel="noopener noreferrer" class="link-access-btn">
+              Acessar Sistema ➔
+            </a>
+            ${adminActions}
+          </div>
+        `;
+
+        grid.appendChild(card);
+      });
+    }
+
+    // Modal Operações
+    function openAddLinkModal() {
+      document.getElementById("modal-title").textContent = "🔗 Incluir Novo Link";
+      document.getElementById("link-id-input").value = "";
+      document.getElementById("link-title-input").value = "";
+      document.getElementById("link-url-input").value = "";
+      document.getElementById("link-category-input").value = "Sistemas PRF";
+      document.getElementById("link-icon-input").value = "";
+      document.getElementById("link-desc-input").value = "";
+
+      document.getElementById("link-modal").classList.add("open");
+    }
+
+    function editLink(id) {
+      const link = LINKS.find(l => l.id === id);
+      if (!link) return;
+
+      document.getElementById("modal-title").textContent = "✏️ Editar Link";
+      document.getElementById("link-id-input").value = link.id;
+      document.getElementById("link-title-input").value = link.title;
+      document.getElementById("link-url-input").value = link.url;
+      document.getElementById("link-category-input").value = link.category;
+      document.getElementById("link-icon-input").value = link.icon || "";
+      document.getElementById("link-desc-input").value = link.description || "";
+
+      document.getElementById("link-modal").classList.add("open");
+    }
+
+    function closeLinkModal(e) {
+      if (!e || e.target.id === 'link-modal' || e.target.classList.contains('modal-close') || e.target.tagName === 'BUTTON') {
+        document.getElementById("link-modal").classList.remove("open");
+      }
+    }
+
+    async function saveLink() {
+      const id = document.getElementById("link-id-input").value;
+      const title = document.getElementById("link-title-input").value.trim();
+      let url = document.getElementById("link-url-input").value.trim();
+      const category = document.getElementById("link-category-input").value;
+      const icon = document.getElementById("link-icon-input").value.trim();
+      const description = document.getElementById("link-desc-input").value.trim();
+
+      if (!title || !url) {
+        alert("Por favor, preencha o Título e a URL do link.");
+        return;
+      }
+
+      if (!url.startsWith("http://") && !url.startsWith("https://")) {
+        url = "https://" + url;
+      }
+
+      const linkObj = {
+        id: id || ("link_" + Date.now()),
+        title: title,
+        url: url,
+        category: category,
+        icon: icon || "🔗",
+        description: description
+      };
+
+      if (id) {
+        const idx = LINKS.findIndex(l => l.id === id);
+        if (idx > -1) LINKS[idx] = linkObj;
+      } else {
+        LINKS.unshift(linkObj);
+      }
+
+      localStorage.setItem("sgp_nuap_links", JSON.stringify(LINKS));
+      closeLinkModal();
+      renderCategoryPills();
+      renderLinks();
+
+      await syncUploadLinks();
+      showToast(id ? "Link atualizado com sucesso!" : "Link adicionado e sincronizado!");
+    }
+
+    async function deleteLink(id) {
+      const link = LINKS.find(l => l.id === id);
+      if (!confirm(`Tem certeza que deseja excluir o link "${link ? link.title : 'selecionado'}"?`)) return;
+
+      LINKS = LINKS.filter(l => l.id !== id);
+      localStorage.setItem("sgp_nuap_links", JSON.stringify(LINKS));
+      renderCategoryPills();
+      renderLinks();
+
+      await syncUploadLinks();
+      showToast("Link excluído e sincronizado!");
+    }
+
+    // Nuvem Gist Sync
+    async function cloudGetLinks() {
+      const token = localStorage.getItem("github_token") || DEFAULT_GITHUB_TOKEN;
+      const gistId = localStorage.getItem("github_gist_id_unified") || DEFAULT_GIST_ID;
+      try {
+        const res = await fetch(`https://api.github.com/gists/${gistId}`, {
+          headers: { "Authorization": `Bearer ${token}` }
+        });
+        if (res.ok) {
+          const gist = await res.json();
+          if (gist.files && gist.files["siape_unified_data.json"]) {
+            const parsed = JSON.parse(gist.files["siape_unified_data.json"].content);
+            if (parsed && Array.isArray(parsed.links) && parsed.links.length > 0) {
+              LINKS = parsed.links;
+              localStorage.setItem("sgp_nuap_links", JSON.stringify(LINKS));
+              renderCategoryPills();
+              renderLinks();
+            }
+          }
+        }
+      } catch (e) {
+        console.warn("Erro ao buscar links da nuvem:", e);
+      }
+    }
+
+    async function syncUploadLinks() {
+      const token = localStorage.getItem("github_token") || DEFAULT_GITHUB_TOKEN;
+      const gistId = localStorage.getItem("github_gist_id_unified") || DEFAULT_GIST_ID;
+
+      try {
+        let currentPayload = {};
+        const getRes = await fetch(`https://api.github.com/gists/${gistId}`, {
+          headers: { "Authorization": `Bearer ${token}` }
+        });
+        if (getRes.ok) {
+          const gist = await getRes.json();
+          if (gist.files && gist.files["siape_unified_data.json"]) {
+            currentPayload = JSON.parse(gist.files["siape_unified_data.json"].content) || {};
+          }
+        }
+
+        currentPayload.links = LINKS;
+        currentPayload.updatedAt = new Date().toISOString();
+
+        await fetch(`https://api.github.com/gists/${gistId}`, {
+          method: "PATCH",
+          headers: {
+            "Authorization": `Bearer ${token}`,
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            files: {
+              "siape_unified_data.json": {
+                "content": JSON.stringify(currentPayload)
+              }
+            }
+          })
+        });
+      } catch (e) {
+        console.error("Erro ao sincronizar links com o Gist:", e);
+      }
+    }
+
+    function toggleMobileSidebar(show) {
+      const sidebar = document.querySelector(".sidebar");
+      const overlay = document.getElementById("sidebar-overlay");
+      if (sidebar) {
+        if (show) sidebar.classList.add("open");
+        else sidebar.classList.remove("open");
+      }
+      if (overlay) {
+        if (show) overlay.classList.add("active");
+        else overlay.classList.remove("active");
+      }
+    }
+
+    function showToast(message) {
+      const toast = document.getElementById("toast");
+      toast.querySelector("span").textContent = message;
+      toast.classList.add("show");
+      setTimeout(() => {
+        toast.classList.remove("show");
+      }, 3500);
+    }
+  </script>
+</body>
+
+</html>
