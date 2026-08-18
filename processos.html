@@ -2095,7 +2095,12 @@
 
       const mailtoLink = `mailto:${OFFICIAL_ALERT_RECIPIENTS.join(",")}?subject=${encodeURIComponent(subjectText)}&body=${encodeURIComponent(emailBody)}`;
 
-      window.open(mailtoLink, '_blank');
+      const mailLink = document.createElement('a');
+      mailLink.href = mailtoLink;
+      mailLink.style.display = 'none';
+      document.body.appendChild(mailLink);
+      mailLink.click();
+      document.body.removeChild(mailLink);
       showToast(`📧 Notificação de processos iniciada para os ${OFFICIAL_ALERT_RECIPIENTS.length} e-mails oficiais!`);
     }
   </script>
