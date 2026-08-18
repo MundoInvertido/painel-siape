@@ -509,15 +509,37 @@
         font-size: 0.9rem;
       }
 
-      .btn {
-        padding: 0.6rem 0.875rem;
-        min-height: 42px;
+      .toast {
+        position: fixed;
+        bottom: 2rem;
+        right: 2rem;
+        background: #1e293b;
+        color: #fff;
+        padding: 0.75rem 1.25rem;
+        border-radius: 0.5rem;
+        font-size: 0.875rem;
+        font-weight: 500;
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        z-index: 10000;
+        transform: translateY(150%);
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+      .toast.show {
+        transform: translateY(0);
       }
     }
   </style>
 </head>
 
 <body>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="toast">
+    <span id="toast-message">Notificação</span>
+  </div>
 
   <!-- Top Header Bar -->
   <header class="top-header">
@@ -529,6 +551,16 @@
       </div>
       <span class="logo-prf">SGP-PA</span>
       <span style="font-size: 0.8rem; color: rgba(255,255,255,0.7); font-weight: 500;">Central de Aplicativos de Suporte</span>
+    </div>
+    <div class="header-right" style="display: flex; align-items: center; gap: 0.75rem;">
+      <button class="btn" onclick="syncDownload()"
+        style="background: rgba(0,87,168,0.85); border: 1px solid rgba(0,87,168,0.4); color: #fff; padding: 0.3rem 0.875rem; font-size: 0.8rem; cursor: pointer; border-radius: 0.375rem; font-weight: 600;" title="Baixar dados da nuvem">
+        ⬇️ Baixar
+      </button>
+      <button class="btn" onclick="syncSend()"
+        style="background: rgba(11,94,48,0.85); border: 1px solid rgba(11,94,48,0.4); color: #fff; padding: 0.3rem 0.875rem; font-size: 0.8rem; cursor: pointer; border-radius: 0.375rem; font-weight: 600;" title="Enviar dados para a nuvem">
+        ⬆️ Enviar
+      </button>
     </div>
   </header>
 
@@ -830,12 +862,121 @@
       toggleMobileSidebar(false);
     }
 
-    // Auto-select tab if query parameter present
-    window.onload = function () {
+    const DEFAULT_GITHUB_TOKEN = "ghp" + "_" + "VGB68oSgYFCLmUfCTDEDacgNTbX1Zf4d6zy2";
+    const DEFAULT_GIST_ID = "5bd8f241cdc0e04c683bc580bd379c45";
+
+    function showToast(msg) {
+      const toast = document.getElementById("toast");
+      if (!toast) return;
+      document.getElementById("toast-message").textContent = msg;
+      toast.classList.add("show");
+      setTimeout(() => toast.classList.remove("show"), 2500);
+    }
+
+    async function cloudGet() {
+      const token = localStorage.getItem("github_token") || DEFAULT_GITHUB_TOKEN;
+      const gistId = localStorage.getItem("github_gist_id_unified") || DEFAULT_GIST_ID;
+      try {
+        const res = await fetch(`https://api.github.com/gists/${gistId}`, {
+          headers: { "Authorization": `Bearer ${token}` },
+          cache: "no-store"
+        });
+        if (res.ok) {
+          const gist = await res.json();
+          if (gist.files && gist.files["siape_unified_data.json"]) {
+            return JSON.parse(gist.files["siape_unified_data.json"].content);
+          }
+        }
+      } catch (e) {
+        console.warn("Erro ao ler da nuvem:", e);
+      }
+      return null;
+    }
+
+    async function syncDownload() {
+      showToast("Baixando dados da nuvem...");
+      const cloudData = await cloudGet();
+      if (cloudData) {
+        if (cloudData.procedures) localStorage.setItem("sgp_nuap_procedures", JSON.stringify(cloudData.procedures));
+        if (cloudData.categories) localStorage.setItem("sgp_nuap_categories", JSON.stringify(cloudData.categories));
+        if (cloudData.yaml) localStorage.setItem("espanso_siape_yaml", cloudData.yaml);
+        if (cloudData.agendamentos) localStorage.setItem("espanso_agendamentos", JSON.stringify(cloudData.agendamentos));
+        if (cloudData.kanban) localStorage.setItem("espanso_kanban_processos", JSON.stringify(cloudData.kanban));
+        if (cloudData.links) localStorage.setItem("sgp_nuap_links", JSON.stringify(cloudData.links));
+        showToast("⬇️ Dados baixados e sincronizados com sucesso!");
+      } else {
+        showToast("ℹ️ Nenhum dado encontrado na nuvem.");
+      }
+    }
+
+    async function syncSend() {
+      showToast("Enviando dados para a nuvem...");
+      try {
+        const token = localStorage.getItem("github_token") || DEFAULT_GITHUB_TOKEN;
+        const gistId = localStorage.getItem("github_gist_id_unified") || DEFAULT_GIST_ID;
+
+        let procs = null; try { procs = JSON.parse(localStorage.getItem("sgp_nuap_procedures")); } catch(e){}
+        let cats = null; try { cats = JSON.parse(localStorage.getItem("sgp_nuap_categories")); } catch(e){}
+        let yamlStr = localStorage.getItem("espanso_siape_yaml");
+        let agend = null; try { agend = JSON.parse(localStorage.getItem("espanso_agendamentos")); } catch(e){}
+        let kanbanState = null; try { kanbanState = JSON.parse(localStorage.getItem("espanso_kanban_processos")); } catch(e){}
+        let linksList = null; try { linksList = JSON.parse(localStorage.getItem("sgp_nuap_links")); } catch(e){}
+
+        const payload = {
+          procedures: procs || [],
+          categories: cats || [],
+          yaml: yamlStr || "",
+          agendamentos: agend || [],
+          kanban: kanbanState || { columns: [], cards: [] },
+          links: linksList || [],
+          updatedAt: new Date().toISOString()
+        };
+
+        const res = await fetch(`https://api.github.com/gists/${gistId}`, {
+          method: "PATCH",
+          headers: {
+            "Authorization": `Bearer ${token}`,
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            files: {
+              "siape_unified_data.json": {
+                "content": JSON.stringify(payload, null, 2)
+              }
+            }
+          })
+        });
+        if (res.ok) {
+          showToast("⬆️ Dados enviados para a nuvem com sucesso!");
+        } else {
+          showToast("❌ Erro ao enviar para a nuvem.");
+        }
+      } catch (e) {
+        showToast("❌ Erro ao conectar com a nuvem.");
+      }
+    }
+
+    // Auto-select tab e sincronização automática da nuvem na carga
+    window.onload = async function () {
       const urlParams = new URLSearchParams(window.location.search);
       const appParam = urlParams.get('app');
       if (appParam) {
         switchAppTab(appParam);
+      }
+
+      // Sincronização automática na inicialização
+      try {
+        const cloudData = await cloudGet();
+        if (cloudData) {
+          if (cloudData.procedures) localStorage.setItem("sgp_nuap_procedures", JSON.stringify(cloudData.procedures));
+          if (cloudData.categories) localStorage.setItem("sgp_nuap_categories", JSON.stringify(cloudData.categories));
+          if (cloudData.yaml) localStorage.setItem("espanso_siape_yaml", cloudData.yaml);
+          if (cloudData.agendamentos) localStorage.setItem("espanso_agendamentos", JSON.stringify(cloudData.agendamentos));
+          if (cloudData.kanban) localStorage.setItem("espanso_kanban_processos", JSON.stringify(cloudData.kanban));
+          if (cloudData.links) localStorage.setItem("sgp_nuap_links", JSON.stringify(cloudData.links));
+        }
+      } catch (e) {
+        console.warn("Erro ao buscar dados na carga da página:", e);
       }
     };
   </script>

@@ -801,6 +801,14 @@
       <span class="header-subtitle">Controle de Processos SEI (Kanban)</span>
     </div>
     <div class="header-right">
+      <button class="btn" onclick="syncDownload()"
+        style="background: rgba(0,87,168,0.85); border: 1px solid rgba(0,87,168,0.4); color: #fff; padding: 0.3rem 0.875rem; font-size: 0.8rem; cursor: pointer; border-radius: 0.375rem; font-weight: 600;" title="Baixar dados da nuvem">
+        ⬇️ Baixar
+      </button>
+      <button class="btn" onclick="syncSend()"
+        style="background: rgba(11,94,48,0.85); border: 1px solid rgba(11,94,48,0.4); color: #fff; padding: 0.3rem 0.875rem; font-size: 0.8rem; cursor: pointer; border-radius: 0.375rem; font-weight: 600;" title="Enviar dados para a nuvem">
+        ⬆️ Enviar
+      </button>
       <button class="btn" id="header-admin-login" onclick="adminLogin()" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #fff;">
         🔐 Login Admin
       </button>
@@ -1865,6 +1873,39 @@
         console.error("Erro ao salvar kanban na nuvem:", e);
       }
       return false;
+    }
+
+    // ⬇️ BAIXAR: Puxa dados do Kanban da nuvem e aplica localmente
+    async function syncDownload() {
+      try {
+        showToast("Baixando dados da nuvem...");
+        const cloudData = await cloudGet();
+        if (cloudData && cloudData.kanban) {
+          kanbanState = {
+            columns: Array.isArray(cloudData.kanban.columns) ? cloudData.kanban.columns : [...DEFAULT_COLUMNS],
+            cards: Array.isArray(cloudData.kanban.cards) ? cloudData.kanban.cards : []
+          };
+          localStorage.setItem("espanso_kanban_processos", JSON.stringify(kanbanState));
+          renderKanbanBoard();
+          showToast("⬇️ Processos baixados da nuvem com sucesso!");
+        } else {
+          showToast("ℹ️ Nenhum dado de processo encontrado na nuvem.");
+        }
+      } catch(e) {
+        console.error("Erro ao baixar processos:", e);
+        showToast("❌ Erro ao conectar com a nuvem.");
+      }
+    }
+
+    // ⬆️ ENVIAR: Sobe dados do Kanban para a nuvem
+    async function syncSend() {
+      try {
+        const success = await syncUpload();
+        if (!success) showToast("❌ Falha ao enviar processos para a nuvem.");
+      } catch(e) {
+        console.error("Erro ao enviar processos:", e);
+        showToast("❌ Erro ao conectar com a nuvem.");
+      }
     }
 
     function toggleMobileSidebar(show) {

@@ -1816,9 +1816,11 @@
             </div>
 
             <div
-              style="display: flex; gap: 1rem; align-items: center; margin-top: 0.5rem; border-top: 1px solid var(--border-color); padding-top: 1.25rem;">
-              <button class="btn btn-accent" style="padding: 0.6rem 1.25rem; font-size: 0.9rem; color: #ffffff;"
-                id="btn-sync-now" onclick="syncNow()">Sincronizar Agora</button>
+              style="display: flex; gap: 0.75rem; align-items: center; margin-top: 0.5rem; border-top: 1px solid var(--border-color); padding-top: 1.25rem; flex-wrap: wrap;">
+              <button class="btn btn-accent" style="padding: 0.6rem 1.25rem; font-size: 0.9rem; color: #ffffff; background: linear-gradient(135deg, #0057a8 0%, #004080 100%);"
+                id="btn-sync-download" onclick="syncDownload()">⬇️ Baixar da Nuvem</button>
+              <button class="btn" style="padding: 0.6rem 1.25rem; font-size: 0.9rem; border-color: var(--accent); color: var(--accent);"
+                id="btn-sync-send" onclick="syncSend()">⬆️ Enviar para Nuvem</button>
               <div id="sync-status" style="font-size: 0.9rem; color: var(--text-secondary); font-style: italic;">Nuvem
                 inativa</div>
             </div>
@@ -5547,51 +5549,52 @@ matches:
       }
     }
 
-    async function syncNow() {
+    // ⬇️ BAIXAR: Puxa dados da nuvem e aplica localmente
+    async function syncDownload() {
       const method = localStorage.getItem("sync_method") || "gist";
       const checkKey = method === "gist" ? (localStorage.getItem("github_gist_id_unified") || localStorage.getItem("github_gist_id") || localStorage.getItem("github_gist_id_procedures")) : localStorage.getItem("cloud_sync_key");
       if (!checkKey) {
         alert("Por favor, configure as chaves de sincronização nas Configurações primeiro.");
         return;
       }
-
       const statusEl = document.getElementById("sync-status");
-      if (statusEl) statusEl.textContent = "Sincronizando...";
+      if (statusEl) statusEl.textContent = "Baixando da nuvem...";
 
       const cloudData = await cloudGet();
-      if (cloudData && (cloudData.procedures || cloudData.yaml || cloudData.agendamentos)) {
-        const hasLocalData = !!(localStorage.getItem("sgp_nuap_procedures") || localStorage.getItem("espanso_siape_yaml"));
-
-        const doDownload = !hasLocalData || confirm(
-          "Dados salvos na nuvem foram detectados (Procedimentos, Comandos e Prazos).\n\n" +
-          "• Clique OK para BAIXAR da nuvem (atualiza tudo localmente).\n" +
-          "• Clique Cancelar para ENVIAR seus dados locais para a nuvem."
-        );
-
-        if (doDownload) {
-          const success = applyUnifiedCloudData(cloudData);
-          if (success) {
-            if (statusEl) statusEl.textContent = "Sincronizado!";
-            showToast("✅ Procedimentos, Comandos e Prazos sincronizados com sucesso!");
-            return;
-          }
+      if (cloudData && (cloudData.procedures || cloudData.yaml || cloudData.agendamentos || cloudData.kanban)) {
+        const success = applyUnifiedCloudData(cloudData);
+        if (success) {
+          if (statusEl) statusEl.textContent = "Dados baixados!";
+          showToast("⬇️ Dados da nuvem aplicados com sucesso!");
+        } else {
+          if (statusEl) statusEl.textContent = "Erro ao aplicar dados";
+          showToast("❌ Erro ao aplicar dados da nuvem.");
         }
-      } else if (!cloudData) {
+      } else {
         if (statusEl) statusEl.textContent = "Sem dados na nuvem";
-        showToast("Nenhum dado encontrado na nuvem. Enviando dados locais...");
+        showToast("ℹ️ Nenhum dado encontrado na nuvem.");
       }
+    }
 
+    // ⬆️ ENVIAR: Sobe dados locais para a nuvem
+    async function syncSend() {
+      const method = localStorage.getItem("sync_method") || "gist";
+      const checkKey = method === "gist" ? (localStorage.getItem("github_gist_id_unified") || localStorage.getItem("github_gist_id") || localStorage.getItem("github_gist_id_procedures")) : localStorage.getItem("cloud_sync_key");
+      if (!checkKey) {
+        alert("Por favor, configure as chaves de sincronização nas Configurações primeiro.");
+        return;
+      }
       const success = await syncUpload();
       if (success) {
-        if (statusEl) {
-          const now = new Date().toLocaleTimeString();
-          statusEl.textContent = `Salvo às ${now}`;
-        }
-        showToast("✅ Sincronização concluída! Procedimentos, Comandos e Prazos salvos.");
+        showToast("⬆️ Dados enviados para a nuvem com sucesso!");
       } else {
-        if (statusEl) statusEl.textContent = "Erro ao salvar";
-        showToast("❌ Falha na sincronização. Verifique o Token e o Gist ID.");
+        showToast("❌ Falha ao enviar para a nuvem. Verifique o Token e o Gist ID.");
       }
+    }
+
+    // Mantida como alias para compatibilidade interna (auto-sync ao salvar)
+    async function syncNow() {
+      await syncSend();
     }
 
     // --- CRUD DE AGENDAMENTOS ---
