@@ -1530,13 +1530,43 @@
 
       const mailtoLink = `mailto:${OFFICIAL_ALERT_RECIPIENTS.join(",")}?subject=${encodeURIComponent(subjectText)}&body=${encodeURIComponent(emailBody)}`;
 
-      const mailLink = document.createElement('a');
-      mailLink.href = mailtoLink;
-      mailLink.style.display = 'none';
-      document.body.appendChild(mailLink);
-      mailLink.click();
-      document.body.removeChild(mailLink);
-      showToast(`📧 Notificação automática enviada para ${OFFICIAL_ALERT_RECIPIENTS.length} e-mails oficiais!`);
+      // Tenta enviar via EmailJS (envio em segundo plano sem necessidade de cliente nativo)
+      if (typeof emailjs !== 'undefined') {
+        const templateParams = {
+          to_emails: OFFICIAL_ALERT_RECIPIENTS.join(", "),
+          subject: subjectText,
+          message: emailBody
+        };
+        emailjs.send("service_4h4ldod", "template_o3or23l", templateParams, "MTguD2oyiG7jRcbM4")
+          .then(function(response) {
+            console.log("EmailJS Sucesso:", response.status, response.text);
+            showToast("📧 E-mail de notificação enviado com sucesso para a equipe!");
+          }, function(error) {
+            console.warn("EmailJS Falhou, usando fallback mailto:", error);
+            const mailLink = document.createElement('a');
+            mailLink.href = mailtoLink;
+            mailLink.style.display = 'none';
+            document.body.appendChild(mailLink);
+            mailLink.click();
+            document.body.removeChild(mailLink);
+            showToast("📧 Abrindo cliente de e-mail...");
+          });
+      } else {
+        const mailLink = document.createElement('a');
+        mailLink.href = mailtoLink;
+        mailLink.style.display = 'none';
+        document.body.appendChild(mailLink);
+        mailLink.click();
+        document.body.removeChild(mailLink);
+        showToast(`📧 Notificação enviada via cliente nativo para ${OFFICIAL_ALERT_RECIPIENTS.length} e-mails!`);
+      }
+    }
+  </script>
+  <!-- EmailJS SDK Integration -->
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+  <script>
+    if (typeof emailjs !== 'undefined') {
+      emailjs.init("MTguD2oyiG7jRcbM4");
     }
   </script>
 </body>
