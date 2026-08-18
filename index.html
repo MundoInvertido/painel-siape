@@ -3747,11 +3747,25 @@
         openProcedure(id);
       }
 
-      if (localStorage.getItem("cloud_auto_sync") === "true") {
-        syncUpload();
-      }
+      // Sincronização automática na nuvem ao incluir ou editar procedimento
+      syncUpload();
 
-      showToast(editingProcedureId ? "Procedimento atualizado com sucesso!" : "Procedimento salvo com sucesso!");
+      showToast(editingProcedureId ? "Procedimento atualizado e sincronizado na nuvem!" : "Procedimento salvo e sincronizado na nuvem!");
+    }
+
+    function deleteProcedure(id) {
+      const proc = PROCEDURES.find(p => p.id === id);
+      const title = proc ? proc.title : "este procedimento";
+      if (!confirm(`Tem certeza que deseja excluir "${title}"?`)) return;
+
+      PROCEDURES = PROCEDURES.filter(p => p.id !== id);
+      localStorage.setItem("sgp_nuap_procedures", JSON.stringify(PROCEDURES));
+      renderProcedures();
+
+      // Sincronização automática na nuvem ao excluir procedimento
+      syncUpload();
+
+      showToast("Procedimento excluído e sincronizado na nuvem!");
     }
 
     function editCurrentProcedure() {
@@ -3949,11 +3963,10 @@
       renderCategoryFilters();
       renderProcedures();
 
-      if (localStorage.getItem("cloud_auto_sync") === "true") {
-        syncUpload();
-      }
+      // Sincronização automática na nuvem ao atualizar categorias
+      syncUpload();
 
-      showToast("Categorias atualizadas com sucesso!");
+      showToast("Categorias atualizadas e sincronizadas na nuvem!");
     }
 
     function renderCategoryFilters() {
