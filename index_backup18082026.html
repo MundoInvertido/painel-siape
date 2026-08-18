@@ -1878,123 +1878,18 @@
         </div>
         <div class="form-group">
           <label for="proc-desc">Descrição Curta</label>
-          <div class="step-editor-toolbar">
-            <button type="button" class="tb-btn" style="font-weight: bold;" onmousedown="event.preventDefault()" onclick="formatStepText(this, 'bold', '**', '**', 'negrito')" title="Negrito">B</button>
-            <button type="button" class="tb-btn" style="font-style: italic;" onmousedown="event.preventDefault()" onclick="formatStepText(this, 'italic', '*', '*', 'itálico')" title="Itálico">I</button>
-            <button type="button" class="tb-btn" style="text-decoration: underline;" onmousedown="event.preventDefault()" onclick="formatStepText(this, 'underline', '++', '++', 'sublinhado')" title="Sublinhado">U</button>
-            <div class="tb-divider"></div>
-            <div class="tb-color-picker-wrapper">
-              <button type="button" class="tb-btn" onmousedown="event.preventDefault()" onclick="toggleColorPicker(this)" title="Cor do Texto" style="color: #dc2626; font-weight: bold;">A ▾</button>
-              <div class="tb-color-dropdown">
-                <div class="color-dot" style="background-color: #dc2626;" onmousedown="event.preventDefault()" onclick="chooseTextColor(this, '#dc2626')" title="Vermelho"></div>
-                <div class="color-dot" style="background-color: #d97706;" onmousedown="event.preventDefault()" onclick="chooseTextColor(this, '#d97706')" title="Laranja/Amarelo"></div>
-                <div class="color-dot" style="background-color: #2563eb;" onmousedown="event.preventDefault()" onclick="chooseTextColor(this, '#2563eb')" title="Azul"></div>
-                <div class="color-dot" style="background-color: #10b981;" onmousedown="event.preventDefault()" onclick="chooseTextColor(this, '#10b981')" title="Verde"></div>
-                <div class="color-dot" style="background-color: var(--text-primary);" onmousedown="event.preventDefault()" onclick="chooseTextColor(this, 'var(--text-primary)')" title="Cor Padrão"></div>
-              </div>
-            </div>
-            <div class="tb-divider"></div>
-            <button type="button" class="tb-btn" onmousedown="event.preventDefault()" onclick="formatStepText(this, 'justifyLeft', '<div style=&quot;text-align: left;&quot;>', '</div>', 'texto')" title="Alinhar à Esquerda">
-              <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor"><path d="M15 15H3v2h12v-2zm0-8H3v2h12V7zM3 13h18v-2H3v2zm0 8h18v-2H3v2zM3 3v2h18V3H3z"/></svg>
-            </button>
-            <button type="button" class="tb-btn" onmousedown="event.preventDefault()" onclick="formatStepText(this, 'justifyCenter', '<div style=&quot;text-align: center;&quot;>', '</div>', 'texto')" title="Centralizar">
-              <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor"><path d="M3 15h18v2H3v-2zm0-8h18v2H3V7zm3 4h12v2H6v-2zm4 4h4v2h-4v-2zm-7-8h14v2H3V3z"/></svg>
-            </button>
-            <button type="button" class="tb-btn" onmousedown="event.preventDefault()" onclick="formatStepText(this, 'justifyRight', '<div style=&quot;text-align: right;&quot;>', '</div>', 'texto')" title="Alinhar à Direita">
-              <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor"><path d="M9 15h12v2H9v-2zm0-8h12v2H9V7zm-6 6h18v-2H3v2zm0 8h18v-2H3v2zM3 3v2h18V3H3z"/></svg>
-            </button>
-            <div class="tb-divider"></div>
-            <button type="button" class="tb-btn" onmousedown="event.preventDefault()" onclick="formatStepText(this, 'insertUnorderedList', '- ', '', 'Item')" title="Lista com Marcadores">• Marcadores</button>
-            <button type="button" class="tb-btn" onmousedown="event.preventDefault()" onclick="formatStepText(this, 'insertOrderedList', '1. ', '', 'Item')" title="Lista Numerada">1. Numerada</button>
-            <div class="tb-divider"></div>
-            <button type="button" class="tb-btn" style="color: var(--accent); font-weight: 600;" onmousedown="event.preventDefault()" onclick="insertCodeHelper(this)" title="Inserir Código Copiável">+ Código</button>
-            <button type="button" class="tb-btn" style="color: #10b981; font-weight: 600;" onmousedown="event.preventDefault()" onclick="insertImageHelper(this)" title="Inserir Imagem">+ Imagem</button>
-            <div class="tb-divider" style="margin-left: auto;"></div>
-            <button type="button" class="tb-btn toggle-view-btn active-mode" onmousedown="event.preventDefault()" onclick="toggleStepEditorMode(this, 'visual')" title="Modo Visual Edição Limpa">👁️ Visual</button>
-            <button type="button" class="tb-btn toggle-view-btn" onmousedown="event.preventDefault()" onclick="toggleStepEditorMode(this, 'code')" title="Editar Código HTML/Markdown diretamente">&lt;/&gt; Código</button>
-          </div>
-          <div class="step-desc-preview" contenteditable="true" onfocus="clearPreviewPlaceholder(this)" oninput="syncVisualToTextarea(this)" onblur="syncVisualToTextarea(this)" title="Edite a descrição curta diretamente aqui em modo visual"></div>
-          <textarea id="proc-desc" class="form-control step-desc-input" rows="2" placeholder="Breve resumo sobre o procedimento..." style="display: none; border-top-left-radius: 0; border-top-right-radius: 0; border-top: none; border-color: var(--border-color);" oninput="updateStepPreview(this)"></textarea>
+          <textarea id="proc-desc" class="form-control" rows="2"
+            placeholder="Breve resumo sobre o procedimento..."></textarea>
         </div>
         <div class="form-group">
           <label for="proc-alert">Aviso de Atenção (Alerta Vermelho - Opcional)</label>
-          <div class="step-editor-toolbar">
-            <button type="button" class="tb-btn" style="font-weight: bold;" onmousedown="event.preventDefault()" onclick="formatStepText(this, 'bold', '**', '**', 'negrito')" title="Negrito">B</button>
-            <button type="button" class="tb-btn" style="font-style: italic;" onmousedown="event.preventDefault()" onclick="formatStepText(this, 'italic', '*', '*', 'itálico')" title="Itálico">I</button>
-            <button type="button" class="tb-btn" style="text-decoration: underline;" onmousedown="event.preventDefault()" onclick="formatStepText(this, 'underline', '++', '++', 'sublinhado')" title="Sublinhado">U</button>
-            <div class="tb-divider"></div>
-            <div class="tb-color-picker-wrapper">
-              <button type="button" class="tb-btn" onmousedown="event.preventDefault()" onclick="toggleColorPicker(this)" title="Cor do Texto" style="color: #dc2626; font-weight: bold;">A ▾</button>
-              <div class="tb-color-dropdown">
-                <div class="color-dot" style="background-color: #dc2626;" onmousedown="event.preventDefault()" onclick="chooseTextColor(this, '#dc2626')" title="Vermelho"></div>
-                <div class="color-dot" style="background-color: #d97706;" onmousedown="event.preventDefault()" onclick="chooseTextColor(this, '#d97706')" title="Laranja/Amarelo"></div>
-                <div class="color-dot" style="background-color: #2563eb;" onmousedown="event.preventDefault()" onclick="chooseTextColor(this, '#2563eb')" title="Azul"></div>
-                <div class="color-dot" style="background-color: #10b981;" onmousedown="event.preventDefault()" onclick="chooseTextColor(this, '#10b981')" title="Verde"></div>
-                <div class="color-dot" style="background-color: var(--text-primary);" onmousedown="event.preventDefault()" onclick="chooseTextColor(this, 'var(--text-primary)')" title="Cor Padrão"></div>
-              </div>
-            </div>
-            <div class="tb-divider"></div>
-            <button type="button" class="tb-btn" onmousedown="event.preventDefault()" onclick="formatStepText(this, 'justifyLeft', '<div style=&quot;text-align: left;&quot;>', '</div>', 'texto')" title="Alinhar à Esquerda">
-              <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor"><path d="M15 15H3v2h12v-2zm0-8H3v2h12V7zM3 13h18v-2H3v2zm0 8h18v-2H3v2zM3 3v2h18V3H3z"/></svg>
-            </button>
-            <button type="button" class="tb-btn" onmousedown="event.preventDefault()" onclick="formatStepText(this, 'justifyCenter', '<div style=&quot;text-align: center;&quot;>', '</div>', 'texto')" title="Centralizar">
-              <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor"><path d="M3 15h18v2H3v-2zm0-8h18v2H3V7zm3 4h12v2H6v-2zm4 4h4v2h-4v-2zm-7-8h14v2H3V3z"/></svg>
-            </button>
-            <button type="button" class="tb-btn" onmousedown="event.preventDefault()" onclick="formatStepText(this, 'justifyRight', '<div style=&quot;text-align: right;&quot;>', '</div>', 'texto')" title="Alinhar à Direita">
-              <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor"><path d="M9 15h12v2H9v-2zm0-8h12v2H9V7zm-6 6h18v-2H3v2zm0 8h18v-2H3v2zM3 3v2h18V3H3z"/></svg>
-            </button>
-            <div class="tb-divider"></div>
-            <button type="button" class="tb-btn" onmousedown="event.preventDefault()" onclick="formatStepText(this, 'insertUnorderedList', '- ', '', 'Item')" title="Lista com Marcadores">• Marcadores</button>
-            <button type="button" class="tb-btn" onmousedown="event.preventDefault()" onclick="formatStepText(this, 'insertOrderedList', '1. ', '', 'Item')" title="Lista Numerada">1. Numerada</button>
-            <div class="tb-divider"></div>
-            <button type="button" class="tb-btn" style="color: var(--accent); font-weight: 600;" onmousedown="event.preventDefault()" onclick="insertCodeHelper(this)" title="Inserir Código Copiável">+ Código</button>
-            <button type="button" class="tb-btn" style="color: #10b981; font-weight: 600;" onmousedown="event.preventDefault()" onclick="insertImageHelper(this)" title="Inserir Imagem">+ Imagem</button>
-            <div class="tb-divider" style="margin-left: auto;"></div>
-            <button type="button" class="tb-btn toggle-view-btn active-mode" onmousedown="event.preventDefault()" onclick="toggleStepEditorMode(this, 'visual')" title="Modo Visual Edição Limpa">👁️ Visual</button>
-            <button type="button" class="tb-btn toggle-view-btn" onmousedown="event.preventDefault()" onclick="toggleStepEditorMode(this, 'code')" title="Editar Código HTML/Markdown diretamente">&lt;/&gt; Código</button>
-          </div>
-          <div class="step-desc-preview" contenteditable="true" onfocus="clearPreviewPlaceholder(this)" oninput="syncVisualToTextarea(this)" onblur="syncVisualToTextarea(this)" title="Edite o aviso de atenção diretamente aqui em modo visual"></div>
-          <textarea id="proc-alert" class="form-control step-desc-input" rows="2" placeholder="Atenção: Aposentado não faz jus..." style="display: none; border-top-left-radius: 0; border-top-right-radius: 0; border-top: none; border-color: var(--border-color);" oninput="updateStepPreview(this)"></textarea>
+          <textarea id="proc-alert" class="form-control" rows="2"
+            placeholder="Atenção: Aposentado não faz jus..."></textarea>
         </div>
         <div class="form-group">
           <label for="proc-extrainfo">Informações Adicionais (Banner Âmbar - Opcional)</label>
-          <div class="step-editor-toolbar">
-            <button type="button" class="tb-btn" style="font-weight: bold;" onmousedown="event.preventDefault()" onclick="formatStepText(this, 'bold', '**', '**', 'negrito')" title="Negrito">B</button>
-            <button type="button" class="tb-btn" style="font-style: italic;" onmousedown="event.preventDefault()" onclick="formatStepText(this, 'italic', '*', '*', 'itálico')" title="Itálico">I</button>
-            <button type="button" class="tb-btn" style="text-decoration: underline;" onmousedown="event.preventDefault()" onclick="formatStepText(this, 'underline', '++', '++', 'sublinhado')" title="Sublinhado">U</button>
-            <div class="tb-divider"></div>
-            <div class="tb-color-picker-wrapper">
-              <button type="button" class="tb-btn" onmousedown="event.preventDefault()" onclick="toggleColorPicker(this)" title="Cor do Texto" style="color: #dc2626; font-weight: bold;">A ▾</button>
-              <div class="tb-color-dropdown">
-                <div class="color-dot" style="background-color: #dc2626;" onmousedown="event.preventDefault()" onclick="chooseTextColor(this, '#dc2626')" title="Vermelho"></div>
-                <div class="color-dot" style="background-color: #d97706;" onmousedown="event.preventDefault()" onclick="chooseTextColor(this, '#d97706')" title="Laranja/Amarelo"></div>
-                <div class="color-dot" style="background-color: #2563eb;" onmousedown="event.preventDefault()" onclick="chooseTextColor(this, '#2563eb')" title="Azul"></div>
-                <div class="color-dot" style="background-color: #10b981;" onmousedown="event.preventDefault()" onclick="chooseTextColor(this, '#10b981')" title="Verde"></div>
-                <div class="color-dot" style="background-color: var(--text-primary);" onmousedown="event.preventDefault()" onclick="chooseTextColor(this, 'var(--text-primary)')" title="Cor Padrão"></div>
-              </div>
-            </div>
-            <div class="tb-divider"></div>
-            <button type="button" class="tb-btn" onmousedown="event.preventDefault()" onclick="formatStepText(this, 'justifyLeft', '<div style=&quot;text-align: left;&quot;>', '</div>', 'texto')" title="Alinhar à Esquerda">
-              <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor"><path d="M15 15H3v2h12v-2zm0-8H3v2h12V7zM3 13h18v-2H3v2zm0 8h18v-2H3v2zM3 3v2h18V3H3z"/></svg>
-            </button>
-            <button type="button" class="tb-btn" onmousedown="event.preventDefault()" onclick="formatStepText(this, 'justifyCenter', '<div style=&quot;text-align: center;&quot;>', '</div>', 'texto')" title="Centralizar">
-              <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor"><path d="M3 15h18v2H3v-2zm0-8h18v2H3V7zm3 4h12v2H6v-2zm4 4h4v2h-4v-2zm-7-8h14v2H3V3z"/></svg>
-            </button>
-            <button type="button" class="tb-btn" onmousedown="event.preventDefault()" onclick="formatStepText(this, 'justifyRight', '<div style=&quot;text-align: right;&quot;>', '</div>', 'texto')" title="Alinhar à Direita">
-              <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor"><path d="M9 15h12v2H9v-2zm0-8h12v2H9V7zm-6 6h18v-2H3v2zm0 8h18v-2H3v2zM3 3v2h18V3H3z"/></svg>
-            </button>
-            <div class="tb-divider"></div>
-            <button type="button" class="tb-btn" onmousedown="event.preventDefault()" onclick="formatStepText(this, 'insertUnorderedList', '- ', '', 'Item')" title="Lista com Marcadores">• Marcadores</button>
-            <button type="button" class="tb-btn" onmousedown="event.preventDefault()" onclick="formatStepText(this, 'insertOrderedList', '1. ', '', 'Item')" title="Lista Numerada">1. Numerada</button>
-            <div class="tb-divider"></div>
-            <button type="button" class="tb-btn" style="color: var(--accent); font-weight: 600;" onmousedown="event.preventDefault()" onclick="insertCodeHelper(this)" title="Inserir Código Copiável">+ Código</button>
-            <button type="button" class="tb-btn" style="color: #10b981; font-weight: 600;" onmousedown="event.preventDefault()" onclick="insertImageHelper(this)" title="Inserir Imagem">+ Imagem</button>
-            <div class="tb-divider" style="margin-left: auto;"></div>
-            <button type="button" class="tb-btn toggle-view-btn active-mode" onmousedown="event.preventDefault()" onclick="toggleStepEditorMode(this, 'visual')" title="Modo Visual Edição Limpa">👁️ Visual</button>
-            <button type="button" class="tb-btn toggle-view-btn" onmousedown="event.preventDefault()" onclick="toggleStepEditorMode(this, 'code')" title="Editar Código HTML/Markdown diretamente">&lt;/&gt; Código</button>
-          </div>
-          <div class="step-desc-preview" contenteditable="true" onfocus="clearPreviewPlaceholder(this)" oninput="syncVisualToTextarea(this)" onblur="syncVisualToTextarea(this)" title="Edite as informações adicionais diretamente aqui em modo visual"></div>
-          <textarea id="proc-extrainfo" class="form-control step-desc-input" rows="2" placeholder="Valor pago em 2024: R$ 500,00..." style="display: none; border-top-left-radius: 0; border-top-right-radius: 0; border-top: none; border-color: var(--border-color);" oninput="updateStepPreview(this)"></textarea>
+          <textarea id="proc-extrainfo" class="form-control" rows="2"
+            placeholder="Valor pago em 2024: R$ 500,00..."></textarea>
         </div>
 
         <div style="margin-top: 1.5rem; margin-bottom: 0.5rem;">
@@ -2495,7 +2390,7 @@
                         <div>
                             <h3 style="font-size: 1.15rem; font-weight: 900; color: #0b1a40; margin-bottom: 0.2rem;">${proc.title}</h3>
                             <p style="font-size: 0.85rem; color: #0057a8; margin-bottom: 0.5rem; font-weight: 700;">${proc.subtitle}</p>
-                            <p style="font-size: 0.875rem; color: #475569; line-height: 1.5;">${renderStepDescription(proc.description)}</p>
+                            <p style="font-size: 0.875rem; color: #475569; line-height: 1.5;">${proc.description}</p>
                         </div>
                         <div class="procedure-card-footer" style="margin-top: 1rem; border-top: 1px solid #e2e8f0; padding-top: 0.85rem;">
                             <span class="steps-count" style="background: #eff6ff; color: #1e40af; border: 1px solid #bfdbfe; font-weight: 700; border-radius: 9999px; padding: 0.2rem 0.7rem;">
@@ -2625,14 +2520,14 @@
       if (proc.alert) {
         const alertDiv = document.createElement("div");
         alertDiv.className = "procedure-alert";
-        alertDiv.innerHTML = `<strong>Atenção:</strong> ${renderStepDescription(proc.alert)}`;
+        alertDiv.innerHTML = `<strong>Atenção:</strong> ${proc.alert}`;
         body.appendChild(alertDiv);
       }
 
       if (proc.extraInfo) {
         const extraDiv = document.createElement("div");
         extraDiv.className = "procedure-extra";
-        extraDiv.innerHTML = renderStepDescription(proc.extraInfo);
+        extraDiv.innerHTML = proc.extraInfo;
         body.appendChild(extraDiv);
       }
 
@@ -2743,19 +2638,9 @@
       // Clear inputs
       document.getElementById("proc-title").value = "";
       document.getElementById("proc-subtitle").value = "";
-
-      const descInput = document.getElementById("proc-desc");
-      descInput.value = "";
-      updateStepPreview(descInput);
-
-      const alertInput = document.getElementById("proc-alert");
-      alertInput.value = "";
-      updateStepPreview(alertInput);
-
-      const extraInput = document.getElementById("proc-extrainfo");
-      extraInput.value = "";
-      updateStepPreview(extraInput);
-
+      document.getElementById("proc-desc").value = "";
+      document.getElementById("proc-alert").value = "";
+      document.getElementById("proc-extrainfo").value = "";
       document.getElementById("proc-notes").value = "";
       document.getElementById("steps-inputs-container").innerHTML = "";
       // Add one default step
@@ -3916,19 +3801,9 @@
       document.getElementById("proc-category").value = proc.category;
       document.getElementById("proc-title").value = proc.title;
       document.getElementById("proc-subtitle").value = proc.subtitle || "";
-
-      const descInput = document.getElementById("proc-desc");
-      descInput.value = proc.description || "";
-      updateStepPreview(descInput);
-
-      const alertInput = document.getElementById("proc-alert");
-      alertInput.value = proc.alert || "";
-      updateStepPreview(alertInput);
-
-      const extraInput = document.getElementById("proc-extrainfo");
-      extraInput.value = proc.extraInfo || "";
-      updateStepPreview(extraInput);
-
+      document.getElementById("proc-desc").value = proc.description || "";
+      document.getElementById("proc-alert").value = proc.alert || "";
+      document.getElementById("proc-extrainfo").value = proc.extraInfo || "";
       document.getElementById("proc-notes").value = proc.notes ? proc.notes.join("\n") : "";
 
       // Populate steps
