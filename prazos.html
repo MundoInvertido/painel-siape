@@ -161,15 +161,23 @@
       transition: width 0.3s ease, margin-left 0.3s ease, padding 0.3s ease, opacity 0.2s ease;
     }
 
-    @media (min-width: 769px) {
+    @media (min-width: 901px) {
       body.sidebar-collapsed .sidebar {
         width: 0 !important;
         min-width: 0 !important;
-        padding: 0 !important;
-        margin-left: calc(var(--sidebar-width) * -1) !important;
+        max-width: 0 !important;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        border-right: none !important;
         opacity: 0;
         overflow: hidden;
         pointer-events: none;
+      }
+
+      body.sidebar-collapsed .main-content {
+        max-width: 100% !important;
       }
     }
 
@@ -1031,7 +1039,7 @@
 
     // Toggle sidebar menu (Mobile: overlay / Desktop: recolher/expandir com persistência)
     function toggleSidebar(forceState) {
-      const isMobile = window.innerWidth <= 768;
+      const isMobile = window.innerWidth <= 900;
       if (isMobile) {
         const sidebar = document.querySelector(".sidebar");
         const overlay = document.getElementById("sidebar-overlay");
@@ -1053,7 +1061,7 @@
       toggleSidebar(show);
     }
 
-    if (window.innerWidth > 768 && localStorage.getItem("sidebar_collapsed") === "true") {
+    if (window.innerWidth > 900 && localStorage.getItem("sidebar_collapsed") === "true") {
       document.body.classList.add("sidebar-collapsed");
     }
 
