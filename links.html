@@ -115,6 +115,19 @@
       height: calc(100vh - var(--header-height));
       overflow-y: auto;
       z-index: 90;
+      transition: width 0.3s ease, margin-left 0.3s ease, padding 0.3s ease, opacity 0.2s ease;
+    }
+
+    @media (min-width: 769px) {
+      body.sidebar-collapsed .sidebar {
+        width: 0 !important;
+        min-width: 0 !important;
+        padding: 0 !important;
+        margin-left: calc(var(--sidebar-width) * -1) !important;
+        opacity: 0;
+        overflow: hidden;
+        pointer-events: none;
+      }
     }
 
     .sidebar-logo {
@@ -662,7 +675,7 @@
   <!-- Top Header Bar -->
   <header class="top-header">
     <div class="header-left">
-      <div class="menu-icon" onclick="toggleMobileSidebar(true)" style="cursor: pointer; margin-right: 0.25rem;">
+      <div class="menu-icon" onclick="toggleSidebar()" style="cursor: pointer; margin-right: 0.25rem;" title="Recolher / Expandir Menu">
         <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
           <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z" />
         </svg>
@@ -1254,17 +1267,32 @@
       }
     }
 
+    // Toggle sidebar menu (Mobile: overlay / Desktop: recolher/expandir com persistência)
+    function toggleSidebar(forceState) {
+      const isMobile = window.innerWidth <= 768;
+      if (isMobile) {
+        const sidebar = document.querySelector(".sidebar");
+        const overlay = document.getElementById("sidebar-overlay");
+        if (sidebar && overlay) {
+          const show = forceState !== undefined ? forceState : !sidebar.classList.contains("open");
+          sidebar.classList.toggle("open", show);
+          overlay.classList.toggle("active", show);
+        }
+      } else {
+        const body = document.body;
+        const currentlyCollapsed = body.classList.contains("sidebar-collapsed");
+        const shouldCollapse = forceState !== undefined ? forceState : !currentlyCollapsed;
+        body.classList.toggle("sidebar-collapsed", shouldCollapse);
+        localStorage.setItem("sidebar_collapsed", shouldCollapse ? "true" : "false");
+      }
+    }
+
     function toggleMobileSidebar(show) {
-      const sidebar = document.querySelector(".sidebar");
-      const overlay = document.getElementById("sidebar-overlay");
-      if (sidebar) {
-        if (show) sidebar.classList.add("open");
-        else sidebar.classList.remove("open");
-      }
-      if (overlay) {
-        if (show) overlay.classList.add("active");
-        else overlay.classList.remove("active");
-      }
+      toggleSidebar(show);
+    }
+
+    if (window.innerWidth > 768 && localStorage.getItem("sidebar_collapsed") === "true") {
+      document.body.classList.add("sidebar-collapsed");
     }
 
     function showToast(message) {
