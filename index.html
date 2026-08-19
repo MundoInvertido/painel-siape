@@ -166,22 +166,12 @@
       height: calc(100vh - var(--header-height));
       overflow-y: auto;
       box-shadow: 2px 0 10px rgba(0, 0, 0, 0.02);
-      transition: width 0.3s ease, margin-left 0.3s ease, padding 0.3s ease, opacity 0.2s ease;
+      transition: opacity 0.15s ease;
     }
 
     @media (min-width: 901px) {
       body.sidebar-collapsed .sidebar {
-        width: 0 !important;
-        min-width: 0 !important;
-        max-width: 0 !important;
-        padding-left: 0 !important;
-        padding-right: 0 !important;
-        margin-left: 0 !important;
-        margin-right: 0 !important;
-        border-right: none !important;
-        opacity: 0;
-        overflow: hidden;
-        pointer-events: none;
+        display: none !important;
       }
 
       body.sidebar-collapsed .main-content {
