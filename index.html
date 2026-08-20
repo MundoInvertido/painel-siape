@@ -3612,6 +3612,40 @@
       }
     }
 
+    function sanitizeImageTags(html) {
+      if (!html) return "";
+
+      const tempDiv = document.createElement("div");
+      tempDiv.innerHTML = html;
+
+      const imgElements = tempDiv.querySelectorAll("img");
+      imgElements.forEach(img => {
+        if (img.id === "lightbox-img" || img.id === "image-preview-element") return;
+
+        if (!img.classList.contains("proc-step-img")) {
+          img.classList.add("proc-step-img");
+        }
+        img.setAttribute("onclick", "zoomImage(this, event)");
+        img.style.cursor = "zoom-in";
+        img.style.maxWidth = "100%";
+        img.style.maxHeight = "280px";
+        img.style.borderRadius = "6px";
+        img.style.border = "1px solid var(--border-color)";
+
+        const parentWrapper = img.closest(".proc-img-wrapper");
+        if (!parentWrapper && img.parentNode) {
+          const wrapper = document.createElement("div");
+          wrapper.className = "proc-img-wrapper";
+          wrapper.style.textAlign = "center";
+          wrapper.style.margin = "0.75rem 0";
+          img.parentNode.insertBefore(wrapper, img);
+          wrapper.appendChild(img);
+        }
+      });
+
+      return tempDiv.innerHTML;
+    }
+
     function sanitizeCodeTags(html) {
       if (!html) return "";
 
@@ -3654,7 +3688,7 @@
         }
       });
 
-      return tempDiv.innerHTML;
+      return sanitizeImageTags(tempDiv.innerHTML);
     }
 
     function syncVisualToTextarea(previewDiv) {
@@ -4016,14 +4050,24 @@
         }, false);
       }
 
-      // Suporte global a Ctrl+V quando o modal de imagem está aberto
+      // Suporte inteligente a Ctrl+V para colar imagens da área de transferência
       document.addEventListener('paste', function (e) {
-        const modal = document.getElementById("image-upload-modal");
-        if (modal && modal.classList.contains('open')) {
-          const items = (e.clipboardData || e.originalEvent.clipboardData).items;
-          for (let item of items) {
-            if (item.kind === 'file' && item.type.startsWith('image/')) {
-              const blob = item.getAsFile();
+        const items = (e.clipboardData || (e.originalEvent && e.originalEvent.clipboardData)) ? (e.clipboardData || e.originalEvent.clipboardData).items : null;
+        if (!items) return;
+
+        for (let item of items) {
+          if (item.kind === 'file' && item.type.startsWith('image/')) {
+            const blob = item.getAsFile();
+            if (!blob) continue;
+
+            const target = e.target;
+            const previewDiv = target.closest ? target.closest(".step-desc-preview") : null;
+            const textarea = target.tagName === "TEXTAREA" ? target : (previewDiv ? previewDiv.closest(".form-group")?.querySelector("textarea") : null);
+
+            const uploadModal = document.getElementById("image-upload-modal");
+            if (textarea || (uploadModal && uploadModal.classList.contains('open'))) {
+              if (textarea) currentImageTargetTextarea = textarea;
+              openImageUploadModal();
               handleImageFileSelect(blob);
               showToast("📋 Imagem colada da área de transferência!");
               break;
