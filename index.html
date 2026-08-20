@@ -931,6 +931,18 @@
       z-index: 10050 !important;
     }
 
+    #lightbox-modal {
+      justify-content: center !important;
+      align-items: center !important;
+      z-index: 999999 !important;
+    }
+
+    #lightbox-modal.open {
+      display: flex !important;
+      opacity: 1 !important;
+      pointer-events: auto !important;
+    }
+
     #procedure-panel .panel-content,
     #add-modal .panel-content,
     #categories-modal .panel-content,
@@ -2670,7 +2682,7 @@
                 ` : "";
 
         card.innerHTML = `
-                    <div style="cursor: pointer;" onclick="openProcedure('${proc.id}')">
+                    <div style="cursor: pointer;" onclick="if (!event.target.closest('img') && !event.target.closest('code, .code-copy')) openProcedure('${proc.id}')">
                         <div class="procedure-card-header" style="margin-bottom: 0.65rem;">
                             <span class="procedure-category-badge" style="background: #fef3c7; color: #92400e; border: 1px solid #fde68a; font-weight: 800;">${proc.category}</span>
                         </div>
@@ -4151,7 +4163,12 @@
         return `@@@PROTECTED_BLOCK_${protectedBlocks.length - 1}@@@`;
       });
 
-      // 0.1. Protege todas as demais tags HTML restantes (ex: <img>, <span...>, <div...>, <br>, etc.)
+      // 0.1. Imagens em Markdown: ![alt](url) -> <img src="url" ... />
+      tokenized = tokenized.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, function (match, alt, src) {
+        return `<div class="proc-img-wrapper" style="text-align: center; margin: 0.75rem 0;"><img src="${src}" alt="${alt || 'Imagem do procedimento'}" class="proc-step-img" style="max-width: 100%; max-height: 280px; border-radius: 6px; border: 1px solid var(--border-color); cursor: zoom-in;" onclick="zoomImage(this)" /></div>`;
+      });
+
+      // 0.2. Protege todas as demais tags HTML restantes (ex: <img>, <span...>, <div...>, <br>, etc.)
       tokenized = tokenized.replace(/<[^>]+>/g, function (match) {
         protectedBlocks.push(match);
         return `@@@PROTECTED_BLOCK_${protectedBlocks.length - 1}@@@`;
@@ -4170,11 +4187,6 @@
 
       // 4. Códigos em crases: `código` -> <code class="code-copy">código</code>
       tokenized = tokenized.replace(/`([^`]+)`/g, '<code class="code-copy">$1</code>');
-
-      // 4.5. Imagens em Markdown: ![alt](url) -> <img src="url" ... />
-      tokenized = tokenized.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, function (match, alt, src) {
-        return `<div class="proc-img-wrapper" style="text-align: center; margin: 0.75rem 0;"><img src="${src}" alt="${alt || 'Imagem do procedimento'}" class="proc-step-img" style="max-width: 100%; max-height: 280px; border-radius: 6px; border: 1px solid var(--border-color); cursor: zoom-in;" onclick="zoomImage(this)" /></div>`;
-      });
 
       // 5. Auto-detecção inteligente de Comandos SIAPENET/eSIAPE:
       // a) Comandos com gatilho > (ex: >CAENEXCAPO, >CDCOINDFUN, >DATSITFUN)
