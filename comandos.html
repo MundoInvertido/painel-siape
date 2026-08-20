@@ -5421,8 +5421,15 @@ matches:
         updated = true;
       }
 
+      if (parsed.favorite_triggers && Array.isArray(parsed.favorite_triggers)) {
+        favoriteTriggers = parsed.favorite_triggers;
+        localStorage.setItem("espanso_favorite_triggers", JSON.stringify(favoriteTriggers));
+        updated = true;
+      }
+
       if (typeof renderCategoryFilters === 'function') renderCategoryFilters();
       if (typeof renderProcedures === 'function') renderProcedures();
+      if (typeof renderCommands === 'function') renderCommands();
       if (typeof reloadDatabase === 'function') reloadDatabase();
       if (typeof renderAgendamentos === 'function') renderAgendamentos();
       if (typeof updateMainPageAlerts === 'function') updateMainPageAlerts();
@@ -5512,12 +5519,19 @@ matches:
       try { kanban = JSON.parse(localStorage.getItem("espanso_kanban_processos")); } catch (e) { }
       if (!kanban || !Array.isArray(kanban.columns)) kanban = (cloudData && cloudData.kanban) || { columns: [], cards: [] };
 
+      let favs = favoriteTriggers;
+      try {
+        if (!favs || favs.length === 0) favs = JSON.parse(localStorage.getItem("espanso_favorite_triggers")) || [];
+      } catch (e) { }
+      if (!favs || !Array.isArray(favs)) favs = (cloudData && cloudData.favorite_triggers) || [];
+
       const payload = {
         procedures: procs,
         categories: cats,
         yaml: yamlStr,
         agendamentos: agend,
         kanban: kanban,
+        favorite_triggers: favs,
         updatedAt: new Date().toISOString()
       };
 
@@ -6317,147 +6331,229 @@ matches:
       toggleMobileSidebar(false);
     }
 
+    let favoriteTriggers = [];
+    try {
+      favoriteTriggers = JSON.parse(localStorage.getItem("espanso_favorite_triggers")) || [];
+      if (!Array.isArray(favoriteTriggers)) favoriteTriggers = [];
+    } catch (e) {
+      favoriteTriggers = [];
+    }
+
+    function isFavoriteCommand(trigger) {
+      return favoriteTriggers.includes(trigger);
+    }
+
+    function toggleFavoriteCommand(trigger) {
+      const idx = favoriteTriggers.indexOf(trigger);
+      let isFav = false;
+      if (idx !== -1) {
+        favoriteTriggers.splice(idx, 1);
+        isFav = false;
+      } else {
+        favoriteTriggers.push(trigger);
+        isFav = true;
+      }
+      localStorage.setItem("espanso_favorite_triggers", JSON.stringify(favoriteTriggers));
+
+      // Sincroniza dados com a nuvem (Gist) automaticamente
+      if (typeof syncUpload === 'function') {
+        syncUpload();
+      }
+
+      renderCommands();
+      showToast(isFav ? "⭐ Adicionado aos Favoritos!" : "☆ Removido dos Favoritos");
+    }
+
     function renderCommands() {
       const container = document.getElementById("commands-section");
       container.innerHTML = "";
 
       const searchQuery = document.getElementById("search-input").value.trim().toLowerCase();
-      let matchedAny = false;
+      const isAdmin = localStorage.getItem("admin_session") === "true";
 
+      // 1. Coletar todos os itens que respeitam os filtros ativos
+      const allFilteredItems = [];
       parsedSections.forEach(section => {
         if (currentCategoryFilter !== "ALL" && currentCategoryFilter !== section.title) {
           return;
         }
 
-        const filteredItems = section.items.filter(item => {
+        section.items.forEach(item => {
           const triggerType = getTriggerType(item.trigger);
 
           if (currentTypeFilter !== 'ALL') {
-            if (currentTypeFilter === 'SIAPE' && triggerType !== 'SIAPE') return false;
-            if (currentTypeFilter === 'RUB' && triggerType !== 'RUB') return false;
-            if (currentTypeFilter === 'OC' && triggerType !== 'OC') return false;
-            if (currentTypeFilter === 'BOX' && (triggerType === 'SIAPE' || triggerType === 'RUB' || triggerType === 'OC')) return false;
+            if (currentTypeFilter === 'SIAPE' && triggerType !== 'SIAPE') return;
+            if (currentTypeFilter === 'RUB' && triggerType !== 'RUB') return;
+            if (currentTypeFilter === 'OC' && triggerType !== 'OC') return;
+            if (currentTypeFilter === 'BOX' && (triggerType === 'SIAPE' || triggerType === 'RUB' || triggerType === 'OC')) return;
           }
 
           if (searchQuery) {
             const inTrigger = item.trigger.toLowerCase().includes(searchQuery);
             const inLabel = item.label.toLowerCase().includes(searchQuery);
             const inReplace = item.replace.toLowerCase().includes(searchQuery);
-            return inTrigger || inLabel || inReplace;
+            if (!inTrigger && !inLabel && !inReplace) return;
           }
 
-          return true;
+          allFilteredItems.push({ ...item, categoryTitle: section.title });
         });
+      });
 
-        if (filteredItems.length === 0) return;
+      if (allFilteredItems.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <h3>Nenhum resultado encontrado</h3>
+            <p>Experimente pesquisar por termos diferentes ou confira os filtros ativos no momento.</p>
+            <button class="btn btn-accent" style="margin-top: 1rem;" onclick="resetAllFilters()">Limpar Todos os Filtros</button>
+          </div>
+        `;
+        return;
+      }
 
-        matchedAny = true;
+      // 2. SEÇÃO DE FAVORITOS (Exibida em PRIMEIRO no topo da página)
+      const favoriteItems = allFilteredItems.filter(item => isFavoriteCommand(item.trigger));
+
+      if (favoriteItems.length > 0) {
+        const favHeader = document.createElement("div");
+        favHeader.className = "group-header favorite-group-header";
+        favHeader.style.cssText = "background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%); border-left: 4px solid #f59e0b; color: #92400e; margin-bottom: 0.75rem;";
+        favHeader.innerHTML = `
+          <span style="display: flex; align-items: center; gap: 0.4rem; font-weight: 800;">⭐ Comandos Favoritos</span>
+          <span class="group-count" style="background: #fef3c7; color: #b45309; border: 1px solid #fde68a;">${favoriteItems.length} favoritos</span>
+        `;
+        container.appendChild(favHeader);
+
+        renderItemsBlock(favoriteItems, container, searchQuery, isAdmin, true);
+      }
+
+      // 3. SEÇÕES POR CATEGORIA (Exibe os itens não-favoritados por categoria)
+      parsedSections.forEach(section => {
+        if (currentCategoryFilter !== "ALL" && currentCategoryFilter !== section.title) {
+          return;
+        }
+
+        const sectionStandardItems = allFilteredItems.filter(item => item.categoryTitle === section.title && !isFavoriteCommand(item.trigger));
+        if (sectionStandardItems.length === 0) return;
 
         const sectionHeader = document.createElement("div");
         sectionHeader.className = "group-header";
         sectionHeader.innerHTML = `
-                    <span>${section.title}</span>
-                    <span class="group-count">${filteredItems.length} itens</span>
-                `;
+          <span>${section.title}</span>
+          <span class="group-count">${sectionStandardItems.length} itens</span>
+        `;
         container.appendChild(sectionHeader);
 
-        if (viewMode === 'grid') {
-          const grid = document.createElement("div");
-          grid.className = "commands-grid";
-
-          filteredItems.forEach(item => {
-            const card = document.createElement("div");
-            card.className = "command-card";
-
-            const triggerType = getTriggerType(item.trigger);
-            const typeLabel = getTriggerTypeLabel(triggerType);
-
-            const isAdmin = localStorage.getItem("admin_session") === "true";
-            const adminActions = isAdmin ? `
-                            <div class="command-card-actions" onclick="event.stopPropagation()" style="display: flex; gap: 0.4rem; margin-top: 0.5rem; padding-top: 0.5rem; border-top: 1px dashed var(--border-color);">
-                                <button class="btn" onclick="openCommandModal('${item.trigger}')" style="padding: 0.25rem 0.6rem; font-size: 0.78rem; border-color: var(--accent); color: var(--accent); flex: 1; cursor: pointer;">✏️ Editar</button>
-                                <button class="btn" onclick="deleteCommand('${item.trigger}')" style="padding: 0.25rem 0.6rem; font-size: 0.78rem; border-color: #dc2626; color: #dc2626; flex: 1; cursor: pointer;">🗑️ Excluir</button>
-                            </div>
-                        ` : "";
-
-            card.innerHTML = `
-                            <div>
-                                <div class="command-header">
-                                    <span class="trigger-badge">${highlightText(item.trigger, searchQuery)}</span>
-                                    <button class="copy-button" onclick="copyToClipboard('${item.trigger}')" title="Copiar Gatilho">
-                                        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
-                                            <path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/>
-                                        </svg>
-                                    </button>
-                                </div>
-                                <div class="command-label" style="margin-top: 0.5rem; margin-bottom: 0.5rem;">${highlightText(item.label, searchQuery)}</div>
-                                <div class="command-meta">
-                                    <span class="type-badge ${item.type || 'BOX'}">${typeLabel}</span>
-                                    <span>Gera: <code style="font-family: var(--font-mono); color: var(--accent); font-weight: bold;">${item.replace}</code></span>
-                                </div>
-                            </div>
-                            ${adminActions}
-                        `;
-            grid.appendChild(card);
-          });
-
-          container.appendChild(grid);
-        } else {
-          const tableContainer = document.createElement("div");
-          tableContainer.className = "commands-table-container";
-
-          const table = document.createElement("table");
-          table.className = "commands-table";
-
-          const isAdmin = localStorage.getItem("admin_session") === "true";
-
-          table.innerHTML = `
-                        <thead>
-                            <tr>
-                                <th style="width: 200px;">Gatilho (Trigger)</th>
-                                <th>Descrição / Comando SIAPE</th>
-                                <th style="width: 150px;">Tipo</th>
-                                <th style="width: ${isAdmin ? '180px' : '120px'}; text-align: center;">Ações</th>
-                            </tr>
-                        </thead>
-                        <tbody></tbody>
-                    `;
-
-          const tbody = table.querySelector("tbody");
-
-          filteredItems.forEach(item => {
-            const tr = document.createElement("tr");
-            const triggerType = getTriggerType(item.trigger);
-            const typeLabel = getTriggerTypeLabel(triggerType);
-            const typeColor = getTriggerTypeColor(triggerType);
-
-            const adminTableActions = isAdmin ? `
-                            <button class="btn" onclick="openCommandModal('${item.trigger}')" style="padding: 0.25rem 0.5rem; font-size: 0.8rem; border-color: var(--accent); color: var(--accent); margin-left: 0.25rem; cursor: pointer;">
-                                ✏️
-                            </button>
-                            <button class="btn" onclick="deleteCommand('${item.trigger}')" style="padding: 0.25rem 0.5rem; font-size: 0.8rem; border-color: #dc2626; color: #dc2626; margin-left: 0.25rem; cursor: pointer;">
-                                🗑️
-                            </button>
-                        ` : "";
-
-            tr.innerHTML = `
-                            <td><strong class="trigger-badge" style="font-size: 0.9rem;">${highlightText(item.trigger, searchQuery)}</strong></td>
-                            <td><span class="command-label" style="font-size: 0.9rem;">${highlightText(item.label, searchQuery)}</span></td>
-                            <td><span class="type-badge ${item.type || 'BOX'}">${typeLabel}</span></td>
-                            <td style="text-align: center;">
-                                <button class="btn" onclick="copyToClipboard('${item.trigger}')" style="padding: 0.25rem 0.5rem; font-size: 0.8rem; cursor: pointer;">
-                                    Copiar
-                                </button>
-                                ${adminTableActions}
-                            </td>
-                        `;
-            tbody.appendChild(tr);
-          });
-
-          tableContainer.appendChild(table);
-          container.appendChild(tableContainer);
-        }
+        renderItemsBlock(sectionStandardItems, container, searchQuery, isAdmin, false);
       });
+    }
+
+    function renderItemsBlock(itemsList, container, searchQuery, isAdmin, isFavoriteGroup = false) {
+      if (viewMode === 'grid') {
+        const grid = document.createElement("div");
+        grid.className = "commands-grid";
+        grid.style.marginBottom = "1.5rem";
+
+        itemsList.forEach(item => {
+          const card = document.createElement("div");
+          card.className = "command-card";
+          if (isFavoriteGroup) {
+            card.style.borderColor = "#fcd34d";
+            card.style.boxShadow = "0 4px 12px rgba(245, 158, 11, 0.1)";
+          }
+
+          const triggerType = getTriggerType(item.trigger);
+          const typeLabel = getTriggerTypeLabel(triggerType);
+          const isFav = isFavoriteCommand(item.trigger);
+
+          const adminActions = isAdmin ? `
+            <div class="command-card-actions" onclick="event.stopPropagation()" style="display: flex; gap: 0.4rem; margin-top: 0.5rem; padding-top: 0.5rem; border-top: 1px dashed var(--border-color);">
+              <button class="btn" onclick="openCommandModal('${item.trigger}')" style="padding: 0.25rem 0.6rem; font-size: 0.78rem; border-color: var(--accent); color: var(--accent); flex: 1; cursor: pointer;">✏️ Editar</button>
+              <button class="btn" onclick="deleteCommand('${item.trigger}')" style="padding: 0.25rem 0.6rem; font-size: 0.78rem; border-color: #dc2626; color: #dc2626; flex: 1; cursor: pointer;">🗑️ Excluir</button>
+            </div>
+          ` : "";
+
+          card.innerHTML = `
+            <div>
+              <div class="command-header" style="display: flex; justify-content: space-between; align-items: center;">
+                <div style="display: flex; align-items: center; gap: 0.35rem;">
+                  <button class="fav-star-btn" onclick="toggleFavoriteCommand('${item.trigger}')" title="${isFav ? 'Remover dos Favoritos' : 'Adicionar aos Favoritos'}" style="background: none; border: none; font-size: 1.15rem; cursor: pointer; padding: 0; line-height: 1; transition: transform 0.15s ease;">
+                    ${isFav ? '⭐' : '☆'}
+                  </button>
+                  <span class="trigger-badge">${highlightText(item.trigger, searchQuery)}</span>
+                </div>
+                <button class="copy-button" onclick="copyToClipboard('${item.trigger}')" title="Copiar Gatilho">
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                    <path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/>
+                  </svg>
+                </button>
+              </div>
+              <div class="command-label" style="margin-top: 0.5rem; margin-bottom: 0.5rem;">${highlightText(item.label, searchQuery)}</div>
+              <div class="command-meta">
+                <span class="type-badge ${item.type || 'BOX'}">${typeLabel}</span>
+                <span>Gera: <code style="font-family: var(--font-mono); color: var(--accent); font-weight: bold;">${item.replace}</code></span>
+              </div>
+            </div>
+            ${adminActions}
+          `;
+          grid.appendChild(card);
+        });
+
+        container.appendChild(grid);
+      } else {
+        const tableContainer = document.createElement("div");
+        tableContainer.className = "commands-table-container";
+        tableContainer.style.marginBottom = "1.5rem";
+
+        const table = document.createElement("table");
+        table.className = "commands-table";
+
+        table.innerHTML = `
+          <thead>
+            <tr>
+              <th style="width: 40px; text-align: center;">⭐</th>
+              <th style="width: 200px;">Gatilho (Trigger)</th>
+              <th>Descrição / Comando SIAPE</th>
+              <th style="width: 150px;">Tipo</th>
+              <th style="width: ${isAdmin ? '180px' : '120px'}; text-align: center;">Ações</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        `;
+
+        const tbody = table.querySelector("tbody");
+
+        itemsList.forEach(item => {
+          const tr = document.createElement("tr");
+          const triggerType = getTriggerType(item.trigger);
+          const typeLabel = getTriggerTypeLabel(triggerType);
+          const isFav = isFavoriteCommand(item.trigger);
+
+          const adminTableActions = isAdmin ? `
+            <button class="btn" onclick="openCommandModal('${item.trigger}')" style="padding: 0.25rem 0.5rem; font-size: 0.8rem; border-color: var(--accent); color: var(--accent); margin-left: 0.25rem; cursor: pointer;">✏️</button>
+            <button class="btn" onclick="deleteCommand('${item.trigger}')" style="padding: 0.25rem 0.5rem; font-size: 0.8rem; border-color: #dc2626; color: #dc2626; margin-left: 0.25rem; cursor: pointer;">🗑️</button>
+          ` : "";
+
+          tr.innerHTML = `
+            <td style="text-align: center;">
+              <button onclick="toggleFavoriteCommand('${item.trigger}')" title="${isFav ? 'Remover dos Favoritos' : 'Adicionar aos Favoritos'}" style="background: none; border: none; font-size: 1.1rem; cursor: pointer;">
+                ${isFav ? '⭐' : '☆'}
+              </button>
+            </td>
+            <td><strong class="trigger-badge" style="font-size: 0.9rem;">${highlightText(item.trigger, searchQuery)}</strong></td>
+            <td><span class="command-label" style="font-size: 0.9rem;">${highlightText(item.label, searchQuery)}</span></td>
+            <td><span class="type-badge ${item.type || 'BOX'}">${typeLabel}</span></td>
+            <td style="text-align: center;">
+              <button class="btn" onclick="copyToClipboard('${item.trigger}')" style="padding: 0.25rem 0.5rem; font-size: 0.8rem; cursor: pointer;">Copiar</button>
+              ${adminTableActions}
+            </td>
+          `;
+          tbody.appendChild(tr);
+        });
+
+        tableContainer.appendChild(table);
+        container.appendChild(tableContainer);
+      }
+    }
 
       if (!matchedAny) {
         container.innerHTML = `
