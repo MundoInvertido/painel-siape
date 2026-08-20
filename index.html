@@ -2078,8 +2078,36 @@
             <button type="button" class="tb-btn" onmousedown="event.preventDefault()" onclick="formatStepText(this, 'insertUnorderedList', '- ', '', 'Item')" title="Lista com Marcadores">• Marcadores</button>
             <button type="button" class="tb-btn" onmousedown="event.preventDefault()" onclick="formatStepText(this, 'insertOrderedList', '1. ', '', 'Item')" title="Lista Numerada">1. Numerada</button>
             <div class="tb-divider"></div>
-            <button type="button" class="tb-btn" style="color: var(--accent); font-weight: 600;" onmousedown="event.preventDefault()" onclick="insertCodeHelper(this)" title="Inserir Código Copiável">+ Código</button>
-            <button type="button" class="tb-btn" style="color: #10b981; font-weight: 600;" onmousedown="event.preventDefault()" onclick="insertImageHelper(this)" title="Inserir Imagem">+ Imagem</button>
+            <button type="button" class="tb-btn" style="font-weight: bold;" onmousedown="event.preventDefault()" onclick="formatStepText(this, 'bold', '**', '**', 'negrito')" title="Negrito (Ctrl+B)">B</button>
+            <button type="button" class="tb-btn" style="font-style: italic;" onmousedown="event.preventDefault()" onclick="formatStepText(this, 'italic', '*', '*', 'itálico')" title="Itálico (Ctrl+I)">I</button>
+            <button type="button" class="tb-btn" style="text-decoration: underline;" onmousedown="event.preventDefault()" onclick="formatStepText(this, 'underline', '++', '++', 'sublinhado')" title="Sublinhado">U</button>
+            <div class="tb-divider"></div>
+            <div class="tb-color-picker-wrapper">
+              <button type="button" class="tb-btn" onmousedown="event.preventDefault()" onclick="toggleColorPicker(this)" title="Cor do Texto" style="color: #dc2626; font-weight: bold;">A ▾</button>
+              <div class="tb-color-dropdown">
+                <div class="color-dot" style="background-color: #dc2626;" onmousedown="event.preventDefault()" onclick="chooseTextColor(this, '#dc2626')" title="Vermelho"></div>
+                <div class="color-dot" style="background-color: #d97706;" onmousedown="event.preventDefault()" onclick="chooseTextColor(this, '#d97706')" title="Laranja/Amarelo"></div>
+                <div class="color-dot" style="background-color: #2563eb;" onmousedown="event.preventDefault()" onclick="chooseTextColor(this, '#2563eb')" title="Azul"></div>
+                <div class="color-dot" style="background-color: #10b981;" onmousedown="event.preventDefault()" onclick="chooseTextColor(this, '#10b981')" title="Verde"></div>
+                <div class="color-dot" style="background-color: var(--text-primary);" onmousedown="event.preventDefault()" onclick="chooseTextColor(this, 'var(--text-primary)')" title="Cor Padrão"></div>
+              </div>
+            </div>
+            <div class="tb-divider"></div>
+            <button type="button" class="tb-btn" onmousedown="event.preventDefault()" onclick="formatStepText(this, 'justifyLeft', '<div style=&quot;text-align: left;&quot;>', '</div>', 'texto')" title="Alinhar à Esquerda">
+              <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor"><path d="M15 15H3v2h12v-2zm0-8H3v2h12V7zM3 13h18v-2H3v2zm0 8h18v-2H3v2zM3 3v2h18V3H3z"/></svg>
+            </button>
+            <button type="button" class="tb-btn" onmousedown="event.preventDefault()" onclick="formatStepText(this, 'justifyCenter', '<div style=&quot;text-align: center;&quot;>', '</div>', 'texto')" title="Centralizar">
+              <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor"><path d="M3 15h18v2H3v-2zm0-8h18v2H3V7zm3 4h12v2H6v-2zm4 4h4v2h-4v-2zm-7-8h14v2H3V3z"/></svg>
+            </button>
+            <button type="button" class="tb-btn" onmousedown="event.preventDefault()" onclick="formatStepText(this, 'justifyRight', '<div style=&quot;text-align: right;&quot;>', '</div>', 'texto')" title="Alinhar à Direita">
+              <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor"><path d="M9 15h12v2H9v-2zm0-8h12v2H9V7zm-6 6h18v-2H3v2zm0 8h18v-2H3v2zM3 3v2h18V3H3z"/></svg>
+            </button>
+            <div class="tb-divider"></div>
+            <button type="button" class="tb-btn" onmousedown="event.preventDefault()" onclick="formatStepText(this, 'insertUnorderedList', '- ', '', 'Item')" title="Lista com Marcadores">• Marcadores</button>
+            <button type="button" class="tb-btn" onmousedown="event.preventDefault()" onclick="formatStepText(this, 'insertOrderedList', '1. ', '', 'Item')" title="Lista Numerada">1. Numerada</button>
+            <div class="tb-divider"></div>
+            <button type="button" class="tb-btn" style="color: var(--accent); font-weight: 600;" onmousedown="event.preventDefault()" onclick="insertCodeHelper(this)" title="Inserir Código Copiável (Ctrl+Alt+C)">+ Código</button>
+            <button type="button" class="tb-btn" style="color: #10b981; font-weight: 600;" onmousedown="event.preventDefault()" onclick="insertImageHelper(this)" title="Inserir Imagem (Ctrl+Shift+M)">+ Imagem</button>
             <div class="tb-divider" style="margin-left: auto;"></div>
             <button type="button" class="tb-btn toggle-view-btn active-mode" onmousedown="event.preventDefault()" onclick="toggleStepEditorMode(this, 'visual')" title="Modo Visual Edição Limpa">👁️ Visual</button>
             <button type="button" class="tb-btn toggle-view-btn" onmousedown="event.preventDefault()" onclick="toggleStepEditorMode(this, 'code')" title="Editar Código HTML/Markdown diretamente">&lt;/&gt; Código</button>
@@ -2090,8 +2118,8 @@
         <div class="form-group">
           <label for="proc-alert">Aviso de Atenção (Alerta Vermelho - Opcional)</label>
           <div class="step-editor-toolbar">
-            <button type="button" class="tb-btn" style="font-weight: bold;" onmousedown="event.preventDefault()" onclick="formatStepText(this, 'bold', '**', '**', 'negrito')" title="Negrito">B</button>
-            <button type="button" class="tb-btn" style="font-style: italic;" onmousedown="event.preventDefault()" onclick="formatStepText(this, 'italic', '*', '*', 'itálico')" title="Itálico">I</button>
+            <button type="button" class="tb-btn" style="font-weight: bold;" onmousedown="event.preventDefault()" onclick="formatStepText(this, 'bold', '**', '**', 'negrito')" title="Negrito (Ctrl+B)">B</button>
+            <button type="button" class="tb-btn" style="font-style: italic;" onmousedown="event.preventDefault()" onclick="formatStepText(this, 'italic', '*', '*', 'itálico')" title="Itálico (Ctrl+I)">I</button>
             <button type="button" class="tb-btn" style="text-decoration: underline;" onmousedown="event.preventDefault()" onclick="formatStepText(this, 'underline', '++', '++', 'sublinhado')" title="Sublinhado">U</button>
             <div class="tb-divider"></div>
             <div class="tb-color-picker-wrapper">
@@ -2118,8 +2146,8 @@
             <button type="button" class="tb-btn" onmousedown="event.preventDefault()" onclick="formatStepText(this, 'insertUnorderedList', '- ', '', 'Item')" title="Lista com Marcadores">• Marcadores</button>
             <button type="button" class="tb-btn" onmousedown="event.preventDefault()" onclick="formatStepText(this, 'insertOrderedList', '1. ', '', 'Item')" title="Lista Numerada">1. Numerada</button>
             <div class="tb-divider"></div>
-            <button type="button" class="tb-btn" style="color: var(--accent); font-weight: 600;" onmousedown="event.preventDefault()" onclick="insertCodeHelper(this)" title="Inserir Código Copiável">+ Código</button>
-            <button type="button" class="tb-btn" style="color: #10b981; font-weight: 600;" onmousedown="event.preventDefault()" onclick="insertImageHelper(this)" title="Inserir Imagem">+ Imagem</button>
+            <button type="button" class="tb-btn" style="color: var(--accent); font-weight: 600;" onmousedown="event.preventDefault()" onclick="insertCodeHelper(this)" title="Inserir Código Copiável (Ctrl+Alt+C)">+ Código</button>
+            <button type="button" class="tb-btn" style="color: #10b981; font-weight: 600;" onmousedown="event.preventDefault()" onclick="insertImageHelper(this)" title="Inserir Imagem (Ctrl+Shift+M)">+ Imagem</button>
             <div class="tb-divider" style="margin-left: auto;"></div>
             <button type="button" class="tb-btn toggle-view-btn active-mode" onmousedown="event.preventDefault()" onclick="toggleStepEditorMode(this, 'visual')" title="Modo Visual Edição Limpa">👁️ Visual</button>
             <button type="button" class="tb-btn toggle-view-btn" onmousedown="event.preventDefault()" onclick="toggleStepEditorMode(this, 'code')" title="Editar Código HTML/Markdown diretamente">&lt;/&gt; Código</button>
@@ -2130,8 +2158,8 @@
         <div class="form-group">
           <label for="proc-extrainfo">Informações Adicionais (Banner Âmbar - Opcional)</label>
           <div class="step-editor-toolbar">
-            <button type="button" class="tb-btn" style="font-weight: bold;" onmousedown="event.preventDefault()" onclick="formatStepText(this, 'bold', '**', '**', 'negrito')" title="Negrito">B</button>
-            <button type="button" class="tb-btn" style="font-style: italic;" onmousedown="event.preventDefault()" onclick="formatStepText(this, 'italic', '*', '*', 'itálico')" title="Itálico">I</button>
+            <button type="button" class="tb-btn" style="font-weight: bold;" onmousedown="event.preventDefault()" onclick="formatStepText(this, 'bold', '**', '**', 'negrito')" title="Negrito (Ctrl+B)">B</button>
+            <button type="button" class="tb-btn" style="font-style: italic;" onmousedown="event.preventDefault()" onclick="formatStepText(this, 'italic', '*', '*', 'itálico')" title="Itálico (Ctrl+I)">I</button>
             <button type="button" class="tb-btn" style="text-decoration: underline;" onmousedown="event.preventDefault()" onclick="formatStepText(this, 'underline', '++', '++', 'sublinhado')" title="Sublinhado">U</button>
             <div class="tb-divider"></div>
             <div class="tb-color-picker-wrapper">
@@ -2158,8 +2186,8 @@
             <button type="button" class="tb-btn" onmousedown="event.preventDefault()" onclick="formatStepText(this, 'insertUnorderedList', '- ', '', 'Item')" title="Lista com Marcadores">• Marcadores</button>
             <button type="button" class="tb-btn" onmousedown="event.preventDefault()" onclick="formatStepText(this, 'insertOrderedList', '1. ', '', 'Item')" title="Lista Numerada">1. Numerada</button>
             <div class="tb-divider"></div>
-            <button type="button" class="tb-btn" style="color: var(--accent); font-weight: 600;" onmousedown="event.preventDefault()" onclick="insertCodeHelper(this)" title="Inserir Código Copiável">+ Código</button>
-            <button type="button" class="tb-btn" style="color: #10b981; font-weight: 600;" onmousedown="event.preventDefault()" onclick="insertImageHelper(this)" title="Inserir Imagem">+ Imagem</button>
+            <button type="button" class="tb-btn" style="color: var(--accent); font-weight: 600;" onmousedown="event.preventDefault()" onclick="insertCodeHelper(this)" title="Inserir Código Copiável (Ctrl+Alt+C)">+ Código</button>
+            <button type="button" class="tb-btn" style="color: #10b981; font-weight: 600;" onmousedown="event.preventDefault()" onclick="insertImageHelper(this)" title="Inserir Imagem (Ctrl+Shift+M)">+ Imagem</button>
             <div class="tb-divider" style="margin-left: auto;"></div>
             <button type="button" class="tb-btn toggle-view-btn active-mode" onmousedown="event.preventDefault()" onclick="toggleStepEditorMode(this, 'visual')" title="Modo Visual Edição Limpa">👁️ Visual</button>
             <button type="button" class="tb-btn toggle-view-btn" onmousedown="event.preventDefault()" onclick="toggleStepEditorMode(this, 'code')" title="Editar Código HTML/Markdown diretamente">&lt;/&gt; Código</button>
@@ -4067,6 +4095,69 @@
         if (textToCopy && textToCopy.trim().length > 0) {
           copyText(textToCopy.trim());
         }
+      }
+    });
+
+    // Atalhos de teclado no Editor Visual (.step-desc-preview):
+    // Ctrl+B: Negrito
+    // Ctrl+I: Itálico
+    // Ctrl+Alt+C: Inserir Código/Comando (+ Código)
+    // Ctrl+Shift+M: Inserir Imagem (+ Imagem)
+    document.addEventListener("keydown", function (e) {
+      const previewDiv = e.target ? e.target.closest(".step-desc-preview") : null;
+      if (!previewDiv) return;
+
+      const isCtrl = e.ctrlKey || e.metaKey;
+      const key = e.key ? e.key.toLowerCase() : "";
+
+      // Ctrl + B -> Negrito
+      if (isCtrl && !e.shiftKey && !e.altKey && key === 'b') {
+        e.preventDefault();
+        const formGroup = previewDiv.closest(".form-group");
+        const btnBold = formGroup ? formGroup.querySelector(".tb-btn") : null;
+        if (btnBold) {
+          formatStepText(btnBold, 'bold', '**', '**', 'negrito');
+        } else {
+          document.execCommand('bold', false, null);
+          syncVisualToTextarea(previewDiv);
+        }
+        return;
+      }
+
+      // Ctrl + I -> Itálico
+      if (isCtrl && !e.shiftKey && !e.altKey && key === 'i') {
+        e.preventDefault();
+        const formGroup = previewDiv.closest(".form-group");
+        const btnItalic = formGroup ? formGroup.querySelector(".tb-btn") : null;
+        if (btnItalic) {
+          formatStepText(btnItalic, 'italic', '*', '*', 'itálico');
+        } else {
+          document.execCommand('italic', false, null);
+          syncVisualToTextarea(previewDiv);
+        }
+        return;
+      }
+
+      // Ctrl + Alt + C -> Inserir Código (+ Código)
+      if (isCtrl && e.altKey && !e.shiftKey && key === 'c') {
+        e.preventDefault();
+        const formGroup = previewDiv.closest(".form-group");
+        if (formGroup) {
+          const dummyBtn = formGroup.querySelector(".tb-btn") || previewDiv;
+          insertCodeHelper(dummyBtn);
+        }
+        return;
+      }
+
+      // Ctrl + Shift + M -> Inserir Imagem (+ Imagem)
+      if (isCtrl && e.shiftKey && !e.altKey && key === 'm') {
+        e.preventDefault();
+        const formGroup = previewDiv.closest(".form-group");
+        if (formGroup) {
+          const dummyBtn = formGroup.querySelector(".tb-btn") || previewDiv;
+          insertImageHelper(dummyBtn);
+        }
+        return;
       }
     });
 
