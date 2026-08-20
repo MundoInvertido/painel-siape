@@ -3575,19 +3575,15 @@
     function sanitizeCodeTags(html) {
       if (!html) return "";
 
-      let cleaned = html;
+      const tempDiv = document.createElement("div");
+      tempDiv.innerHTML = html;
 
-      // 1. Desaninha tags <code> aninhadas
-      while (/<code[^>]*>[\s\S]*?<code/gi.test(cleaned)) {
-        cleaned = cleaned.replace(/<code[^>]*>([\s\S]*?)<\/code>/gi, '$1');
-      }
+      const codeElements = tempDiv.querySelectorAll("code");
+      codeElements.forEach(codeEl => {
+        let text = codeEl.textContent || codeEl.innerText || "";
 
-      // 2. Normaliza todas as tags <code> para a forma limpa e pura <code class="code-copy">TEXTO</code>
-      cleaned = cleaned.replace(/<code([^>]*)>([\s\S]*?)<\/code>/gi, function (_, attrs, content) {
-        let rawText = content.replace(/<[^>]*>?/gm, '');
-
-        // Remove atributos vazados no texto
-        rawText = rawText
+        // Remove fragmentos de atributos vazados ou caracteres de escape no texto
+        text = text
           .replace(/onclick="[^"]*"/gi, '')
           .replace(/title="[^"]*"/gi, '')
           .replace(/data-code="[^"]*"/gi, '')
@@ -3596,15 +3592,18 @@
           .replace(/\\*"/g, '"')
           .trim();
 
-        // Extrai a palavra/comando de código pura (ex: CAENEXCAPO ou CAIFOBITRH ou >CAIFOBITRH)
-        const matchCode = rawText.match(/([A-Za-z0-9_>\-\/.+]+)$/);
-        const finalCode = matchCode ? matchCode[1] : rawText;
-
-        if (!finalCode) return '';
-        return `<code class="code-copy">${finalCode}</code>`;
+        if (text) {
+          codeEl.className = "code-copy";
+          codeEl.removeAttribute("title");
+          codeEl.removeAttribute("onclick");
+          codeEl.removeAttribute("data-code");
+          codeEl.textContent = text;
+        } else {
+          codeEl.remove();
+        }
       });
 
-      return cleaned;
+      return tempDiv.innerHTML;
     }
 
     function syncVisualToTextarea(previewDiv) {
@@ -4140,7 +4139,12 @@
       // 4. Códigos em crases: `código` -> <code class="code-copy">código</code>
       tokenized = tokenized.replace(/`([^`]+)`/g, '<code class="code-copy">$1</code>');
 
-      // 5. Restaura os blocos HTML intactos
+      // 5. Auto-detecção de Comandos SIAPENET/eSIAPE (ex: >CAENEXCAPO, >CDCOINDFUN, >DATSITFUN) digitados como texto puro
+      tokenized = tokenized.replace(/(^|[\s(>])(>[A-Z0-9_\-\/.+]{3,})(?=$|[\s).,;?!])/g, function(m, p1, cmd) {
+        return p1 + `<code class="code-copy">${cmd}</code>`;
+      });
+
+      // 6. Restaura os blocos HTML intactos
       tokenized = tokenized.replace(/@@@HTML_BLOCK_(\d+)@@@/g, function (_, index) {
         return htmlBlocks[parseInt(index, 10)];
       });
