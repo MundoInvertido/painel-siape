@@ -10,7 +10,7 @@
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@500;600;700&family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;600;700&display=swap"
     rel="stylesheet">
   <style>
     :root {
@@ -35,7 +35,7 @@
       --card-shadow-hover: 0 16px 32px -4px rgba(0, 87, 168, 0.18), 0 4px 12px -2px rgba(15, 23, 42, 0.08);
       --accent-gradient: linear-gradient(135deg, #0b1a40 0%, #0057a8 100%);
       --gold-gradient: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
-      --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Courier New", monospace;
+      --font-mono: 'Fira Code', 'JetBrains Mono', 'Cascadia Code', Consolas, Monaco, monospace;
       --font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       --radius-sm: 0.375rem;
       --radius-md: 0.625rem;
@@ -1422,34 +1422,135 @@
       padding-left: 1.25rem !important;
     }
 
-    /* Estilização para Códigos Copiáveis */
+    /* Estilização Premium para Códigos e Comandos Copiáveis */
     code, .code-copy {
-      font-family: 'JetBrains Mono', 'Fira Code', 'Courier New', Courier, monospace !important;
-      background-color: rgba(2, 132, 199, 0.1) !important;
-      color: #0284c7 !important;
-      border: 1px solid rgba(2, 132, 199, 0.25) !important;
-      padding: 0.15rem 0.45rem !important;
+      font-family: 'Fira Code', 'JetBrains Mono', 'Cascadia Code', Consolas, Monaco, monospace !important;
+      background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%) !important;
+      color: #1e40af !important;
+      border: 1px solid #93c5fd !important;
+      padding: 0.2rem 0.6rem !important;
       border-radius: 0.375rem !important;
-      font-size: 0.85em !important;
+      font-size: 0.88em !important;
       font-weight: 700 !important;
       cursor: pointer !important;
-      transition: all 0.15s ease !important;
-      display: inline-block !important;
-      margin: 0 0.15rem !important;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      gap: 0.3rem !important;
+      margin: 0.1rem 0.25rem !important;
+      box-shadow: 0 1px 3px rgba(37, 99, 235, 0.12) !important;
+      letter-spacing: 0.02em !important;
+    }
+
+    [data-theme="dark"] code,
+    [data-theme="dark"] .code-copy {
+      background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%) !important;
+      color: #c7d2fe !important;
+      border-color: #6366f1 !important;
+      box-shadow: 0 1px 3px rgba(99, 102, 241, 0.2) !important;
     }
 
     code:hover, .code-copy:hover {
-      background-color: rgba(2, 132, 199, 0.2) !important;
-      border-color: #0284c7 !important;
-      color: #0369a1 !important;
-      transform: translateY(-1px) !important;
-      box-shadow: 0 2px 5px rgba(2, 132, 199, 0.2) !important;
+      background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%) !important;
+      color: #ffffff !important;
+      border-color: #1d4ed8 !important;
+      transform: translateY(-1px) scale(1.02) !important;
+      box-shadow: 0 4px 10px rgba(37, 99, 235, 0.3) !important;
+    }
+
+    [data-theme="dark"] code:hover,
+    [data-theme="dark"] .code-copy:hover {
+      background: linear-gradient(135deg, #4338ca 0%, #3730a3 100%) !important;
+      color: #ffffff !important;
+      border-color: #818cf8 !important;
+      box-shadow: 0 4px 10px rgba(99, 102, 241, 0.4) !important;
     }
 
     code:active, .code-copy:active {
-      transform: translateY(0) !important;
-      background-color: #0284c7 !important;
-      color: #ffffff !important;
+      transform: translateY(0) scale(0.98) !important;
+    }
+
+    /* Editor de Código HTML (VS Code Dark Theme Syntax Highlighting) */
+    .code-editor-container {
+      position: relative;
+      background-color: #0d1723;
+      border: 1px solid #1e293b;
+      border-bottom-left-radius: 0.5rem;
+      border-bottom-right-radius: 0.5rem;
+      overflow: hidden;
+      min-height: 160px;
+    }
+
+    .code-editor-backdrop {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      padding: 0.875rem 1rem;
+      color: #cbd5e1;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      overflow-y: auto;
+      pointer-events: none;
+      margin: 0;
+      box-sizing: border-box;
+      font-family: 'Fira Code', 'JetBrains Mono', Consolas, monospace !important;
+      font-size: 0.85rem !important;
+      line-height: 1.6 !important;
+    }
+
+    .code-editor-textarea {
+      width: 100% !important;
+      height: 100% !important;
+      min-height: 160px !important;
+      background: transparent !important;
+      color: transparent !important;
+      caret-color: #38bdf8 !important;
+      padding: 0.875rem 1rem !important;
+      border: none !important;
+      outline: none !important;
+      resize: vertical !important;
+      box-sizing: border-box !important;
+      font-family: 'Fira Code', 'JetBrains Mono', Consolas, monospace !important;
+      font-size: 0.85rem !important;
+      line-height: 1.6 !important;
+      white-space: pre-wrap !important;
+      word-wrap: break-word !important;
+    }
+
+    .code-editor-textarea::selection {
+      background: rgba(56, 189, 248, 0.3) !important;
+      color: transparent !important;
+    }
+
+    /* Cores de Sintaxe Estilo VS Code IDE */
+    .code-editor-container .hl-tag {
+      color: #38bdf8 !important; /* Ciano / Azul para Tags HTML (<select, <option, <span) */
+      font-weight: 600 !important;
+    }
+
+    .code-editor-container .hl-bracket {
+      color: #0284c7 !important; /* Azul Escuro para Colchetes Angular (<, >, </) */
+    }
+
+    .code-editor-container .hl-attr {
+      color: #2dd4bf !important; /* Verde Água / Ciano Claro para Atributos (id, style, class, value, onclick) */
+      font-weight: 500 !important;
+    }
+
+    .code-editor-container .hl-val {
+      color: #f59e0b !important; /* Dourado / Amarelo para Valores/Strings ("...") */
+    }
+
+    .code-editor-container .hl-entity {
+      color: #f97316 !important; /* Laranja Vívido para Entidades (&gt;, &lt;, &amp;) */
+      font-weight: bold !important;
+    }
+
+    .code-editor-container .hl-comment {
+      color: #64748b !important; /* Cinza Muted para Comentários HTML */
+      font-style: italic !important;
     }
 
     /* Estilização universal para imagens de procedimentos (máximo 280px de altura no modal) */
@@ -2006,6 +2107,7 @@
             <button type="button" class="tb-btn" style="color: var(--accent); font-weight: 600;" onmousedown="event.preventDefault()" onclick="insertCodeHelper(this)" title="Inserir Código Copiável">+ Código</button>
             <button type="button" class="tb-btn" style="color: #10b981; font-weight: 600;" onmousedown="event.preventDefault()" onclick="insertImageHelper(this)" title="Inserir Imagem">+ Imagem</button>
             <div class="tb-divider" style="margin-left: auto;"></div>
+            <button type="button" class="tb-btn" style="color: #38bdf8; font-weight: 600;" onmousedown="event.preventDefault()" onclick="formatStepHtml(this)" title="Formatar e Organizar Código HTML">✨ Formatar HTML</button>
             <button type="button" class="tb-btn toggle-view-btn active-mode" onmousedown="event.preventDefault()" onclick="toggleStepEditorMode(this, 'visual')" title="Modo Visual Edição Limpa">👁️ Visual</button>
             <button type="button" class="tb-btn toggle-view-btn" onmousedown="event.preventDefault()" onclick="toggleStepEditorMode(this, 'code')" title="Editar Código HTML/Markdown diretamente">&lt;/&gt; Código</button>
           </div>
@@ -2046,6 +2148,48 @@
             <button type="button" class="tb-btn" style="color: var(--accent); font-weight: 600;" onmousedown="event.preventDefault()" onclick="insertCodeHelper(this)" title="Inserir Código Copiável">+ Código</button>
             <button type="button" class="tb-btn" style="color: #10b981; font-weight: 600;" onmousedown="event.preventDefault()" onclick="insertImageHelper(this)" title="Inserir Imagem">+ Imagem</button>
             <div class="tb-divider" style="margin-left: auto;"></div>
+            <button type="button" class="tb-btn" style="color: #38bdf8; font-weight: 600;" onmousedown="event.preventDefault()" onclick="formatStepHtml(this)" title="Formatar e Organizar Código HTML">✨ Formatar HTML</button>
+            <button type="button" class="tb-btn toggle-view-btn active-mode" onmousedown="event.preventDefault()" onclick="toggleStepEditorMode(this, 'visual')" title="Modo Visual Edição Limpa">👁️ Visual</button>
+            <button type="button" class="tb-btn toggle-view-btn" onmousedown="event.preventDefault()" onclick="toggleStepEditorMode(this, 'code')" title="Editar Código HTML/Markdown diretamente">&lt;/&gt; Código</button>
+          </div>
+          <div class="step-desc-preview" contenteditable="true" onfocus="clearPreviewPlaceholder(this)" oninput="syncVisualToTextarea(this)" onblur="syncVisualToTextarea(this)" title="Edite o aviso de atenção diretamente aqui em modo visual"></div>
+          <textarea id="proc-alert" class="form-control step-desc-input" rows="2" placeholder="Atenção: Aposentado não faz jus..." style="display: none; border-top-left-radius: 0; border-top-right-radius: 0; border-top: none; border-color: var(--border-color);" oninput="updateStepPreview(this)"></textarea>
+        </div>
+        <div class="form-group">
+          <label for="proc-extrainfo">Informações Adicionais (Banner Âmbar - Opcional)</label>
+          <div class="step-editor-toolbar">
+            <button type="button" class="tb-btn" style="font-weight: bold;" onmousedown="event.preventDefault()" onclick="formatStepText(this, 'bold', '**', '**', 'negrito')" title="Negrito">B</button>
+            <button type="button" class="tb-btn" style="font-style: italic;" onmousedown="event.preventDefault()" onclick="formatStepText(this, 'italic', '*', '*', 'itálico')" title="Itálico">I</button>
+            <button type="button" class="tb-btn" style="text-decoration: underline;" onmousedown="event.preventDefault()" onclick="formatStepText(this, 'underline', '++', '++', 'sublinhado')" title="Sublinhado">U</button>
+            <div class="tb-divider"></div>
+            <div class="tb-color-picker-wrapper">
+              <button type="button" class="tb-btn" onmousedown="event.preventDefault()" onclick="toggleColorPicker(this)" title="Cor do Texto" style="color: #dc2626; font-weight: bold;">A ▾</button>
+              <div class="tb-color-dropdown">
+                <div class="color-dot" style="background-color: #dc2626;" onmousedown="event.preventDefault()" onclick="chooseTextColor(this, '#dc2626')" title="Vermelho"></div>
+                <div class="color-dot" style="background-color: #d97706;" onmousedown="event.preventDefault()" onclick="chooseTextColor(this, '#d97706')" title="Laranja/Amarelo"></div>
+                <div class="color-dot" style="background-color: #2563eb;" onmousedown="event.preventDefault()" onclick="chooseTextColor(this, '#2563eb')" title="Azul"></div>
+                <div class="color-dot" style="background-color: #10b981;" onmousedown="event.preventDefault()" onclick="chooseTextColor(this, '#10b981')" title="Verde"></div>
+                <div class="color-dot" style="background-color: var(--text-primary);" onmousedown="event.preventDefault()" onclick="chooseTextColor(this, 'var(--text-primary)')" title="Cor Padrão"></div>
+              </div>
+            </div>
+            <div class="tb-divider"></div>
+            <button type="button" class="tb-btn" onmousedown="event.preventDefault()" onclick="formatStepText(this, 'justifyLeft', '<div style=&quot;text-align: left;&quot;>', '</div>', 'texto')" title="Alinhar à Esquerda">
+              <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor"><path d="M15 15H3v2h12v-2zm0-8H3v2h12V7zM3 13h18v-2H3v2zm0 8h18v-2H3v2zM3 3v2h18V3H3z"/></svg>
+            </button>
+            <button type="button" class="tb-btn" onmousedown="event.preventDefault()" onclick="formatStepText(this, 'justifyCenter', '<div style=&quot;text-align: center;&quot;>', '</div>', 'texto')" title="Centralizar">
+              <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor"><path d="M3 15h18v2H3v-2zm0-8h18v2H3V7zm3 4h12v2H6v-2zm4 4h4v2h-4v-2zm-7-8h14v2H3V3z"/></svg>
+            </button>
+            <button type="button" class="tb-btn" onmousedown="event.preventDefault()" onclick="formatStepText(this, 'justifyRight', '<div style=&quot;text-align: right;&quot;>', '</div>', 'texto')" title="Alinhar à Direita">
+              <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor"><path d="M9 15h12v2H9v-2zm0-8h12v2H9V7zm-6 6h18v-2H3v2zm0 8h18v-2H3v2zM3 3v2h18V3H3z"/></svg>
+            </button>
+            <div class="tb-divider"></div>
+            <button type="button" class="tb-btn" onmousedown="event.preventDefault()" onclick="formatStepText(this, 'insertUnorderedList', '- ', '', 'Item')" title="Lista com Marcadores">• Marcadores</button>
+            <button type="button" class="tb-btn" onmousedown="event.preventDefault()" onclick="formatStepText(this, 'insertOrderedList', '1. ', '', 'Item')" title="Lista Numerada">1. Numerada</button>
+            <div class="tb-divider"></div>
+            <button type="button" class="tb-btn" style="color: var(--accent); font-weight: 600;" onmousedown="event.preventDefault()" onclick="insertCodeHelper(this)" title="Inserir Código Copiável">+ Código</button>
+            <button type="button" class="tb-btn" style="color: #10b981; font-weight: 600;" onmousedown="event.preventDefault()" onclick="insertImageHelper(this)" title="Inserir Imagem">+ Imagem</button>
+            <div class="tb-divider" style="margin-left: auto;"></div>
+            <button type="button" class="tb-btn" style="color: #38bdf8; font-weight: 600;" onmousedown="event.preventDefault()" onclick="formatStepHtml(this)" title="Formatar e Organizar Código HTML">✨ Formatar HTML</button>
             <button type="button" class="tb-btn toggle-view-btn active-mode" onmousedown="event.preventDefault()" onclick="toggleStepEditorMode(this, 'visual')" title="Modo Visual Edição Limpa">👁️ Visual</button>
             <button type="button" class="tb-btn toggle-view-btn" onmousedown="event.preventDefault()" onclick="toggleStepEditorMode(this, 'code')" title="Editar Código HTML/Markdown diretamente">&lt;/&gt; Código</button>
           </div>
@@ -3403,8 +3547,9 @@
 
                         <!-- Alternar de Modo -->
                         <div class="tb-divider" style="margin-left: auto;"></div>
+                        <button type="button" class="tb-btn" style="color: #38bdf8; font-weight: 600;" onmousedown="event.preventDefault()" onclick="formatStepHtml(this)" title="Formatar e Organizar Código HTML">✨ Formatar HTML</button>
                         <button type="button" class="tb-btn toggle-view-btn active-mode" onmousedown="event.preventDefault()" onclick="toggleStepEditorMode(this, 'visual')" title="Modo Visual Edição Limpa">👁️ Visual</button>
-                        <button type="button" class="tb-btn toggle-view-btn" onmousedown="event.preventDefault()" onclick="toggleStepEditorMode(this, 'code')" title="Editar Código HTML/Markdown diretamente">&lt;/&gt; Código</button>
+                        <button type="button" class="tb-btn toggle-view-btn" onmousedown="event.preventDefault()" onclick="toggleStepEditorMode(this, 'code')" title="Editar Código HTML com Syntax Highlighting">&lt;/&gt; Código</button>
                     </div>
                     <div class="step-desc-preview" contenteditable="true" onfocus="clearPreviewPlaceholder(this)" oninput="syncVisualToTextarea(this)" onblur="syncVisualToTextarea(this)" title="Edite a descrição do passo diretamente aqui em modo visual"></div>
                     <textarea class="form-control step-desc-input" rows="3" placeholder="Escreva a descrição do passo..." style="display: none; border-top-left-radius: 0; border-top-right-radius: 0; border-top: none; border-color: var(--border-color);" oninput="updateStepPreview(this)">${stepDesc}</textarea>
@@ -3423,6 +3568,127 @@
       }
     }
 
+    // --- SINTAXE HIGHLIGHTING PARA EDITOR DE CÓDIGO HTML (ESTILO VS CODE) ---
+    function highlightHtmlCode(code) {
+      if (!code) return '';
+
+      let escaped = code
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+
+      // 1. Destaque de Comentários HTML <!-- ... -->
+      escaped = escaped.replace(/&lt;!--[\s\S]*?--&gt;/g, '<span class="hl-comment">$&</span>');
+
+      // 2. Destaque de Tags e Atributos
+      escaped = escaped.replace(/(&lt;\/?)([a-zA-Z0-9-]+)([\s\S]*?)(&gt;)/g, function (match, open, tagName, attrs, close) {
+        let highlightedAttrs = attrs.replace(/([a-zA-Z0-9-]+)\s*=\s*(["'][^"']*["']|'[^']*'|[^\s&>]+)/g, function (attrMatch, attrName, attrVal) {
+          return `<span class="hl-attr">${attrName}</span>=<span class="hl-val">${attrVal}</span>`;
+        });
+
+        return `<span class="hl-bracket">${open}</span><span class="hl-tag">${tagName}</span>${highlightedAttrs}<span class="hl-bracket">${close}</span>`;
+      });
+
+      // 3. Destaque de Entidades HTML (&gt;, &lt;, &amp;)
+      escaped = escaped.replace(/&amp;(gt|lt|amp|quot|apos|#\d+);/g, '<span class="hl-entity">&amp;$1;</span>');
+
+      return escaped;
+    }
+
+    function ensureCodeEditorContainer(textarea) {
+      if (!textarea) return null;
+      let container = textarea.closest(".code-editor-container");
+      if (container) return container;
+
+      container = document.createElement("div");
+      container.className = "code-editor-container";
+
+      const backdrop = document.createElement("div");
+      backdrop.className = "code-editor-backdrop";
+
+      textarea.parentNode.insertBefore(container, textarea);
+      container.appendChild(backdrop);
+      container.appendChild(textarea);
+
+      textarea.classList.add("code-editor-textarea");
+      textarea.setAttribute("spellcheck", "false");
+
+      textarea.addEventListener("input", function () {
+        onCodeEditorInput(textarea);
+      });
+      textarea.addEventListener("scroll", function () {
+        onCodeEditorScroll(textarea);
+      });
+
+      return container;
+    }
+
+    function onCodeEditorInput(textarea) {
+      if (!textarea) return;
+      const container = ensureCodeEditorContainer(textarea);
+      if (!container) return;
+      const backdrop = container.querySelector(".code-editor-backdrop");
+      if (backdrop) {
+        backdrop.innerHTML = highlightHtmlCode(textarea.value) + '<br>';
+        backdrop.scrollTop = textarea.scrollTop;
+        backdrop.scrollLeft = textarea.scrollLeft;
+      }
+    }
+
+    function onCodeEditorScroll(textarea) {
+      if (!textarea) return;
+      const container = textarea.closest(".code-editor-container");
+      if (!container) return;
+      const backdrop = container.querySelector(".code-editor-backdrop");
+      if (backdrop) {
+        backdrop.scrollTop = textarea.scrollTop;
+        backdrop.scrollLeft = textarea.scrollLeft;
+      }
+    }
+
+    function formatStepHtml(btnEl) {
+      const formGroup = btnEl.closest(".form-group");
+      if (!formGroup) return;
+      const textarea = formGroup.querySelector("textarea");
+      if (!textarea) return;
+
+      let html = textarea.value;
+      if (!html.trim()) return;
+
+      let formatted = '';
+      let reg = /(>)(<)(\/*)/g;
+      html = html.replace(reg, '$1\n$2$3');
+      let pad = 0;
+      html.split('\n').forEach(function (line) {
+        let indent = 0;
+        let trimmed = line.trim();
+        if (!trimmed) return;
+
+        if (trimmed.match(/.+<\/\w[^>]*>$/)) {
+          indent = 0;
+        } else if (trimmed.match(/^<\/\w/)) {
+          if (pad !== 0) pad -= 1;
+        } else if (trimmed.match(/^<\w[^>]*[^\/]>$/)) {
+          indent = 1;
+        } else {
+          indent = 0;
+        }
+
+        let padding = '';
+        for (let i = 0; i < pad; i++) {
+          padding += '  ';
+        }
+
+        formatted += padding + trimmed + '\n';
+        pad += indent;
+      });
+
+      textarea.value = formatted.trim();
+      onCodeEditorInput(textarea);
+      updateStepPreview(textarea);
+      showToast("✨ Código HTML formatado e organizado!");
+    }
+
     function toggleStepEditorMode(btn, mode) {
       const formGroup = btn.closest(".form-group");
       const previewDiv = formGroup.querySelector(".step-desc-preview");
@@ -3432,16 +3698,21 @@
       toolbar.querySelectorAll(".toggle-view-btn").forEach(b => b.classList.remove("active-mode"));
       btn.classList.add("active-mode");
 
+      const container = ensureCodeEditorContainer(textarea);
+
       if (mode === 'visual') {
-        if (textarea.style.display !== "none") {
+        if (container && container.style.display !== "none") {
           updateStepPreview(textarea);
         }
         previewDiv.style.display = "block";
-        textarea.style.display = "none";
+        if (container) container.style.display = "none";
       } else {
         syncVisualToTextarea(previewDiv);
         previewDiv.style.display = "none";
-        textarea.style.display = "block";
+        if (container) {
+          container.style.display = "block";
+          onCodeEditorInput(textarea);
+        }
         textarea.focus();
       }
     }
@@ -3458,6 +3729,9 @@
         return;
       }
       textarea.value = previewDiv.innerHTML;
+      if (textarea.closest(".code-editor-container")) {
+        onCodeEditorInput(textarea);
+      }
     }
 
     function updateStepPreview(textarea) {
@@ -3474,6 +3748,10 @@
       } else {
         previewDiv.innerHTML = renderStepDescription(textarea.value);
         previewDiv.classList.remove("empty-preview");
+      }
+
+      if (textarea.closest(".code-editor-container")) {
+        onCodeEditorInput(textarea);
       }
     }
 
