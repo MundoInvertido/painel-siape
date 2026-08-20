@@ -2910,7 +2910,10 @@
       }
     }
 
-    function zoomImage(imgEl) {
+    function zoomImage(imgEl, e) {
+      if (e && typeof e.stopPropagation === 'function') {
+        e.stopPropagation();
+      }
       if (!imgEl) return;
       const src = imgEl.getAttribute("src") || imgEl.src;
       if (!src) return;
@@ -2918,21 +2921,31 @@
       if (!lightbox) return;
       const lightboxImg = document.getElementById("lightbox-img");
       if (lightboxImg) lightboxImg.src = src;
+      lightbox.dataset.openedAt = String(Date.now());
       lightbox.style.display = "flex";
       lightbox.classList.add("open");
     }
     window.zoomImage = zoomImage;
 
-    function closeLightbox() {
+    function closeLightbox(e) {
       const lightbox = document.getElementById("lightbox-modal");
-      if (lightbox) {
-        lightbox.classList.remove("open");
-        setTimeout(() => {
-          if (!lightbox.classList.contains("open")) {
-            lightbox.style.display = "none";
-          }
-        }, 250);
+      if (!lightbox) return;
+
+      if (e && e.target && e.target.id === "lightbox-img") {
+        return;
       }
+
+      const openedAt = parseInt(lightbox.dataset.openedAt || "0", 10);
+      if (openedAt > 0 && (Date.now() - openedAt) < 300) {
+        return;
+      }
+
+      lightbox.classList.remove("open");
+      setTimeout(() => {
+        if (!lightbox.classList.contains("open")) {
+          lightbox.style.display = "none";
+        }
+      }, 200);
     }
     window.closeLightbox = closeLightbox;
 
@@ -3953,7 +3966,7 @@
       const legenda = document.getElementById("image-caption-input").value.trim();
 
       let imgHtml = `\n<div class="proc-img-wrapper" style="text-align: center; margin: 0.75rem 0;">`;
-      imgHtml += `<img src="${selectedImageBase64}" alt="${legenda || 'Imagem do procedimento'}" class="proc-step-img" style="max-width: 100%; max-height: 280px; border-radius: 6px; border: 1px solid var(--border-color); cursor: pointer;" onclick="zoomImage(this)" />`;
+      imgHtml += `<img src="${selectedImageBase64}" alt="${legenda || 'Imagem do procedimento'}" class="proc-step-img" style="max-width: 100%; max-height: 280px; border-radius: 6px; border: 1px solid var(--border-color); cursor: zoom-in;" onclick="zoomImage(this, event)" />`;
       if (legenda) {
         imgHtml += `<div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.25rem;">${legenda}</div>`;
       }
@@ -5162,14 +5175,14 @@
       if (img && img.id !== "lightbox-img" && !img.closest("#login-modal") && !img.closest(".sidebar-brand")) {
         e.preventDefault();
         e.stopPropagation();
-        zoomImage(img);
+        zoomImage(img, e);
       }
     });
 
     // Tecla ESC para fechar o zoom da imagem
     document.addEventListener("keydown", function (e) {
       if (e.key === "Escape") {
-        closeLightbox();
+        closeLightbox(e);
       }
     });
 
