@@ -3613,6 +3613,41 @@
       }
     }
 
+    function sanitizeCodeTags(html) {
+      if (!html) return "";
+
+      let cleaned = html;
+
+      // 1. Desaninha tags <code> aninhadas
+      while (/<code[^>]*>[\s\S]*?<code/gi.test(cleaned)) {
+        cleaned = cleaned.replace(/<code[^>]*>([\s\S]*?)<\/code>/gi, '$1');
+      }
+
+      // 2. Normaliza todas as tags <code> para a forma limpa e pura <code class="code-copy">TEXTO</code>
+      cleaned = cleaned.replace(/<code([^>]*)>([\s\S]*?)<\/code>/gi, function (_, attrs, content) {
+        let rawText = content.replace(/<[^>]*>?/gm, '');
+
+        // Remove atributos vazados no texto
+        rawText = rawText
+          .replace(/onclick="[^"]*"/gi, '')
+          .replace(/title="[^"]*"/gi, '')
+          .replace(/data-code="[^"]*"/gi, '')
+          .replace(/class="[^"]*"/gi, '')
+          .replace(/\\*'/g, "'")
+          .replace(/\\*"/g, '"')
+          .trim();
+
+        // Extrai a palavra/comando de código pura (ex: CAENEXCAPO ou CAIFOBITRH ou >CAIFOBITRH)
+        const matchCode = rawText.match(/([A-Za-z0-9_>\-\/.+]+)$/);
+        const finalCode = matchCode ? matchCode[1] : rawText;
+
+        if (!finalCode) return '';
+        return `<code class="code-copy">${finalCode}</code>`;
+      });
+
+      return cleaned;
+    }
+
     function syncVisualToTextarea(previewDiv) {
       if (!previewDiv) return;
       const formGroup = previewDiv.closest(".form-group");
@@ -3624,10 +3659,7 @@
         textarea.value = "";
         return;
       }
-      textarea.value = previewDiv.innerHTML;
-      if (textarea.closest(".code-editor-container")) {
-        onCodeEditorInput(textarea);
-      }
+      textarea.value = sanitizeCodeTags(previewDiv.innerHTML);
     }
 
     function updateStepPreview(textarea) {
@@ -3642,12 +3674,12 @@
         previewDiv.innerHTML = `<span style="color: var(--text-muted); font-style: italic;">Digite a descrição do passo ou use os botões da barra de ferramentas...</span>`;
         previewDiv.classList.add("empty-preview");
       } else {
-        previewDiv.innerHTML = renderStepDescription(textarea.value);
+        const cleanVal = sanitizeCodeTags(textarea.value);
+        if (cleanVal !== textarea.value) {
+          textarea.value = cleanVal;
+        }
+        previewDiv.innerHTML = renderStepDescription(cleanVal);
         previewDiv.classList.remove("empty-preview");
-      }
-
-      if (textarea.closest(".code-editor-container")) {
-        onCodeEditorInput(textarea);
       }
     }
 
@@ -3770,8 +3802,7 @@
         code = code.trim();
       }
 
-      const escapedCode = code.replace(/"/g, '&quot;').replace(/'/g, "\\'");
-      const insertHtml = `&nbsp;<code class="code-copy" data-code="${escapedCode}" title="Clique para copiar ${escapedCode}">${code}</code>&nbsp;`;
+      const insertHtml = `&nbsp;<code class="code-copy">${code}</code>&nbsp;`;
 
       if (isVisual) {
         clearPreviewPlaceholder(previewDiv);
@@ -4149,15 +4180,7 @@
         }
       }
 
-      // Garante que TODAS as tags <code> no HTML gerado possuam classe code-copy e data-code para serem copiáveis!
-      finalHtml = finalHtml.replace(/<code([^>]*)>([\s\S]*?)<\/code>/gi, function (match, attrs, content) {
-        const cleanContent = content.replace(/<[^>]*>?/gm, '').trim();
-        if (!cleanContent) return match;
-        const escapedCode = cleanContent.replace(/"/g, '&quot;').replace(/'/g, "\\'");
-        return `<code class="code-copy" data-code="${escapedCode}" title="Clique para copiar ${escapedCode}">${content}</code>`;
-      });
-
-      return finalHtml;
+      return sanitizeCodeTags(finalHtml);
     }
 
     function reorderSteps() {
