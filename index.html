@@ -2312,15 +2312,15 @@
           },
           {
             title: "Movimentação Financeira no SIAPE",
-            desc: "Lançar o valor resultante na coluna <strong>desconto</strong> no SIAPE usando a transação <code class=\"code-copy\" onclick=\"copyText('FPATMOVFIN')\" title=\"Clique para copiar\">FPATMOVFIN</code> (Assunto de cálculo: 44)."
+            desc: "Lançar o valor resultante na coluna <strong>desconto</strong> no SIAPE usando a transação <code class=\"code-copy\">FPATMOVFIN</code> (Assunto de cálculo: 44)."
           }
         ],
         notes: [
           "Ajuste do mês anterior: O auxílio é antecipado. Exemplo: Pedido de aumento em 20 de Março. Pagar na folha de Abril a diferença de Fevereiro (para uso em Março) e a diferença de Março (para uso em Abril) na sequência 6.",
           "No SIGEPE: Exclua o benefício no Sigepe Benefícios com a data mais antiga que conseguir, evitando novos acertos automáticos.",
-          "Atualização SIAPE (tela preta): Utilizar <code class=\"code-copy\" onclick=\"copyText('FPATMOVFIN')\">FPATMOVFIN</code> com Assunto de Cálculo 44 para lançamento sem prazo.",
-          "Rubricas Normais (Lançamento automático): <code class=\"code-copy\" onclick=\"copyText('00951')\">00951</code>, <code class=\"code-copy\" onclick=\"copyText('00370')\">00370</code>, <code class=\"code-copy\" onclick=\"copyText('82850')\">82850</code>.",
-          "Rubricas de Acerto (Situações excepcionais): <code class=\"code-copy\" onclick=\"copyText('83297')\">83297</code> (Acerto AT), <code class=\"code-copy\" onclick=\"copyText('83296')\">83296</code> (Acerto CLT), <code class=\"code-copy\" onclick=\"copyText('83295')\">83295</code> (Acerto CDT)."
+          "Atualização SIAPE (tela preta): Utilizar <code class=\"code-copy\">FPATMOVFIN</code> com Assunto de Cálculo 44 para lançamento sem prazo.",
+          "Rubricas Normais (Lançamento automático): <code class=\"code-copy\">00951</code>, <code class=\"code-copy\">00370</code>, <code class=\"code-copy\">82850</code>.",
+          "Rubricas de Acerto (Situações excepcionais): <code class=\"code-copy\">83297</code> (Acerto AT), <code class=\"code-copy\">83296</code> (Acerto CLT), <code class=\"code-copy\">83295</code> (Acerto CDT)."
         ]
       },
       {
@@ -2333,7 +2333,7 @@
         steps: [
           {
             title: "Cadastro de Alimentação Individual",
-            desc: "Acessar a transação <code class=\"code-copy\" onclick=\"copyText('CDATALIIND')\" title=\"Clique para copiar\">CDATALIIND</code> (usada tanto para inclusão quanto exclusão)."
+            desc: "Acessar a transação <code class=\"code-copy\">CDATALIIND</code> (usada tanto para inclusão quanto exclusão)."
           },
           {
             title: "Preencher Parâmetros",
@@ -2341,12 +2341,12 @@
           },
           {
             title: "Primeiro Mês (Lançamento Manual)",
-            desc: "No primeiro mês, lançar manualmente no <code class=\"code-copy\" onclick=\"copyText('FPATMOVFIN')\">FPATMOVFIN</code> os seguintes lançamentos com prazo <code>001</code>:<br>• <strong>Sequência 1:</strong> Proporcional (mês atual)<br>• <strong>Sequência 2:</strong> Integral (mês seguinte adiantado) - valor de R$ 1.000,00.",
+            desc: "No primeiro mês, lançar manualmente no <code class=\"code-copy\">FPATMOVFIN</code> os seguintes lançamentos com prazo <code>001</code>:<br>• <strong>Sequência 1:</strong> Proporcional (mês atual)<br>• <strong>Sequência 2:</strong> Integral (mês seguinte adiantado) - valor de R$ 1.000,00.",
             appLink: "calculadora"
           }
         ],
         notes: [
-          "Rubrica principal de Auxílio Alimentação: <code class=\"code-copy\" onclick=\"copyText('00136')\">00136</code>."
+          "Rubrica principal de Auxílio Alimentação: <code class=\"code-copy\">00136</code>."
         ]
       },
       {
@@ -2360,15 +2360,15 @@
         steps: [
           {
             title: "Cadastramento de Dependente",
-            desc: "Caso o pedido ocorra na folha de pagamento do mesmo mês do nascimento do dependente, cadastrá-lo na transação <code class=\"code-copy\" onclick=\"copyText('CDIADEPEND')\" title=\"Clique para copiar\">CDIADEPEND</code>. O sistema realiza o pagamento automático."
+            desc: "Caso o pedido ocorra na folha de pagamento do mesmo mês do nascimento do dependente, cadastrá-lo na transação <code class=\"code-copy\">CDIADEPEND</code>. O sistema realiza o pagamento automático."
           },
           {
             title: "Verificar Vinculação",
-            desc: "Verifique se o filho já foi devidamente incluído em <code class=\"code-copy\" onclick=\"copyText('CDCODEPEND')\">CDCODEPEND</code> com a opção <code>01 - AUXILIO-PRE ESCOLA - INDIRET</code>."
+            desc: "Verifique se o filho já foi devidamente incluído em <code class=\"code-copy\">CDCODEPEND</code> com a opção <code>01 - AUXILIO-PRE ESCOLA - INDIRET</code>."
           },
           {
             title: "Atualizar Número de Dependentes",
-            desc: "Acessar a transação <code class=\"code-copy\" onclick=\"copyText('CAIASERVID')\" title=\"Clique para copiar\">CAIASERVID</code> e atualizar o número total de dependentes funcionais."
+            desc: "Acessar a transação <code class=\"code-copy\">CAIASERVID</code> e atualizar o número total de dependentes funcionais."
           }
         ],
         notes: []
@@ -2383,11 +2383,11 @@
         steps: [
           {
             title: "Cadastro Inicial do Dependente",
-            desc: "Cadastrar o dependente primeiro na transação <code class=\"code-copy\" onclick=\"copyText('CDIADEPEND')\" title=\"Clique para copiar\">CDIADEPEND</code>. Em caso de parto múltiplo (gêmeos), certifique-se de cadastrar todos os dependentes antes de prosseguir com o pagamento."
+            desc: "Cadastrar o dependente primeiro na transação <code class=\"code-copy\">CDIADEPEND</code>. Em caso de parto múltiplo (gêmeos), certifique-se de cadastrar todos os dependentes antes de prosseguir com o pagamento."
           },
           {
             title: "Lançamento do Auxílio",
-            desc: "Acessar a transação <code class=\"code-copy\" onclick=\"copyText('CDINAUXNAT')\" title=\"Clique para copiar\">CDINAUXNAT</code>."
+            desc: "Acessar a transação <code class=\"code-copy\">CDINAUXNAT</code>."
           },
           {
             title: "Inserir Dados",
@@ -2395,7 +2395,7 @@
           },
           {
             title: "Outros Dependentes (Gêmeos)",
-            desc: "Para registrar o auxílio para os demais filhos em partos múltiplos, retornar à transação <code class=\"code-copy\" onclick=\"copyText('CDINAUXNAT')\">CDINAUXNAT</code> e repetir o processo selecionando o outro dependente."
+            desc: "Para registrar o auxílio para os demais filhos em partos múltiplos, retornar à transação <code class=\"code-copy\">CDINAUXNAT</code> e repetir o processo selecionando o outro dependente."
           }
         ],
         notes: [
@@ -2413,18 +2413,18 @@
         steps: [
           {
             title: "Instaurar Processo",
-            desc: "Cadastrar a função <code class=\"code-copy\" onclick=\"copyText('GRIAPROADM')\" title=\"Clique para copiar\">GRIAPROADM</code>. Esta função inclui o processo administrativo e gera dois dígitos identificadores finais."
+            desc: "Cadastrar a função <code class=\"code-copy\">GRIAPROADM</code>. Esta função inclui o processo administrativo e gera dois dígitos identificadores finais."
           },
           {
             title: "Cadastrar Beneficiário",
-            desc: "Acessar a função <code class=\"code-copy\" onclick=\"copyText('GRINBENEF')\" title=\"Clique para copiar\">GRINBENEF</code> para incluir o servidor beneficiado e os respectivos valores financeiros. Se necessário, esta função também é usada para retificar valores incorretos.",
+            desc: "Acessar a função <code class=\"code-copy\">GRINBENEF</code> para incluir o servidor beneficiado e os respectivos valores financeiros. Se necessário, esta função também é usada para retificar valores incorretos.",
             appLink: "calculadora"
           }
         ],
         notes: [
-          "Para ressarcimento per capita de plano de saúde nos exercícios anteriores, utilize o objeto de pagamento <code class=\"code-copy\" onclick=\"copyText('242')\">242</code>.",
-          "Para consultar os objetos de pagamento disponíveis, utilize a transação <code class=\"code-copy\" onclick=\"copyText('TBCOOBJPAG')\">TBCOOBJPAG</code>.",
-          "Para tabelas salariais retroativas, consulte <code class=\"code-copy\" onclick=\"copyText('TBCONIVCEM')\">TBCONIVCEM</code>."
+          "Para ressarcimento per capita de plano de saúde nos exercícios anteriores, utilize o objeto de pagamento <code class=\"code-copy\">242</code>.",
+          "Para consultar os objetos de pagamento disponíveis, utilize a transação <code class=\"code-copy\">TBCOOBJPAG</code>.",
+          "Para tabelas salariais retroativas, consulte <code class=\"code-copy\">TBCONIVCEM</code>."
         ]
       },
       {
@@ -2433,7 +2433,7 @@
         title: "Emissão de GRU",
         subtitle: "Devolução de Valores e Ressarcimentos",
         description: "Emissão da Guia de Recolhimento da União para repatriação de créditos, devolução de folha ou indenizações.",
-        extraInfo: "Independentemente da forma de emissão, a **UG Arrecadadora** será sempre a <code class=\"code-copy\" onclick=\"copyText('200230')\">200230</code>.",
+        extraInfo: "Independentemente da forma de emissão, a **UG Arrecadadora** será sempre a <code class=\"code-copy\">200230</code>.",
         steps: [
           {
             title: "Escolha o Canal de Emissão",
@@ -2441,7 +2441,7 @@
           },
           {
             title: "Inserir os Códigos de Recolhimento",
-            desc: "Preencha a guia com os códigos de acordo com a finalidade:<br><strong>Método Antigo (PagTesouro Clássico):</strong><br>- Devolução de Ex. Anterior: <code class=\"code-copy\" onclick=\"copyText('18806-9')\">18806-9</code><br>- Devolução de Créditos da Folha (no exercício): <code class=\"code-copy\" onclick=\"copyText('68801-0')\">68801-0</code><br>- Ressarcimento de Pessoal Cedido: <code class=\"code-copy\" onclick=\"copyText('68817-7')\">68817-7</code><br>- Anulação de Despesa (ajuda de custo): <code class=\"code-copy\" onclick=\"copyText('68888-6')\">68888-6</code><br><br><strong>Novo Portal PagTesouro:</strong><br>- Devolução de Ex. Anterior: <code class=\"code-copy\" onclick=\"copyText('017437')\">017437</code><br>- Devolução no Exercício: <code class=\"code-copy\" onclick=\"copyText('016430')\">016430</code><br>- Pessoal Cedido: <code class=\"code-copy\" onclick=\"copyText('016431')\">016431</code>"
+            desc: "Preencha a guia com os códigos de acordo com a finalidade:<br><strong>Método Antigo (PagTesouro Clássico):</strong><br>- Devolução de Ex. Anterior: <code class=\"code-copy\">18806-9</code><br>- Devolução de Créditos da Folha (no exercício): <code class=\"code-copy\">68801-0</code><br>- Ressarcimento de Pessoal Cedido: <code class=\"code-copy\">68817-7</code><br>- Anulação de Despesa (ajuda de custo): <code class=\"code-copy\">68888-6</code><br><br><strong>Novo Portal PagTesouro:</strong><br>- Devolução de Ex. Anterior: <code class=\"code-copy\">017437</code><br>- Devolução no Exercício: <code class=\"code-copy\">016430</code><br>- Pessoal Cedido: <code class=\"code-copy\">016431</code>"
           },
           {
             title: "Juntada e Folha Suplementar",
@@ -2449,7 +2449,7 @@
           },
           {
             title: "Cadastrar Ocorrência no SIAPE",
-            desc: "Acessar a transação <code class=\"code-copy\" onclick=\"copyText('FPMOVSUPLIN')\" title=\"Clique para copiar\">FPMOVSUPLIN</code> (para servidores com ocorrência de exclusão) e efetuar os cálculos via <code class=\"code-copy\" onclick=\"copyText('FPCLSUPLIN')\" title=\"Clique para copiar\">FPCLSUPLIN</code>."
+            desc: "Acessar a transação <code class=\"code-copy\">FPMOVSUPLIN</code> (para servidores com ocorrência de exclusão) e efetuar os cálculos via <code class=\"code-copy\">FPCLSUPLIN</code>."
           }
         ],
         notes: []
@@ -2461,6 +2461,18 @@
     if (savedProcs) {
       try {
         PROCEDURES = JSON.parse(savedProcs);
+        if (Array.isArray(PROCEDURES)) {
+          PROCEDURES.forEach(p => {
+            if (p.description) p.description = sanitizeCodeTags(p.description);
+            if (p.alert) p.alert = sanitizeCodeTags(p.alert);
+            if (p.extraInfo) p.extraInfo = sanitizeCodeTags(p.extraInfo);
+            if (p.steps && Array.isArray(p.steps)) {
+              p.steps.forEach(s => {
+                if (s.desc) s.desc = sanitizeCodeTags(s.desc);
+              });
+            }
+          });
+        }
       } catch (e) {
         console.error("Erro ao carregar procedimentos de localStorage:", e);
         PROCEDURES = [...DEFAULT_PROCEDURES];
@@ -3578,11 +3590,22 @@
       const tempDiv = document.createElement("div");
       tempDiv.innerHTML = html;
 
+      // 1. Desaninha qualquer tag <code> aninhada acidentalmente dentro de outra tag <code>
+      const nestedCodes = tempDiv.querySelectorAll("code code");
+      nestedCodes.forEach(nested => {
+        const parent = nested.parentNode;
+        while (nested.firstChild) {
+          parent.insertBefore(nested.firstChild, nested);
+        }
+        nested.remove();
+      });
+
+      // 2. Normaliza cada tag <code> para o formato limpo e puro
       const codeElements = tempDiv.querySelectorAll("code");
       codeElements.forEach(codeEl => {
         let text = codeEl.textContent || codeEl.innerText || "";
 
-        // Remove fragmentos de atributos vazados ou caracteres de escape no texto
+        // Remove qualquer fragmento de atributo residual ou caracteres de escape
         text = text
           .replace(/onclick="[^"]*"/gi, '')
           .replace(/title="[^"]*"/gi, '')
@@ -4118,11 +4141,17 @@
     function renderInlineMarkdown(text) {
       if (!text) return "";
 
-      // 0. Protege todas as tags HTML (incluindo tags <img> com dados Base64) de serem corrompidas por regex de Markdown
-      const htmlBlocks = [];
-      let tokenized = text.replace(/<[^>]+>/g, function (match) {
-        htmlBlocks.push(match);
-        return `@@@HTML_BLOCK_${htmlBlocks.length - 1}@@@`;
+      // 0. Protege blocos <code>...</code> completos primeiro para NUNCA re-processar ou duplicar tags de código!
+      const protectedBlocks = [];
+      let tokenized = text.replace(/<code[^>]*>[\s\S]*?<\/code>/gi, function (match) {
+        protectedBlocks.push(match);
+        return `@@@PROTECTED_BLOCK_${protectedBlocks.length - 1}@@@`;
+      });
+
+      // 0.1. Protege todas as demais tags HTML restantes (ex: <img>, <span...>, <div...>, <br>, etc.)
+      tokenized = tokenized.replace(/<[^>]+>/g, function (match) {
+        protectedBlocks.push(match);
+        return `@@@PROTECTED_BLOCK_${protectedBlocks.length - 1}@@@`;
       });
 
       // 1. Negrito: **texto** ou __texto__ -> <strong>texto</strong>
@@ -4140,13 +4169,13 @@
       tokenized = tokenized.replace(/`([^`]+)`/g, '<code class="code-copy">$1</code>');
 
       // 5. Auto-detecção de Comandos SIAPENET/eSIAPE (ex: >CAENEXCAPO, >CDCOINDFUN, >DATSITFUN) digitados como texto puro
-      tokenized = tokenized.replace(/(^|[\s(>])(>[A-Z0-9_\-\/.+]{3,})(?=$|[\s).,;?!])/g, function(m, p1, cmd) {
+      tokenized = tokenized.replace(/(^|[\s(>])(>[A-Z0-9_\-\/.+]{3,})(?=$|[\s).,;?!<])/g, function (m, p1, cmd) {
         return p1 + `<code class="code-copy">${cmd}</code>`;
       });
 
       // 6. Restaura os blocos HTML intactos
-      tokenized = tokenized.replace(/@@@HTML_BLOCK_(\d+)@@@/g, function (_, index) {
-        return htmlBlocks[parseInt(index, 10)];
+      tokenized = tokenized.replace(/@@@PROTECTED_BLOCK_(\d+)@@@/g, function (_, index) {
+        return protectedBlocks[parseInt(index, 10)];
       });
 
       return tokenized;
@@ -4241,12 +4270,17 @@
     }
 
     function saveNewProcedure() {
+      // Sincroniza todos os editores visuais para o textarea antes de ler os valores
+      document.querySelectorAll(".step-desc-preview").forEach(preview => {
+        syncVisualToTextarea(preview);
+      });
+
       const category = document.getElementById("proc-category").value;
       const title = document.getElementById("proc-title").value.trim();
       const subtitle = document.getElementById("proc-subtitle").value.trim();
-      const description = document.getElementById("proc-desc").value.trim();
-      const alertText = document.getElementById("proc-alert").value.trim();
-      const extraInfoText = document.getElementById("proc-extrainfo").value.trim();
+      const description = sanitizeCodeTags(document.getElementById("proc-desc").value.trim());
+      const alertText = sanitizeCodeTags(document.getElementById("proc-alert").value.trim());
+      const extraInfoText = sanitizeCodeTags(document.getElementById("proc-extrainfo").value.trim());
       const notesText = document.getElementById("proc-notes").value.trim();
 
       if (!title || !description) {
@@ -4259,7 +4293,7 @@
       const steps = [];
       stepDivs.forEach(div => {
         const sTitle = div.querySelector(".step-title-input").value.trim();
-        const sDesc = div.querySelector(".step-desc-input").value.trim();
+        const sDesc = sanitizeCodeTags(div.querySelector(".step-desc-input").value.trim());
         const sAppLink = div.querySelector(".step-applink-select") ? div.querySelector(".step-applink-select").value : "none";
         if (sTitle && sDesc) {
           const stepObj = { title: sTitle, desc: sDesc, appLink: sAppLink || "none" };
