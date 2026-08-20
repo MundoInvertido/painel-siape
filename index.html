@@ -1470,58 +1470,32 @@
       transform: translateY(0) scale(0.98) !important;
     }
 
-    /* Editor de Código HTML (VS Code Dark Theme Syntax Highlighting) */
-    .code-editor-container {
-      position: relative;
-      background-color: #0d1723;
-      border: 1px solid #1e293b;
-      border-bottom-left-radius: 0.5rem;
-      border-bottom-right-radius: 0.5rem;
-      overflow: hidden;
-      min-height: 160px;
-    }
-
-    .code-editor-backdrop {
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      padding: 0.875rem 1rem;
-      color: #cbd5e1;
-      white-space: pre-wrap;
-      word-wrap: break-word;
-      overflow-y: auto;
-      pointer-events: none;
-      margin: 0;
-      box-sizing: border-box;
-      font-family: 'Fira Code', 'JetBrains Mono', Consolas, monospace !important;
-      font-size: 0.85rem !important;
-      line-height: 1.6 !important;
-    }
-
+    /* Editor de Código HTML (VS Code Dark Theme IDE) */
     .code-editor-textarea {
       width: 100% !important;
-      height: 100% !important;
       min-height: 160px !important;
-      background: transparent !important;
-      color: transparent !important;
+      background-color: #0d1723 !important;
+      color: #e2e8f0 !important;
       caret-color: #38bdf8 !important;
       padding: 0.875rem 1rem !important;
-      border: none !important;
+      border: 1px solid #1e293b !important;
+      border-top: none !important;
+      border-bottom-left-radius: 0.5rem !important;
+      border-bottom-right-radius: 0.5rem !important;
       outline: none !important;
       resize: vertical !important;
       box-sizing: border-box !important;
       font-family: 'Fira Code', 'JetBrains Mono', Consolas, monospace !important;
-      font-size: 0.85rem !important;
+      font-size: 0.88rem !important;
       line-height: 1.6 !important;
       white-space: pre-wrap !important;
       word-wrap: break-word !important;
+      tab-size: 2 !important;
     }
 
-    .code-editor-textarea::selection {
-      background: rgba(56, 189, 248, 0.3) !important;
-      color: transparent !important;
+    .code-editor-textarea:focus {
+      border-color: #38bdf8 !important;
+      box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.25) !important;
     }
 
     /* Cores de Sintaxe Estilo VS Code IDE */
@@ -3568,84 +3542,6 @@
       }
     }
 
-    // --- SINTAXE HIGHLIGHTING PARA EDITOR DE CÓDIGO HTML (ESTILO VS CODE) ---
-    function highlightHtmlCode(code) {
-      if (!code) return '';
-
-      let escaped = code
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;');
-
-      // 1. Destaque de Comentários HTML <!-- ... -->
-      escaped = escaped.replace(/&lt;!--[\s\S]*?--&gt;/g, '<span class="hl-comment">$&</span>');
-
-      // 2. Destaque de Tags e Atributos
-      escaped = escaped.replace(/(&lt;\/?)([a-zA-Z0-9-]+)([\s\S]*?)(&gt;)/g, function (match, open, tagName, attrs, close) {
-        let highlightedAttrs = attrs.replace(/([a-zA-Z0-9-]+)\s*=\s*(["'][^"']*["']|'[^']*'|[^\s&>]+)/g, function (attrMatch, attrName, attrVal) {
-          return `<span class="hl-attr">${attrName}</span>=<span class="hl-val">${attrVal}</span>`;
-        });
-
-        return `<span class="hl-bracket">${open}</span><span class="hl-tag">${tagName}</span>${highlightedAttrs}<span class="hl-bracket">${close}</span>`;
-      });
-
-      // 3. Destaque de Entidades HTML (&gt;, &lt;, &amp;)
-      escaped = escaped.replace(/&amp;(gt|lt|amp|quot|apos|#\d+);/g, '<span class="hl-entity">&amp;$1;</span>');
-
-      return escaped;
-    }
-
-    function ensureCodeEditorContainer(textarea) {
-      if (!textarea) return null;
-      let container = textarea.closest(".code-editor-container");
-      if (container) return container;
-
-      container = document.createElement("div");
-      container.className = "code-editor-container";
-
-      const backdrop = document.createElement("div");
-      backdrop.className = "code-editor-backdrop";
-
-      textarea.parentNode.insertBefore(container, textarea);
-      container.appendChild(backdrop);
-      container.appendChild(textarea);
-
-      textarea.classList.add("code-editor-textarea");
-      textarea.setAttribute("spellcheck", "false");
-
-      textarea.addEventListener("input", function () {
-        onCodeEditorInput(textarea);
-      });
-      textarea.addEventListener("scroll", function () {
-        onCodeEditorScroll(textarea);
-      });
-
-      return container;
-    }
-
-    function onCodeEditorInput(textarea) {
-      if (!textarea) return;
-      const container = ensureCodeEditorContainer(textarea);
-      if (!container) return;
-      const backdrop = container.querySelector(".code-editor-backdrop");
-      if (backdrop) {
-        backdrop.innerHTML = highlightHtmlCode(textarea.value) + '<br>';
-        backdrop.scrollTop = textarea.scrollTop;
-        backdrop.scrollLeft = textarea.scrollLeft;
-      }
-    }
-
-    function onCodeEditorScroll(textarea) {
-      if (!textarea) return;
-      const container = textarea.closest(".code-editor-container");
-      if (!container) return;
-      const backdrop = container.querySelector(".code-editor-backdrop");
-      if (backdrop) {
-        backdrop.scrollTop = textarea.scrollTop;
-        backdrop.scrollLeft = textarea.scrollLeft;
-      }
-    }
-
     function formatStepHtml(btnEl) {
       const formGroup = btnEl.closest(".form-group");
       if (!formGroup) return;
@@ -3684,7 +3580,6 @@
       });
 
       textarea.value = formatted.trim();
-      onCodeEditorInput(textarea);
       updateStepPreview(textarea);
       showToast("✨ Código HTML formatado e organizado!");
     }
@@ -3698,21 +3593,19 @@
       toolbar.querySelectorAll(".toggle-view-btn").forEach(b => b.classList.remove("active-mode"));
       btn.classList.add("active-mode");
 
-      const container = ensureCodeEditorContainer(textarea);
+      textarea.classList.add("code-editor-textarea");
+      textarea.setAttribute("spellcheck", "false");
 
       if (mode === 'visual') {
-        if (container && container.style.display !== "none") {
+        if (textarea.style.display !== "none") {
           updateStepPreview(textarea);
         }
         previewDiv.style.display = "block";
-        if (container) container.style.display = "none";
+        textarea.style.display = "none";
       } else {
         syncVisualToTextarea(previewDiv);
         previewDiv.style.display = "none";
-        if (container) {
-          container.style.display = "block";
-          onCodeEditorInput(textarea);
-        }
+        textarea.style.display = "block";
         textarea.focus();
       }
     }
@@ -3874,12 +3767,26 @@
         code = code.trim();
       }
 
-      const escapedCode = code.replace(/'/g, "\\'");
-      const insertHtml = `<code class="code-copy" data-code="${escapedCode}" onclick="copyText('${escapedCode}')">${code}</code>`;
+      const escapedCode = code.replace(/"/g, '&quot;').replace(/'/g, "\\'");
+      const insertHtml = `&nbsp;<code class="code-copy" data-code="${escapedCode}" title="Clique para copiar ${escapedCode}">${code}</code>&nbsp;`;
 
       if (isVisual) {
         clearPreviewPlaceholder(previewDiv);
         previewDiv.focus();
+
+        const sel = window.getSelection();
+        if (sel && sel.rangeCount > 0) {
+          const range = sel.getRangeAt(0);
+          const parentCode = range.startContainer.parentElement ? range.startContainer.parentElement.closest("code, .code-copy") : null;
+          if (parentCode) {
+            const newRange = document.createRange();
+            newRange.setStartAfter(parentCode);
+            newRange.collapse(true);
+            sel.removeAllRanges();
+            sel.addRange(newRange);
+          }
+        }
+
         document.execCommand('insertHTML', false, insertHtml);
         syncVisualToTextarea(previewDiv);
       } else {
@@ -4238,6 +4145,14 @@
           }
         }
       }
+
+      // Garante que TODAS as tags <code> no HTML gerado possuam classe code-copy e data-code para serem copiáveis!
+      finalHtml = finalHtml.replace(/<code([^>]*)>([\s\S]*?)<\/code>/gi, function (match, attrs, content) {
+        const cleanContent = content.replace(/<[^>]*>?/gm, '').trim();
+        if (!cleanContent) return match;
+        const escapedCode = cleanContent.replace(/"/g, '&quot;').replace(/'/g, "\\'");
+        return `<code class="code-copy" data-code="${escapedCode}" title="Clique para copiar ${escapedCode}">${content}</code>`;
+      });
 
       return finalHtml;
     }
