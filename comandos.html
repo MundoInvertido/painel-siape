@@ -948,6 +948,11 @@
       color: var(--badge-siape-text);
     }
 
+    .type-badge.eSIAPE {
+      background: #f3e8ff;
+      color: #7e22ce;
+    }
+
     .type-badge.RUB {
       background: var(--badge-rub-bg);
       color: var(--badge-rub-text);
@@ -1634,6 +1639,7 @@
                 style="border-radius: var(--radius-sm); border: 1px solid var(--border-color); padding: 0.5rem 0.75rem; background-color: var(--bg-secondary); color: var(--text-primary); font-size: 0.9rem; outline: none; width: 100%;">
                 <option value="ALL">Todos os Tipos</option>
                 <option value="SIAPE">Comandos SIAPE (&gt;)</option>
+                <option value="eSIAPE">Comandos eSIAPE (&gt;e)</option>
                 <option value="RUB">Rubricas (rub_)</option>
                 <option value="OC">Ocorrências (oc_)</option>
                 <option value="BOX">Outros</option>
@@ -1914,6 +1920,16 @@
       <div class="panel-body"
         style="display: flex; flex-direction: column; gap: 1rem; overflow-y: auto; padding: 1.5rem;">
         <div class="form-group">
+          <label for="cmd-system-type" style="font-weight: 700;">Tipo de Sistema / Comando *</label>
+          <select id="cmd-system-type" class="form-input" onchange="onCmdSystemTypeChange(this.value)">
+            <option value="SIAPE">💻 Comando SIAPE Terminal (gatilho &gt;)</option>
+            <option value="eSIAPE">🌐 Comando eSIAPE Web (gatilho &gt;e)</option>
+            <option value="RUB">💵 Rubrica Financeira (gatilho rub_)</option>
+            <option value="OC">📋 Ocorrência / Afastamento (gatilho oc_)</option>
+            <option value="CUSTOM">⚙️ Outro / Personalizado</option>
+          </select>
+        </div>
+        <div class="form-group">
           <label for="cmd-category">Bloco / Categoria *</label>
           <select id="cmd-category" class="form-input" onchange="toggleNewCategoryField(this.value)">
             <!-- Populated dynamically -->
@@ -1925,9 +1941,10 @@
         </div>
         <div class="form-group">
           <label for="cmd-trigger">Gatilho (Trigger) *</label>
-          <input type="text" id="cmd-trigger" class="form-input" placeholder="Ex: >teste ou rub_00136">
-          <small style="color: var(--text-secondary); font-size: 0.78rem;">Use <code
-              style="font-family: var(--font-mono); font-weight: bold;">&gt;</code> para comandos SIAPE, <code
+          <input type="text" id="cmd-trigger" class="form-input" placeholder="Ex: >teste, >eCDPAEN ou rub_00136">
+          <small style="color: var(--text-secondary); font-size: 0.78rem;" id="cmd-trigger-help">Use <code
+              style="font-family: var(--font-mono); font-weight: bold;">&gt;</code> para SIAPE, <code
+              style="font-family: var(--font-mono); font-weight: bold;">&gt;e</code> para eSIAPE Web, <code
               style="font-family: var(--font-mono); font-weight: bold;">rub_</code> para rubricas, etc.</small>
         </div>
         <div class="form-group">
@@ -6042,6 +6059,8 @@ matches:
     }
 
     function getTriggerType(trigger) {
+      if (!trigger) return 'SIAPE';
+      if (trigger.startsWith('>e') || trigger.startsWith('e_') || trigger.startsWith('esiape_') || trigger.toLowerCase().startsWith('es_')) return 'eSIAPE';
       if (trigger.startsWith('>')) return 'SIAPE';
       if (trigger.startsWith('rub_')) return 'RUB';
       if (trigger.startsWith('oc_')) return 'OC';
@@ -6053,6 +6072,7 @@ matches:
     function getTriggerTypeLabel(type) {
       switch (type) {
         case 'SIAPE': return 'Comando SIAPE';
+        case 'eSIAPE': return 'Comando eSIAPE';
         case 'RUB': return 'Rubrica Financeira';
         case 'OC': return 'Ocorrência/Afastamento';
         case 'GRU': return 'Arrecadação/GRU';
@@ -6063,6 +6083,7 @@ matches:
     function getTriggerTypeColor(type) {
       switch (type) {
         case 'SIAPE': return '#3b82f6'; // Blue
+        case 'eSIAPE': return '#8b5cf6'; // Purple
         case 'RUB': return '#10b981'; // Green
         case 'OC': return '#eab308'; // Amber
         case 'GRU': return '#ec4899'; // Pink
@@ -6842,6 +6863,35 @@ matches:
     // --- CRUD DE COMANDOS ESPANSO ---
     let editingTrigger = null;
 
+    function onCmdSystemTypeChange(val) {
+      const input = document.getElementById("cmd-trigger");
+      let currentVal = input.value.trim();
+
+      if (val === "SIAPE") {
+        if (currentVal.startsWith(">e")) {
+          input.value = ">" + currentVal.slice(2);
+        } else if (!currentVal.startsWith(">") && currentVal.length > 0) {
+          input.value = ">" + currentVal;
+        }
+      } else if (val === "eSIAPE") {
+        if (currentVal.startsWith(">e")) {
+          // Já possui prefixo >e
+        } else if (currentVal.startsWith(">")) {
+          input.value = ">e" + currentVal.slice(1);
+        } else if (currentVal.length > 0) {
+          input.value = ">e" + currentVal;
+        }
+      } else if (val === "RUB") {
+        if (!currentVal.startsWith("rub_") && currentVal.length > 0) {
+          input.value = "rub_" + currentVal.replace(/^>e?/, '');
+        }
+      } else if (val === "OC") {
+        if (!currentVal.startsWith("oc_") && currentVal.length > 0) {
+          input.value = "oc_" + currentVal.replace(/^>e?/, '');
+        }
+      }
+    }
+
     function openCommandModal(triggerToEdit = null) {
       editingTrigger = triggerToEdit;
       const modal = document.getElementById("command-modal");
@@ -6864,6 +6914,9 @@ matches:
       document.getElementById("new-category-wrapper").style.display = "none";
       document.getElementById("cmd-new-category").value = "";
 
+      const triggerInput = document.getElementById("cmd-trigger");
+      triggerInput.disabled = false; // Permite editar o gatilho a qualquer momento!
+
       if (triggerToEdit) {
         modalTitle.textContent = "Editar Comando";
         // Achar comando na estrutura
@@ -6880,17 +6933,23 @@ matches:
 
         if (foundItem) {
           selectCat.value = foundSec;
-          document.getElementById("cmd-trigger").value = foundItem.trigger;
-          document.getElementById("cmd-trigger").disabled = true; // Gatilho de id único
+          triggerInput.value = foundItem.trigger;
           document.getElementById("cmd-label").value = foundItem.label;
           document.getElementById("cmd-replace").value = foundItem.replace;
+
+          const detectedType = getTriggerType(foundItem.trigger);
+          const systemTypeSelect = document.getElementById("cmd-system-type");
+          if (systemTypeSelect) {
+            systemTypeSelect.value = (detectedType === 'eSIAPE' || detectedType === 'SIAPE' || detectedType === 'RUB' || detectedType === 'OC') ? detectedType : 'CUSTOM';
+          }
         }
       } else {
         modalTitle.textContent = "Adicionar Novo Comando";
-        document.getElementById("cmd-trigger").value = "";
-        document.getElementById("cmd-trigger").disabled = false;
+        triggerInput.value = "";
         document.getElementById("cmd-label").value = "";
         document.getElementById("cmd-replace").value = "";
+        const systemTypeSelect = document.getElementById("cmd-system-type");
+        if (systemTypeSelect) systemTypeSelect.value = "SIAPE";
         // Seleciona a categoria ativa ou a primeira
         selectCat.value = currentCategoryFilter !== "ALL" ? currentCategoryFilter : (selectCat.options[0]?.value || "");
       }
@@ -6932,17 +6991,17 @@ matches:
         return;
       }
 
-      // Validar se trigger já existe ao criar novo
-      if (!editingTrigger) {
+      // Validar se o gatilho já existe em outro comando
+      if (!editingTrigger || trigger !== editingTrigger) {
         let duplicate = false;
         for (let sec of parsedSections) {
-          if (sec.items.some(item => item.trigger === trigger)) {
+          if (sec.items.some(item => item.trigger === trigger && item.trigger !== editingTrigger)) {
             duplicate = true;
             break;
           }
         }
         if (duplicate) {
-          alert(`O gatilho "${trigger}" já existe. Utilize outro gatilho.`);
+          alert(`O gatilho "${trigger}" já existe em outro comando. Utilize outro gatilho.`);
           return;
         }
       }
@@ -6950,7 +7009,16 @@ matches:
       const newCmd = { trigger, label, replace };
 
       if (editingTrigger) {
-        // Remover o item da sua categoria atual
+        // Se o gatilho alterou, atualiza na lista de favoritos
+        if (trigger !== editingTrigger && typeof favoriteTriggers !== 'undefined' && Array.isArray(favoriteTriggers)) {
+          const favIdx = favoriteTriggers.indexOf(editingTrigger);
+          if (favIdx !== -1) {
+            favoriteTriggers[favIdx] = trigger;
+            localStorage.setItem("espanso_favorite_triggers", JSON.stringify(favoriteTriggers));
+          }
+        }
+
+        // Remover o item da sua categoria antiga
         for (let sec of parsedSections) {
           sec.items = sec.items.filter(item => item.trigger !== editingTrigger);
         }
@@ -6971,7 +7039,8 @@ matches:
       const mergedYaml = serializeSectionsToYaml(parsedSections);
       rawYaml = mergedYaml;
       localStorage.setItem("espanso_siape_yaml", mergedYaml);
-      document.getElementById("yaml-input").value = mergedYaml;
+      const yamlInput = document.getElementById("yaml-input");
+      if (yamlInput) yamlInput.value = mergedYaml;
 
       reloadDatabase();
       closeCommandModal();
