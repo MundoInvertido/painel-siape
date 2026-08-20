@@ -2909,18 +2909,6 @@
       document.getElementById("lightbox-modal").classList.remove("open");
     }
 
-    // Global function to copy texts inside modal
-    function copyText(text) {
-      const el = document.createElement('textarea');
-      el.value = text;
-      document.body.appendChild(el);
-      el.select();
-      document.execCommand('copy');
-      document.body.removeChild(el);
-
-      showToast(`Código "${text}" copiado!`);
-    }
-
     function showToast(message) {
       const toast = document.getElementById("toast");
       toast.querySelector("span").textContent = message;
@@ -4009,42 +3997,42 @@
     function copyText(text) {
       if (!text) return;
       const cleanText = text.replace(/<[^>]*>?/gm, '').trim();
+      if (!cleanText) return;
 
-      if (navigator.clipboard && navigator.clipboard.writeText) {
+      let copied = false;
+      try {
+        const textarea = document.createElement("textarea");
+        textarea.value = cleanText;
+        textarea.style.position = "fixed";
+        textarea.style.left = "-9999px";
+        textarea.style.top = "-9999px";
+        textarea.setAttribute("readonly", "");
+        document.body.appendChild(textarea);
+        textarea.select();
+        textarea.setSelectionRange(0, 99999);
+        copied = document.execCommand("copy");
+        document.body.removeChild(textarea);
+      } catch (err) {
+        copied = false;
+      }
+
+      if (!copied && navigator.clipboard && navigator.clipboard.writeText) {
         navigator.clipboard.writeText(cleanText).then(() => {
           showToast(`📋 Código copiado: "${cleanText}"`);
         }).catch(() => {
-          fallbackCopyText(cleanText);
+          showToast(`📋 Código: ${cleanText}`);
         });
-      } else {
-        fallbackCopyText(cleanText);
+        return;
       }
-    }
 
-    function fallbackCopyText(text) {
-      const textarea = document.createElement("textarea");
-      textarea.value = text;
-      textarea.style.position = "fixed";
-      textarea.style.left = "-9999px";
-      document.body.appendChild(textarea);
-      textarea.select();
-      try {
-        document.execCommand("copy");
-        showToast(`📋 Código copiado: "${text}"`);
-      } catch (err) {
-        showToast("❌ Erro ao copiar texto.");
-      }
-      document.body.removeChild(textarea);
+      showToast(`📋 Código copiado: "${cleanText}"`);
     }
 
     // Listener global de clique para tornar QUALQUER tag <code> ou classe .code-copy instantaneamente copiável
     document.addEventListener("click", function (e) {
       const codeTarget = e.target.closest("code, .code-copy");
       if (codeTarget) {
-        if (codeTarget.closest("[contenteditable='true']")) {
-          return; // Não interfere na edição visual
-        }
-        const textToCopy = codeTarget.getAttribute("data-code") || codeTarget.innerText || codeTarget.textContent;
+        const textToCopy = codeTarget.innerText || codeTarget.textContent || codeTarget.getAttribute("data-code");
         if (textToCopy && textToCopy.trim().length > 0) {
           copyText(textToCopy.trim());
         }
@@ -4168,8 +4156,13 @@
       // 4. Códigos em crases: `código` -> <code class="code-copy">código</code>
       tokenized = tokenized.replace(/`([^`]+)`/g, '<code class="code-copy">$1</code>');
 
-      // 5. Auto-detecção de Comandos SIAPENET/eSIAPE (ex: >CAENEXCAPO, >CDCOINDFUN, >DATSITFUN) digitados como texto puro
+      // 5. Auto-detecção inteligente de Comandos SIAPENET/eSIAPE:
+      // a) Comandos com gatilho > (ex: >CAENEXCAPO, >CDCOINDFUN, >DATSITFUN)
       tokenized = tokenized.replace(/(^|[\s(>])(>[A-Z0-9_\-\/.+]{3,})(?=$|[\s).,;?!<])/g, function (m, p1, cmd) {
+        return p1 + `<code class="code-copy">${cmd}</code>`;
+      });
+      // b) Transações SIAPE de 8 a 10 caracteres em maiúsculas (ex: CDCOINDFUN, FPATMOVFIN, CAIFOBITRH, GRIAPROADM)
+      tokenized = tokenized.replace(/(^|[\s(])([A-Z]{2}[A-Z0-9]{6,8})(?=$|[\s).,;?!<])/g, function (m, p1, cmd) {
         return p1 + `<code class="code-copy">${cmd}</code>`;
       });
 
