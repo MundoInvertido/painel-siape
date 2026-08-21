@@ -621,22 +621,23 @@
       return Math.round((end - start) / msPerDay) + 1;
     }
 
-    // Helper: Days to Months and Days (Approximate 30 days/month for civil service)
+    // Helper: Days to Years, Months and Days (Legal Standard: Real Days + 365d/year & 30d/month breakdown)
     function daysToExtenso(totalDays) {
-      if (totalDays <= 0) return '0 dias';
-      const months = Math.floor(totalDays / 30);
-      const days = totalDays % 30;
+      if (!totalDays || isNaN(totalDays) || totalDays <= 0) return '0 dias';
+      
+      const years = Math.floor(totalDays / 365);
+      const remDaysAfterYears = totalDays % 365;
+      const months = Math.floor(remDaysAfterYears / 30);
+      const days = remDaysAfterYears % 30;
 
-      let res = '';
-      if (months > 0) {
-        res += `${months} Mês${months > 1 ? 'es' : ''}`;
-      }
-      if (days > 0) {
-        if (res) res += ' e ';
-        res += `${days} dia${days > 1 ? 's' : ''}`;
-      }
-      if (!res) res = `${totalDays} dias`;
-      return res;
+      let parts = [];
+      if (years > 0) parts.push(`${years} ano${years > 1 ? 's' : ''}`);
+      if (months > 0) parts.push(`${months} mês${months > 1 ? 'es' : ''}`);
+      if (days > 0 || parts.length === 0) parts.push(`${days} dia${days > 1 ? 's' : ''}`);
+
+      if (parts.length === 1) return parts[0];
+      if (parts.length === 2) return parts.join(' e ');
+      return parts[0] + ', ' + parts[1] + ' e ' + parts[2];
     }
 
     // Dynamic CTC Items
