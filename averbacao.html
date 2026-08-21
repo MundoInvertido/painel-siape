@@ -709,18 +709,59 @@
         </div>
         
         <!-- Período Integral da Contribuição (Vínculo Original) -->
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs">
-          <div>
+        <div class="grid grid-cols-1 sm:grid-cols-4 gap-2 text-xs">
+          <div class="sm:col-span-2">
             <label class="text-[11px] text-slate-600 block mb-0.5 font-medium">Órgão Emissor / Empregador</label>
-            <input type="text" value="${data.org || 'Órgão / Empregador'}" class="ctc-org w-full px-2.5 py-1.5 border border-slate-300 rounded-md focus:ring-1 focus:ring-blue-500 outline-none bg-white font-medium" oninput="recalculate()" placeholder="Ex: Petrobras, Sec. Educação">
+            <input type="text" value="${data.org || 'Órgão / Empregador'}" class="ctc-org w-full px-2.5 py-1.5 border border-slate-300 rounded-md focus:ring-1 focus:ring-blue-500 outline-none bg-white font-medium" oninput="recalculate()" placeholder="Ex: SEAP/RN, Petrobras, etc.">
           </div>
           <div>
-            <label class="text-[11px] text-slate-600 block mb-0.5">Data Início da Contribuição *</label>
+            <label class="text-[11px] text-slate-600 block mb-0.5">Data Início Contribuição *</label>
             <input type="date" value="${data.start || ''}" class="ctc-start w-full px-2.5 py-1.5 border border-slate-300 rounded-md focus:ring-1 focus:ring-blue-500 outline-none font-mono bg-white" onchange="recalculate()">
           </div>
           <div>
-            <label class="text-[11px] text-slate-600 block mb-0.5">Data Fim da Contribuição *</label>
+            <label class="text-[11px] text-slate-600 block mb-0.5">Data Fim Contribuição *</label>
             <input type="date" value="${data.end || ''}" class="ctc-end w-full px-2.5 py-1.5 border border-slate-300 rounded-md focus:ring-1 focus:ring-blue-500 outline-none font-mono bg-white" onchange="recalculate()">
+          </div>
+        </div>
+
+        <!-- Ajuste Opcional de Tempo Bruto Certificado da CTC -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs">
+          <div class="sm:col-span-2">
+            <label class="text-[11px] text-slate-500 block mb-0.5">
+              <span>Tempo Bruto Declarado na CTC (Opcional - em dias)</span>
+            </label>
+            <input type="number" value="${data.manualGross || ''}" class="ctc-manual-gross w-full px-2.5 py-1 border border-slate-300 rounded bg-white text-xs font-mono" oninput="recalculate()" placeholder="Deixe em branco para cálculo automático de calendário">
+          </div>
+          <div class="text-[10px] text-slate-500 flex items-center pt-3">
+            <span>ℹ️ Use se a certidão declarar valor oficial fixo (ex: 2.927d).</span>
+          </div>
+        </div>
+
+        <!-- Deduções Declaradas na Própria Certidão (Licença sem Vencimento / Faltas / Suspensões) -->
+        <div class="bg-amber-50/70 p-2.5 rounded-lg border border-amber-200 text-xs space-y-1.5">
+          <div class="flex items-center justify-between">
+            <span class="text-[11px] font-bold text-amber-900 flex items-center gap-1.5">
+              <i data-lucide="minus-circle" class="w-3.5 h-3.5 text-amber-600"></i> Deduções da Certidão (Licença s/ Vencimento / Faltas)
+            </span>
+            <span class="text-[10px] text-amber-700 italic">Desconto legal na origem</span>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-4 gap-2">
+            <div>
+              <label class="text-[10px] text-amber-800 block mb-0.5">Motivo</label>
+              <input type="text" value="${data.afastMotivo || 'Licença sem Vencimento'}" class="ctc-afast-motivo w-full px-2 py-1 border border-amber-300 rounded bg-white text-xs outline-none" oninput="recalculate()" placeholder="Ex: Licença Particular">
+            </div>
+            <div>
+              <label class="text-[10px] text-amber-800 block mb-0.5">Data Início Afast.</label>
+              <input type="date" value="${data.afastStart || ''}" class="ctc-afast-start w-full px-2 py-1 border border-amber-300 rounded bg-white font-mono text-xs outline-none" onchange="recalculate()">
+            </div>
+            <div>
+              <label class="text-[10px] text-amber-800 block mb-0.5">Data Fim Afast.</label>
+              <input type="date" value="${data.afastEnd || ''}" class="ctc-afast-end w-full px-2 py-1 border border-amber-300 rounded bg-white font-mono text-xs outline-none" onchange="recalculate()">
+            </div>
+            <div>
+              <label class="text-[10px] text-amber-800 block mb-0.5 font-bold">Ou Total Dias (-)</label>
+              <input type="number" value="${data.afastDays || ''}" class="ctc-afast-days w-full px-2 py-1 border border-amber-300 rounded bg-white font-mono text-xs font-bold text-amber-900 outline-none" oninput="recalculate()" placeholder="Ex: 43">
+            </div>
           </div>
         </div>
 
@@ -812,14 +853,34 @@
         const org = el.querySelector('.ctc-org').value;
         const aprovStart = parseDate(el.querySelector('.ctc-aprov-start')?.value) || start;
         const aprovEnd = parseDate(el.querySelector('.ctc-aprov-end')?.value) || end;
+        const afastStart = parseDate(el.querySelector('.ctc-afast-start')?.value);
+        const afastEnd = parseDate(el.querySelector('.ctc-afast-end')?.value);
+        const afastDaysInput = parseInt(el.querySelector('.ctc-afast-days')?.value, 10);
+        const afastMotivo = el.querySelector('.ctc-afast-motivo')?.value || 'Licença sem Vencimento';
+        const manualGrossInput = parseInt(el.querySelector('.ctc-manual-gross')?.value, 10);
 
         if (start && end && end >= start) {
+          const autoGross = daysBetween(start, end);
+          const grossToUse = (!isNaN(manualGrossInput) && manualGrossInput > 0) ? manualGrossInput : autoGross;
+
+          let computedAfastDays = 0;
+          if (!isNaN(afastDaysInput) && afastDaysInput > 0) {
+            computedAfastDays = afastDaysInput;
+          } else if (afastStart && afastEnd && afastEnd >= afastStart) {
+            computedAfastDays = daysBetween(afastStart, afastEnd);
+          }
+
           ctcIntervals.push({
             start: aprovStart || start,
             end: aprovEnd || end,
             rawStart: start,
             rawEnd: end,
             hasCustomAproveitado: !!(el.querySelector('.ctc-aprov-end')?.value),
+            afastStart,
+            afastEnd,
+            afastDays: computedAfastDays,
+            afastMotivo,
+            manualGross: (!isNaN(manualGrossInput) && manualGrossInput > 0) ? manualGrossInput : null,
             org
           });
         }
@@ -846,6 +907,7 @@
       let grandTotalGlosaSiape = 0;
       let grandTotalGlosaPrf = 0;
       let grandTotalGlosaConcomitante = 0;
+      let grandTotalGlosaAfastamento = 0;
       let grandTotalLiquid = 0;
 
       // Track globally which days have already been accounted for in any contract
@@ -866,7 +928,9 @@
 
           // Determine what kind of day this is
           let status = 'VALID';
-          if (siapeIntervals.some(s => curTime >= s.start && curTime <= s.end)) {
+          if (ctc.afastStart && ctc.afastEnd && curTime >= ctc.afastStart && curTime <= ctc.afastEnd) {
+            status = 'GLOSA_AFASTAMENTO';
+          } else if (siapeIntervals.some(s => curTime >= s.start && curTime <= s.end)) {
             status = 'GLOSA_SIAPE';
           } else if (prfStart && curTime >= prfStart) {
             status = 'GLOSA_PRF';
@@ -890,7 +954,8 @@
                   start: curGlosaStart,
                   end: segEnd,
                   days: daysBetween(curGlosaStart, segEnd),
-                  type: curGlosaStatus
+                  type: curGlosaStatus,
+                  motivo: ctc.afastMotivo
                 });
                 curGlosaStatus = null;
                 curGlosaStart = null;
@@ -905,7 +970,8 @@
                   start: curGlosaStart,
                   end: segEnd,
                   days: daysBetween(curGlosaStart, segEnd),
-                  type: curGlosaStatus
+                  type: curGlosaStatus,
+                  motivo: ctc.afastMotivo
                 });
                 curGlosaStatus = status;
                 curGlosaStart = new Date(curTime.getTime());
@@ -920,7 +986,8 @@
                 start: curGlosaStart,
                 end: segEnd,
                 days: daysBetween(curGlosaStart, segEnd),
-                type: curGlosaStatus
+                type: curGlosaStatus,
+                motivo: ctc.afastMotivo
               });
               curGlosaStatus = null;
               curGlosaStart = null;
@@ -937,8 +1004,26 @@
             start: curGlosaStart,
             end: segEnd,
             days: daysBetween(curGlosaStart, segEnd),
-            type: curGlosaStatus
+            type: curGlosaStatus,
+            motivo: ctc.afastMotivo
           });
+        }
+
+        // Direct day deduction if informed without date range
+        if (ctc.afastDays > 0 && !glosasDetail.some(g => g.type === 'GLOSA_AFASTAMENTO')) {
+          glosasDetail.push({
+            start: ctc.afastStart || ctc.start,
+            end: ctc.afastEnd || ctc.end,
+            days: ctc.afastDays,
+            type: 'GLOSA_AFASTAMENTO',
+            motivo: ctc.afastMotivo
+          });
+          validDaysForThisCtc = Math.max(0, validDaysForThisCtc - ctc.afastDays);
+        }
+
+        const finalGrossForThisCtc = ctc.manualGross || uniqueGrossDays;
+        if (ctc.manualGross && ctc.manualGross !== uniqueGrossDays) {
+          uniqueGrossDays = ctc.manualGross;
         }
 
         let totalCtcGlosas = 0;
@@ -947,7 +1032,13 @@
           if (g.type === 'GLOSA_SIAPE') grandTotalGlosaSiape += g.days;
           else if (g.type === 'GLOSA_PRF') grandTotalGlosaPrf += g.days;
           else if (g.type === 'GLOSA_CONCOMITANTE') grandTotalGlosaConcomitante += g.days;
+          else if (g.type === 'GLOSA_AFASTAMENTO') grandTotalGlosaAfastamento += g.days;
         });
+
+        // Recalculate liquid based on manual gross if set
+        if (ctc.manualGross) {
+          validDaysForThisCtc = Math.max(0, ctc.manualGross - totalCtcGlosas);
+        }
 
         grandTotalGross += uniqueGrossDays;
         grandTotalGlosas += totalCtcGlosas;
@@ -978,7 +1069,9 @@
             const timeKey = curTime.getTime();
             if (!dayMap.has(timeKey)) {
               let status = 'VALID';
-              if (siapeIntervals.some(s => curTime >= s.start && curTime <= s.end)) {
+              if (ctc.afastStart && ctc.afastEnd && curTime >= ctc.afastStart && curTime <= ctc.afastEnd) {
+                status = 'GLOSA_AFASTAMENTO';
+              } else if (siapeIntervals.some(s => curTime >= s.start && curTime <= s.end)) {
                 status = 'GLOSA_SIAPE';
               } else if (prfStart && curTime >= prfStart) {
                 status = 'GLOSA_PRF';
@@ -1034,9 +1127,10 @@
       document.getElementById('kpi-glosa-prf').innerText = `${grandTotalGlosaPrf} dias`;
       
       let formulaStr = `${grandTotalGross}`;
-      if (grandTotalGlosaSiape > 0) formulaStr += ` - ${grandTotalGlosaSiape}`;
-      if (grandTotalGlosaPrf > 0) formulaStr += ` - ${grandTotalGlosaPrf}`;
-      if (grandTotalGlosaConcomitante > 0) formulaStr += ` - ${grandTotalGlosaConcomitante}`;
+      if (grandTotalGlosaSiape > 0) formulaStr += ` - ${grandTotalGlosaSiape} (SIAPE)`;
+      if (grandTotalGlosaPrf > 0) formulaStr += ` - ${grandTotalGlosaPrf} (PRF)`;
+      if (grandTotalGlosaConcomitante > 0) formulaStr += ` - ${grandTotalGlosaConcomitante} (Concomitância)`;
+      if (grandTotalGlosaAfastamento > 0) formulaStr += ` - ${grandTotalGlosaAfastamento} (Deduções CTC)`;
       formulaStr += ` = ${grandTotalLiquid} dias`;
       document.getElementById('kpi-formula-text').innerText = formulaStr;
 
@@ -1090,12 +1184,19 @@
               } else if (g.type === 'GLOSA_CONCOMITANTE') {
                 label = 'Concomitância Interna RGPS';
                 badgeColor = 'bg-amber-50 text-amber-900 border-amber-200';
+              } else if (g.type === 'GLOSA_AFASTAMENTO') {
+                label = g.motivo || 'Licença sem Vencimento (Dedução CTC)';
+                badgeColor = 'bg-red-50 text-red-900 border-red-200 font-bold';
               }
+
+              const periodRange = (g.start && g.end && g.start.getTime() !== g.end.getTime()) 
+                ? `: ${formatDate(g.start)} a ${formatDate(g.end)}` 
+                : '';
 
               glosasHtml += `
                 <div class="flex items-center gap-1.5 font-mono text-[11px]">
                   <span class="px-1.5 py-0.5 rounded border ${badgeColor} font-bold">- ${g.days}d</span>
-                  <span class="text-slate-600">(${label}: ${formatDate(g.start)} a ${formatDate(g.end)})</span>
+                  <span class="text-slate-600">(${label}${periodRange})</span>
                 </div>
               `;
             });
