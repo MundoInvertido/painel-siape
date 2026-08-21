@@ -443,46 +443,39 @@
             </div>
           </div>
 
-          <!-- Section 2: Visual Distribution Timeline -->
+          <!-- Section 2: Visual Distribution Timeline (Multi-Track Gantt Chart) -->
           <div class="space-y-4">
-            <h3 class="text-base font-bold text-slate-900 flex items-center gap-2 border-b border-slate-200 pb-3">
-              <i data-lucide="git-commit" class="w-5 h-5 text-blue-600"></i>
-              Mapeamento Visual da Distribuição Temporal
-            </h3>
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-200 pb-3 gap-2">
+              <h3 class="text-base font-bold text-slate-900 flex items-center gap-2">
+                <i data-lucide="git-commit" class="w-5 h-5 text-blue-600"></i>
+                Mapeamento Visual Detalhado da Distribuição Temporal
+              </h3>
+              <span id="rpt-timeline-years-badge" class="text-xs font-mono text-slate-600 bg-slate-100 px-3 py-1 rounded-md">Linha do Tempo</span>
+            </div>
 
-            <div class="bg-slate-50 p-5 rounded-xl border border-slate-200 space-y-4">
-              <div
-                class="h-8 w-full bg-slate-200 rounded-lg overflow-hidden flex font-mono text-[11px] text-white font-bold shadow-inner"
-                id="rpt-timeline-bar">
-                <!-- Dynamic timeline bar segments -->
+            <div class="bg-slate-900 text-white p-5 rounded-2xl border border-slate-800 space-y-6 shadow-xl overflow-x-auto print:bg-white print:text-slate-900 print:border-slate-300">
+              
+              <!-- Multi-Track Gantt Chart Container -->
+              <div id="rpt-timeline-multitrack-container" class="min-w-[680px] space-y-4">
+                <!-- Dynamically populated by renderMultiTrackTimeline() -->
               </div>
 
               <!-- Legend -->
-              <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs pt-2">
-                <div class="flex items-center gap-2.5 p-2.5 bg-emerald-50 rounded-lg border border-emerald-200">
-                  <div class="w-3.5 h-3.5 rounded bg-emerald-600 shrink-0"></div>
-                  <div>
-                    <span class="font-bold text-emerald-900 block">Tempo Averbável</span>
-                    <span class="text-emerald-700 text-[11px]">Subperíodos válidos sem glosas.</span>
-                  </div>
+              <div class="pt-3 border-t border-slate-800 text-xs text-slate-300 flex flex-wrap items-center gap-4 print:border-slate-300 print:text-slate-700">
+                <div class="flex items-center gap-2">
+                  <span class="w-3 h-3 rounded-full bg-emerald-500 inline-block shadow-sm"></span>
+                  <span><strong>Verde</strong> = Período aproveitável (Tempo Líquido)</span>
                 </div>
-
-                <div class="flex items-center gap-2.5 p-2.5 bg-amber-50 rounded-lg border border-amber-200">
-                  <div class="w-3.5 h-3.5 rounded bg-amber-500 shrink-0"></div>
-                  <div>
-                    <span class="font-bold text-amber-900 block">Glosa SIAPE</span>
-                    <span class="text-amber-700 text-[11px]">Período já averbado anteriormente.</span>
-                  </div>
+                <div class="flex items-center gap-2">
+                  <span class="w-3 h-3 rounded-full bg-purple-600 inline-block shadow-sm"></span>
+                  <span><strong>Roxo</strong> = Período já averbado anteriormente no SIAPE</span>
                 </div>
-
-                <div class="flex items-center gap-2.5 p-2.5 bg-red-50 rounded-lg border border-red-200">
-                  <div class="w-3.5 h-3.5 rounded bg-red-500 shrink-0"></div>
-                  <div>
-                    <span class="font-bold text-red-900 block">Glosa PRF</span>
-                    <span class="text-red-700 text-[11px]">Concomitância com cargo público atual.</span>
-                  </div>
+                <div class="flex items-center gap-2">
+                  <span class="w-3 h-3 rounded-full bg-rose-600 inline-block shadow-sm"></span>
+                  <span><strong>Vermelho</strong> = Concomitância com cargo PRF (Vedado)</span>
                 </div>
               </div>
+
             </div>
           </div>
 
@@ -921,34 +914,8 @@
         tbody.appendChild(trTotal);
       }
 
-      // Render Interactive Timeline Bar
-      const timelineBar = document.getElementById('rpt-timeline-bar');
-      timelineBar.innerHTML = '';
-      if (totalGrossDays > 0) {
-        subSegments.forEach(seg => {
-          const pct = ((seg.days / totalGrossDays) * 100).toFixed(1);
-          const div = document.createElement('div');
-
-          let bgColor = 'bg-emerald-600';
-          let label = `${seg.days}d Válidos`;
-
-          if (seg.status === 'GLOSA_SIAPE') {
-            bgColor = 'bg-amber-500';
-            label = `${seg.days}d SIAPE`;
-          } else if (seg.status === 'GLOSA_PRF') {
-            bgColor = 'bg-red-500';
-            label = `${seg.days}d Concomitante`;
-          }
-
-          div.className = `${bgColor} h-full flex items-center justify-center transition hover:opacity-90 overflow-hidden px-1`;
-          div.style.width = `${pct}%`;
-          div.title = `${formatDate(seg.start)} a ${formatDate(seg.end)}: ${seg.days} dias (${label})`;
-          div.innerText = seg.days > 15 ? label : `${seg.days}d`;
-          timelineBar.appendChild(div);
-        });
-      } else {
-        timelineBar.innerHTML = `<div class="w-full text-center text-slate-400 text-xs py-1.5 font-normal">Nenhum período processado</div>`;
-      }
+      // Render Multi-Track Gantt Timeline Chart
+      renderMultiTrackTimeline(ctcIntervals, siapeIntervals, prfStart, subSegments);
 
       // Update Official SEI Dispatch Draft Text
       document.getElementById('rpt-doc-sub-header').innerText = `${unidade}`;
@@ -965,6 +932,197 @@
       `;
 
       document.getElementById('rpt-doc-footer-unit').innerText = `${unidade}`;
+    }
+
+    // Renderer for Detailed Multi-Track Gantt Timeline (Matching Official Reference Model)
+    function renderMultiTrackTimeline(ctcIntervals, siapeIntervals, prfStart, subSegments) {
+      const container = document.getElementById('rpt-timeline-multitrack-container');
+      if (!container) return;
+      container.innerHTML = '';
+
+      let allDates = [];
+      ctcIntervals.forEach(c => { allDates.push(c.start.getTime(), c.end.getTime()); });
+      siapeIntervals.forEach(s => { allDates.push(s.start.getTime(), s.end.getTime()); });
+      if (prfStart) allDates.push(prfStart.getTime());
+
+      if (allDates.length === 0) {
+        container.innerHTML = '<div class="text-center text-slate-400 py-6 text-xs font-sans">Nenhum período informado para compor o gráfico.</div>';
+        return;
+      }
+
+      const minTime = Math.min(...allDates);
+      const maxTime = Math.max(...allDates);
+      const totalSpanMs = (maxTime - minTime) || 1;
+
+      function getPct(timeMs) {
+        let pct = ((timeMs - minTime) / totalSpanMs) * 100;
+        return Math.max(0, Math.min(100, pct));
+      }
+
+      // 1. TOP DATE AXIS TICK MARKS
+      const dateKeySet = new Set();
+      ctcIntervals.forEach(c => { dateKeySet.add(c.start.getTime()); dateKeySet.add(c.end.getTime()); });
+      siapeIntervals.forEach(s => { dateKeySet.add(s.start.getTime()); dateKeySet.add(s.end.getTime()); });
+      if (prfStart) dateKeySet.add(prfStart.getTime());
+
+      const sortedDateMs = Array.from(dateKeySet).sort((a, b) => a - b);
+
+      const axisDiv = document.createElement('div');
+      axisDiv.className = 'relative h-12 border-b border-slate-700/80 mb-4 pb-2';
+
+      const arrowLine = document.createElement('div');
+      arrowLine.className = 'absolute top-7 left-0 right-0 h-0.5 bg-slate-600 flex items-center justify-end';
+      arrowLine.innerHTML = '<div class="w-0 h-0 border-t-[5px] border-t-transparent border-b-[5px] border-b-transparent border-l-[10px] border-l-slate-400 -mr-1"></div>';
+      axisDiv.appendChild(arrowLine);
+
+      sortedDateMs.forEach(ms => {
+        const pct = getPct(ms);
+        const dateStr = formatDate(new Date(ms));
+
+        const tick = document.createElement('div');
+        tick.className = 'absolute flex flex-col items-center transform -translate-x-1/2 font-sans';
+        tick.style.left = `${pct}%`;
+        tick.style.top = '0px';
+
+        tick.innerHTML = `
+          <span class="text-[10px] font-mono font-bold text-slate-200 bg-slate-800/90 border border-slate-700 px-1.5 py-0.5 rounded shadow-sm">${dateStr}</span>
+          <div class="w-0.5 h-3 bg-slate-400 mt-1"></div>
+        `;
+        axisDiv.appendChild(tick);
+      });
+      container.appendChild(axisDiv);
+
+      // 2. TRACK ROWS FOR EACH CTC EMPLOYER
+      const ctcColors = ['bg-blue-600', 'bg-amber-600', 'bg-teal-600', 'bg-indigo-600'];
+      ctcIntervals.forEach((ctc, idx) => {
+        const row = document.createElement('div');
+        row.className = 'space-y-1 font-sans';
+
+        const label = document.createElement('div');
+        label.className = 'text-xs font-semibold text-slate-200 flex justify-between items-center';
+        label.innerHTML = `<span>${ctc.org || `Vínculo #${idx+1}`}</span> <span class="font-mono text-[11px] text-slate-400">${formatDate(ctc.start)} a ${formatDate(ctc.end)}</span>`;
+        row.appendChild(label);
+
+        const trackBg = document.createElement('div');
+        trackBg.className = 'h-7 w-full bg-slate-800/60 rounded-lg relative overflow-hidden border border-slate-700/50 shadow-inner';
+
+        const leftPct = getPct(ctc.start.getTime());
+        const rightPct = getPct(ctc.end.getTime());
+        const widthPct = Math.max(1, rightPct - leftPct);
+        const color = ctcColors[idx % ctcColors.length];
+
+        const bar = document.createElement('div');
+        bar.className = `absolute top-1 bottom-1 ${color} rounded-md shadow flex items-center justify-center text-[10px] font-bold text-white px-2 truncate`;
+        bar.style.left = `${leftPct}%`;
+        bar.style.width = `${widthPct}%`;
+        bar.innerText = `${ctc.org}: ${daysBetween(ctc.start, ctc.end)}d`;
+        bar.title = `${ctc.org}: ${formatDate(ctc.start)} a ${formatDate(ctc.end)}`;
+
+        trackBg.appendChild(bar);
+        row.appendChild(trackBg);
+        container.appendChild(row);
+      });
+
+      // 3. TRACK ROW FOR SIAPE PREVIOUS AVERBAÇÕES
+      if (siapeIntervals.length > 0) {
+        const siapeRow = document.createElement('div');
+        siapeRow.className = 'space-y-1 pt-1 font-sans';
+
+        const label = document.createElement('div');
+        label.className = 'text-xs font-semibold text-purple-300';
+        label.innerText = 'Averbação já existente (SIAPE)';
+        siapeRow.appendChild(label);
+
+        const trackBg = document.createElement('div');
+        trackBg.className = 'h-7 w-full bg-slate-800/60 rounded-lg relative overflow-hidden border border-slate-700/50 shadow-inner';
+
+        siapeIntervals.forEach(siape => {
+          const leftPct = getPct(siape.start.getTime());
+          const rightPct = getPct(siape.end.getTime());
+          const widthPct = Math.max(1, rightPct - leftPct);
+
+          const bar = document.createElement('div');
+          bar.className = 'absolute top-1 bottom-1 bg-purple-600 rounded-md shadow flex items-center justify-center text-[10px] font-bold text-white px-2 truncate';
+          bar.style.left = `${leftPct}%`;
+          bar.style.width = `${widthPct}%`;
+          bar.innerText = `Glosa SIAPE (${daysBetween(siape.start, siape.end)}d)`;
+          bar.title = `SIAPE: ${formatDate(siape.start)} a ${formatDate(siape.end)}`;
+
+          trackBg.appendChild(bar);
+        });
+
+        siapeRow.appendChild(trackBg);
+        container.appendChild(siapeRow);
+      }
+
+      // 4. TRACK ROW FOR PRF CARGO / EXERCÍCIO
+      if (prfStart) {
+        const prfRow = document.createElement('div');
+        prfRow.className = 'space-y-1 pt-1 font-sans';
+
+        const label = document.createElement('div');
+        label.className = 'text-xs font-semibold text-rose-300';
+        label.innerText = `Cargo PRF (Concomitância em Exercício em ${formatDate(prfStart)})`;
+        prfRow.appendChild(label);
+
+        const trackBg = document.createElement('div');
+        trackBg.className = 'h-7 w-full bg-slate-800/60 rounded-lg relative overflow-hidden border border-slate-700/50 shadow-inner';
+
+        const leftPct = getPct(prfStart.getTime());
+        const widthPct = Math.max(1, 100 - leftPct);
+
+        const bar = document.createElement('div');
+        bar.className = 'absolute top-1 bottom-1 bg-rose-700/90 rounded-md shadow flex items-center justify-center text-[10px] font-bold text-white px-2 truncate';
+        bar.style.left = `${leftPct}%`;
+        bar.style.width = `${widthPct}%`;
+        bar.innerText = `Vedado (concomitância com PRF)`;
+        bar.title = `Exercício na PRF a partir de ${formatDate(prfStart)}`;
+
+        trackBg.appendChild(bar);
+        prfRow.appendChild(trackBg);
+        container.appendChild(prfRow);
+      }
+
+      // 5. TRACK ROW FOR FINAL DEFINTIVE RESULT
+      const resRow = document.createElement('div');
+      resRow.className = 'space-y-1 pt-3 border-t border-slate-800 font-sans';
+
+      const resLabel = document.createElement('div');
+      resLabel.className = 'text-xs font-bold text-amber-400 flex justify-between items-center';
+      resLabel.innerHTML = '<span>Tempo Líquido Resultante (Apuração Definitiva)</span> <span class="font-mono text-emerald-400 text-xs">Tempo Líquido Aprovado</span>';
+      resRow.appendChild(resLabel);
+
+      const resTrackBg = document.createElement('div');
+      resTrackBg.className = 'h-9 w-full bg-slate-950 rounded-lg relative overflow-hidden border border-slate-700 flex p-1 gap-0.5 shadow-inner';
+
+      subSegments.forEach(seg => {
+        const leftPct = getPct(seg.start.getTime());
+        const rightPct = getPct(seg.end.getTime());
+        const widthPct = Math.max(1, rightPct - leftPct);
+
+        let color = 'bg-emerald-500';
+        let txt = `Período a averbar (${seg.days}d)`;
+
+        if (seg.status === 'GLOSA_SIAPE') {
+          color = 'bg-purple-600';
+          txt = `Glosado SIAPE (${seg.days}d)`;
+        } else if (seg.status === 'GLOSA_PRF') {
+          color = 'bg-rose-800';
+          txt = `Vedado (concomitância com PRF)`;
+        }
+
+        const bar = document.createElement('div');
+        bar.className = `absolute top-1 bottom-1 ${color} rounded flex items-center justify-center text-[10px] font-extrabold text-white px-1 overflow-hidden transition hover:opacity-90 shadow-sm`;
+        bar.style.left = `${leftPct}%`;
+        bar.style.width = `${widthPct}%`;
+        bar.innerText = seg.days > 12 ? txt : `${seg.days}d`;
+        bar.title = `${formatDate(seg.start)} a ${formatDate(seg.end)}: ${seg.days} dias (${txt})`;
+
+        resTrackBg.appendChild(bar);
+      });
+
+      resRow.appendChild(resTrackBg);
+      container.appendChild(resRow);
     }
 
     // Helper to format days into full Portuguese text dynamically
