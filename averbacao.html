@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR" class="h-full bg-slate-100">
 <head>
   <meta charset="UTF-8">
@@ -874,21 +874,44 @@
       document.getElementById('rpt-doc-footer-unit').innerText = `${unidade}`;
     }
 
-    // Helper to format days into Portuguese text
-    function diasPorExtenso(dias) {
-      if (dias === 193) return 'cento e noventa e três';
-      if (dias === 441) return 'quatrocentos e quarenta e um';
-      return `${dias}`;
+    // Helper to format days into full Portuguese text dynamically
+    function diasPorExtenso(n) {
+      if (!n || isNaN(n) || n <= 0) return 'zero';
+      const unidades = ['', 'um', 'dois', 'três', 'quatro', 'cinco', 'seis', 'sete', 'oito', 'nove', 'dez', 'onze', 'doze', 'treze', 'quatorze', 'quinze', 'dezesseis', 'dezessete', 'dezoito', 'dezenove'];
+      const dezenas = ['', '', 'vinte', 'trinta', 'quarenta', 'cinquenta', 'sessenta', 'setenta', 'oitenta', 'noventa'];
+      const centenas = ['', 'cento', 'duzentos', 'trezentos', 'quatrocentos', 'quinhentos', 'seiscentos', 'setecentos', 'oitocentos', 'novecentos'];
+
+      if (n === 100) return 'cem';
+      if (n < 20) return unidades[n];
+      if (n < 100) {
+        const u = n % 10;
+        const d = Math.floor(n / 10);
+        return dezenas[d] + (u > 0 ? ' e ' + unidades[u] : '');
+      }
+      if (n < 1000) {
+        const c = Math.floor(n / 100);
+        const resto = n % 100;
+        return centenas[c] + (resto > 0 ? ' e ' + diasPorExtenso(resto) : '');
+      }
+      if (n < 1000000) {
+        const mil = Math.floor(n / 1000);
+        const resto = n % 1000;
+        const milTxt = mil === 1 ? 'mil' : diasPorExtenso(mil) + ' mil';
+        if (resto === 0) return milTxt;
+        const eStr = (resto < 100 || resto % 100 === 0) ? ' e ' : ' ';
+        return milTxt + eStr + diasPorExtenso(resto);
+      }
+      return String(n);
     }
 
     // Load Default Example Case
     function loadExampleData() {
-      document.getElementById('input-nome').value = 'João da Silva Pereira';
-      document.getElementById('input-siape').value = '1000001';
+      document.getElementById('input-nome').value = 'Carlos Alberto Rodrigues de Brito Junior';
+      document.getElementById('input-siape').value = '1073592';
       document.getElementById('input-cargo').value = 'Policial Rodoviário Federal';
-      document.getElementById('input-sei').value = '08652.000001/2026-00';
-      document.getElementById('input-data-prf').value = '2000-03-15';
-      document.getElementById('input-unidade').value = 'SPRF-XX / NUAP';
+      document.getElementById('input-sei').value = '08812.001796/2026-12';
+      document.getElementById('input-data-prf').value = '1994-07-06';
+      document.getElementById('input-unidade').value = 'SPRF-PA / NUAP';
 
       // Clear list containers
       document.getElementById('ctc-list').innerHTML = '';
@@ -897,21 +920,21 @@
       ctcCounter = 0;
       siapeCounter = 0;
 
-      // Add CTC Period (16/11/1993 a 01/02/1995 -> 441/443 days)
+      // Add CTC Period (16/11/1993 a 01/02/1995 -> 443 dias brutos)
       addCtcPeriod({
-        org: 'Secretaria de Estado de Saúde',
-        start: '1995-06-01',
-        end: '2001-12-31'
+        org: 'Sec. Estado de Educação',
+        start: '1993-11-16',
+        end: '1995-02-01'
       });
 
-      // Add Previously Averred SIAPE Period (04/04/1994 a 10/05/1994 -> 37 days)
+      // Add Previously Averred SIAPE Period (04/04/1994 a 10/05/1994 -> 37 dias)
       addSiapePeriod({
-        desc: 'Averbação Prévia — Órgão Estadual',
-        start: '1998-01-01',
-        end: '1998-06-30'
+        desc: 'Já averbado no SIAPE',
+        start: '1994-04-04',
+        end: '1994-05-10'
       });
 
-      showToast('Exemplo genérico carregado! Substitua pelos dados reais do servidor.');
+      showToast('Exemplo real de averbação carregado com sucesso!');
     }
 
     // Tab Switcher
