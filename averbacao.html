@@ -724,16 +724,17 @@
           </div>
         </div>
 
-        <!-- Ajuste Opcional de Tempo Bruto Certificado da CTC -->
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs">
+        <!-- Ajuste / Informação de Tempo Declarado na CTC -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs bg-slate-100/80 p-2.5 rounded-lg border border-slate-200">
           <div class="sm:col-span-2">
-            <label class="text-[11px] text-slate-500 block mb-0.5">
-              <span>Tempo Bruto Declarado na CTC (Opcional - em dias)</span>
+            <label class="text-[11px] text-slate-700 font-semibold block mb-0.5 flex items-center justify-between">
+              <span>Tempo em Dias Declarado na CTC (Oficial)</span>
+              <span class="text-[10px] text-blue-600 font-normal">Preencha se a CTC cravar dias</span>
             </label>
-            <input type="number" value="${data.manualGross || ''}" class="ctc-manual-gross w-full px-2.5 py-1 border border-slate-300 rounded bg-white text-xs font-mono" oninput="recalculate()" placeholder="Deixe em branco para cálculo automático de calendário">
+            <input type="number" value="${data.manualGross || ''}" class="ctc-manual-gross w-full px-2.5 py-1.5 border border-slate-300 rounded bg-white text-xs font-mono font-bold text-slate-900 focus:ring-1 focus:ring-blue-500 outline-none" oninput="recalculate()" placeholder="Ex: 141 (se vazio, usa calendário automático: 142)">
           </div>
           <div class="text-[10px] text-slate-500 flex items-center pt-3">
-            <span>ℹ️ Use se a certidão declarar valor oficial fixo (ex: 2.927d).</span>
+            <span>ℹ️ O INSS usa meses padrão de 30 dias (ex: 141d). Informe aqui se quiser bater o valor do papel.</span>
           </div>
         </div>
 
