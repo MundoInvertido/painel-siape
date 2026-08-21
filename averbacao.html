@@ -803,20 +803,20 @@
         }
       });
 
-      // Intuitive Accounting Engine: Grouping by CTC Employer with Positive (+) and Negative (-) breakdown
+      // Intuitive Accounting Engine: One row per CTC employer, using UNIQUE days per contract
+      // to avoid double-counting concomitant days in both bruto and glosas
       const ctcBreakdownList = [];
 
       let grandTotalGross = 0;
       let grandTotalGlosas = 0;
       let grandTotalLiquid = 0;
 
-      const globalClaimedDays = new Set(); // Tracks unique days approved across CTCs to handle concomitance
+      // Track globally which days have already been accounted for in any contract
+      const globalAccountedDays = new Set();
 
       ctcIntervals.forEach((ctc, ctcIdx) => {
-        const grossDays = daysBetween(ctc.start, ctc.end);
-        grandTotalGross += grossDays;
-
         const glosasDetail = [];
+        let uniqueGrossDays = 0;     // Unique days belonging only to this contract
         let validDaysForThisCtc = 0;
 
         let curGlosaStart = null;
@@ -826,20 +826,57 @@
         let curTime = new Date(ctc.start.getTime());
         while (curTime <= ctc.end) {
           const timeKey = curTime.getTime();
-          let status = 'VALID';
 
+          // Determine what kind of day this is
+          let status = 'VALID';
           if (siapeIntervals.some(s => curTime >= s.start && curTime <= s.end)) {
             status = 'GLOSA_SIAPE';
           } else if (prfStart && curTime >= prfStart) {
             status = 'GLOSA_PRF';
-          } else if (globalClaimedDays.has(timeKey)) {
+          } else if (globalAccountedDays.has(timeKey)) {
             status = 'GLOSA_CONCOMITANTE';
-          } else {
-            globalClaimedDays.add(timeKey);
           }
 
-          if (status === 'VALID') {
-            validDaysForThisCtc++;
+          // Only count this day if not yet globally accounted (avoid double counting)
+          const alreadyAccountedGlobally = globalAccountedDays.has(timeKey);
+
+          if (!alreadyAccountedGlobally) {
+            // This day is unique to this contract in the global ledger
+            uniqueGrossDays++;
+            globalAccountedDays.add(timeKey);
+
+            if (status === 'VALID') {
+              validDaysForThisCtc++;
+              if (curGlosaStatus && curGlosaStart && prevTime) {
+                const segEnd = new Date(prevTime);
+                glosasDetail.push({
+                  start: curGlosaStart,
+                  end: segEnd,
+                  days: daysBetween(curGlosaStart, segEnd),
+                  type: curGlosaStatus
+                });
+                curGlosaStatus = null;
+                curGlosaStart = null;
+              }
+            } else {
+              if (!curGlosaStatus) {
+                curGlosaStatus = status;
+                curGlosaStart = new Date(curTime.getTime());
+              } else if (status !== curGlosaStatus) {
+                const segEnd = new Date(prevTime);
+                glosasDetail.push({
+                  start: curGlosaStart,
+                  end: segEnd,
+                  days: daysBetween(curGlosaStart, segEnd),
+                  type: curGlosaStatus
+                });
+                curGlosaStatus = status;
+                curGlosaStart = new Date(curTime.getTime());
+              }
+            }
+          } else {
+            // Day already counted in a previous contract (concomitant overlap)
+            // Close any open glosa segment before skipping
             if (curGlosaStatus && curGlosaStart && prevTime) {
               const segEnd = new Date(prevTime);
               glosasDetail.push({
@@ -850,21 +887,6 @@
               });
               curGlosaStatus = null;
               curGlosaStart = null;
-            }
-          } else {
-            if (!curGlosaStatus) {
-              curGlosaStatus = status;
-              curGlosaStart = new Date(curTime.getTime());
-            } else if (status !== curGlosaStatus) {
-              const segEnd = new Date(prevTime);
-              glosasDetail.push({
-                start: curGlosaStart,
-                end: segEnd,
-                days: daysBetween(curGlosaStart, segEnd),
-                type: curGlosaStatus
-              });
-              curGlosaStatus = status;
-              curGlosaStart = new Date(curTime.getTime());
             }
           }
 
@@ -884,6 +906,7 @@
 
         let totalCtcGlosas = 0;
         glosasDetail.forEach(g => totalCtcGlosas += g.days);
+        grandTotalGross += uniqueGrossDays;
         grandTotalGlosas += totalCtcGlosas;
         grandTotalLiquid += validDaysForThisCtc;
 
@@ -891,7 +914,8 @@
           org: ctc.org || `Vínculo #${ctcIdx + 1}`,
           start: ctc.start,
           end: ctc.end,
-          grossDays: grossDays,
+          grossDays: uniqueGrossDays,
+          grossDaysRaw: daysBetween(ctc.start, ctc.end),
           glosas: glosasDetail,
           totalGlosas: totalCtcGlosas,
           liquidDays: validDaysForThisCtc
