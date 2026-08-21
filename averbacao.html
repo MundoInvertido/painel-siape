@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR" class="h-full bg-slate-100">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,27 +12,65 @@
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Merriweather:ital,wght@0,400;0,700;1,300&display=swap" rel="stylesheet">
-  
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Merriweather:ital,wght@0,400;0,700;1,300&display=swap"
+    rel="stylesheet">
+
   <style>
-    body { font-family: 'Inter', sans-serif; }
-    .font-serif-doc { font-family: 'Merriweather', serif; }
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+
+    .font-serif-doc {
+      font-family: 'Merriweather', serif;
+    }
 
     @media print {
-      .no-print { display: none !important; }
-      body { background-color: white !important; font-size: 10.5pt; color: black !important; }
-      .print-shadow-none { box-shadow: none !important; }
-      .page-break { page-break-before: always; }
-      .print-card { border: 1px solid #cbd5e1 !important; box-shadow: none !important; }
+      .no-print {
+        display: none !important;
+      }
+
+      body {
+        background-color: white !important;
+        font-size: 10.5pt;
+        color: black !important;
+      }
+
+      .print-shadow-none {
+        box-shadow: none !important;
+      }
+
+      .page-break {
+        page-break-before: always;
+      }
+
+      .print-card {
+        border: 1px solid #cbd5e1 !important;
+        box-shadow: none !important;
+      }
     }
 
     /* Custom scrollbars */
-    ::-webkit-scrollbar { width: 6px; height: 6px; }
-    ::-webkit-scrollbar-track { background: #f1f5f9; }
-    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
-    ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #f1f5f9;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
+    }
   </style>
 </head>
+
 <body class="h-full text-slate-800 antialiased flex flex-col">
 
   <!-- Header / Navigation -->
@@ -42,28 +81,33 @@
           <i data-lucide="shield-check" class="w-6 h-6"></i>
         </div>
         <div>
-          <h1 class="text-base sm:text-lg font-bold tracking-tight leading-tight">Calculadora & Gerador de Averbações</h1>
+          <h1 class="text-base sm:text-lg font-bold tracking-tight leading-tight">Calculadora & Gerador de Averbações
+          </h1>
           <p class="text-xs text-slate-400">Polícia Rodoviária Federal — Gestão de Pessoas</p>
         </div>
       </div>
 
       <!-- Action & View Toggles -->
       <div class="flex items-center gap-2 sm:gap-3">
-        <button onclick="loadExampleData()" class="flex items-center gap-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 px-3 py-1.5 rounded-lg text-xs font-semibold transition">
+        <button onclick="loadExampleData()"
+          class="flex items-center gap-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 px-3 py-1.5 rounded-lg text-xs font-semibold transition">
           <i data-lucide="sparkles" class="w-3.5 h-3.5 text-amber-400"></i>
           <span class="hidden md:inline">Carregar</span> Exemplo
         </button>
 
         <div class="bg-slate-800 p-1 rounded-lg border border-slate-700 flex text-xs font-medium">
-          <button id="btn-tab-form" onclick="switchTab('form')" class="px-3 py-1 rounded-md bg-amber-500 text-slate-950 font-bold transition">
+          <button id="btn-tab-form" onclick="switchTab('form')"
+            class="px-3 py-1 rounded-md bg-amber-500 text-slate-950 font-bold transition">
             <i data-lucide="edit-3" class="w-3.5 h-3.5 inline mr-1"></i> Dados
           </button>
-          <button id="btn-tab-report" onclick="switchTab('report')" class="px-3 py-1 rounded-md text-slate-300 hover:text-white transition">
+          <button id="btn-tab-report" onclick="switchTab('report')"
+            class="px-3 py-1 rounded-md text-slate-300 hover:text-white transition">
             <i data-lucide="file-text" class="w-3.5 h-3.5 inline mr-1"></i> Relatório
           </button>
         </div>
 
-        <button onclick="window.print()" class="flex items-center gap-1.5 bg-blue-600 hover:bg-blue-500 text-white px-3.5 py-1.5 rounded-lg text-xs font-bold transition shadow-sm">
+        <button onclick="window.print()"
+          class="flex items-center gap-1.5 bg-blue-600 hover:bg-blue-500 text-white px-3.5 py-1.5 rounded-lg text-xs font-bold transition shadow-sm">
           <i data-lucide="printer" class="w-4 h-4"></i>
           <span class="hidden sm:inline">Imprimir PDF</span>
         </button>
@@ -75,7 +119,8 @@
   <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col gap-6">
 
     <!-- Toast Notification Banner -->
-    <div id="toast-banner" class="hidden no-print bg-emerald-600 text-white px-4 py-3 rounded-xl shadow-lg flex items-center justify-between text-xs sm:text-sm font-medium animate-fade-in">
+    <div id="toast-banner"
+      class="hidden no-print bg-emerald-600 text-white px-4 py-3 rounded-xl shadow-lg flex items-center justify-between text-xs sm:text-sm font-medium animate-fade-in">
       <div class="flex items-center gap-2">
         <i data-lucide="check-circle" class="w-5 h-5 shrink-0"></i>
         <span id="toast-message">Exemplo carregado com sucesso!</span>
@@ -106,33 +151,40 @@
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
             <div>
               <label class="block font-semibold text-slate-700 mb-1">Nome Completo do Servidor *</label>
-              <input type="text" id="input-nome" placeholder="Ex: Carlos Alberto Rodrigues" oninput="recalculate()" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none">
+              <input type="text" id="input-nome" placeholder="Ex: xxxx" oninput="recalculate()"
+                class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none">
             </div>
 
             <div>
               <label class="block font-semibold text-slate-700 mb-1">Matrícula SIAPE *</label>
-              <input type="text" id="input-siape" placeholder="Ex: 1000001" oninput="recalculate()" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none font-mono">
+              <input type="text" id="input-siape" placeholder="Ex: 1000001" oninput="recalculate()"
+                class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none font-mono">
             </div>
 
             <div>
               <label class="block font-semibold text-slate-700 mb-1">Cargo Efetivo</label>
-              <input type="text" id="input-cargo" value="Policial Rodoviário Federal" oninput="recalculate()" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none">
+              <input type="text" id="input-cargo" value="Policial Rodoviário Federal" oninput="recalculate()"
+                class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none">
             </div>
 
             <div>
               <label class="block font-semibold text-slate-700 mb-1">Número do Processo SEI</label>
-              <input type="text" id="input-sei" placeholder="Ex: 08652.000001/2026-00" oninput="recalculate()" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none font-mono">
+              <input type="text" id="input-sei" placeholder="Ex: 08652.000001/2026-00" oninput="recalculate()"
+                class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none font-mono">
             </div>
 
             <div>
               <label class="block font-semibold text-slate-700 mb-1">Data de Exercício / Posse na PRF *</label>
-              <input type="date" id="input-data-prf" onchange="recalculate()" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none font-mono">
-              <span class="text-[10px] text-slate-500 mt-0.5 block">Usada para barrar concomitâncias posteriores a esta data.</span>
+              <input type="date" id="input-data-prf" onchange="recalculate()"
+                class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none font-mono">
+              <span class="text-[10px] text-slate-500 mt-0.5 block">Usada para barrar concomitâncias posteriores a esta
+                data.</span>
             </div>
 
             <div>
               <label class="block font-semibold text-slate-700 mb-1">Superintendência / Unidade</label>
-              <input type="text" id="input-unidade" value="SPRF-XX / NUAP" oninput="recalculate()" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none">
+              <input type="text" id="input-unidade" value="SPRF-XX / NUAP" oninput="recalculate()"
+                class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none">
             </div>
           </div>
         </div>
@@ -150,7 +202,8 @@
               </div>
             </div>
 
-            <button onclick="addCtcPeriod()" class="flex items-center gap-1 bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1.5 rounded-lg text-xs font-semibold transition">
+            <button onclick="addCtcPeriod()"
+              class="flex items-center gap-1 bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1.5 rounded-lg text-xs font-semibold transition">
               <i data-lucide="plus" class="w-4 h-4"></i> Adicionar Período
             </button>
           </div>
@@ -173,7 +226,8 @@
               </div>
             </div>
 
-            <button onclick="addSiapePeriod()" class="flex items-center gap-1 bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-1.5 rounded-lg text-xs font-semibold transition">
+            <button onclick="addSiapePeriod()"
+              class="flex items-center gap-1 bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-1.5 rounded-lg text-xs font-semibold transition">
               <i data-lucide="plus" class="w-4 h-4"></i> Adicionar Averbação
             </button>
           </div>
@@ -193,14 +247,16 @@
             <span class="text-xs font-bold uppercase tracking-wider text-amber-400 flex items-center gap-1.5">
               <i data-lucide="calculator" class="w-4 h-4"></i> Resumo em Tempo Real
             </span>
-            <span class="text-[11px] bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-2.5 py-0.5 rounded-full font-mono">
+            <span
+              class="text-[11px] bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-2.5 py-0.5 rounded-full font-mono">
               Auditoria Automática
             </span>
           </div>
 
           <!-- Total Liquid Result KPI -->
           <div class="bg-gradient-to-br from-emerald-600 to-teal-700 p-5 rounded-xl text-white shadow-md space-y-2">
-            <span class="text-xs font-semibold text-emerald-100 uppercase tracking-wider block">Tempo Líquido Averbável</span>
+            <span class="text-xs font-semibold text-emerald-100 uppercase tracking-wider block">Tempo Líquido
+              Averbável</span>
             <div class="text-4xl font-black tracking-tight" id="kpi-liquid-days">
               0 <span class="text-lg font-normal text-emerald-100">dias</span>
             </div>
@@ -227,13 +283,15 @@
 
           <!-- Live Formula Box -->
           <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 text-xs font-mono space-y-2">
-            <span class="text-slate-400 text-[10px] uppercase block tracking-wider font-sans">Fórmula de Apuração:</span>
+            <span class="text-slate-400 text-[10px] uppercase block tracking-wider font-sans">Fórmula de
+              Apuração:</span>
             <div id="kpi-formula-text" class="text-amber-300 font-bold leading-relaxed">
               0 - 0 - 0 = 0 dias
             </div>
           </div>
 
-          <button onclick="switchTab('report')" class="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold py-3 px-4 rounded-xl text-sm transition flex items-center justify-center gap-2 shadow-lg">
+          <button onclick="switchTab('report')"
+            class="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold py-3 px-4 rounded-xl text-sm transition flex items-center justify-center gap-2 shadow-lg">
             <i data-lucide="file-check-2" class="w-4 h-4"></i> Visualizar Relatório Completo
           </button>
         </div>
@@ -257,25 +315,29 @@
           <div class="relative z-10 flex flex-col lg:flex-row justify-between gap-6">
             <div class="space-y-3 max-w-3xl">
               <div class="flex flex-wrap items-center gap-2">
-                <span class="px-3 py-1 bg-amber-500 text-slate-950 font-mono font-bold text-xs rounded-md uppercase tracking-wide">
+                <span
+                  class="px-3 py-1 bg-amber-500 text-slate-950 font-mono font-bold text-xs rounded-md uppercase tracking-wide">
                   Parecer Técnico Definitivo
                 </span>
                 <span id="rpt-sei-tag" class="px-3 py-1 bg-slate-800 text-slate-300 font-mono text-xs rounded-md">
                   SEI nº 08652.000001/2026-00
                 </span>
               </div>
-              
+
               <h2 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
                 Relatório de Averbação de Tempo de Contribuição
               </h2>
               <p class="text-slate-300 text-sm leading-relaxed">
-                Análise e apuração definitiva de tempo de serviço público anterior para fins de aposentadoria e disponibilidade, nos termos da legislação federal vigente.
+                Análise e apuração definitiva de tempo de serviço público anterior para fins de aposentadoria e
+                disponibilidade, nos termos da legislação federal vigente.
               </p>
             </div>
 
             <!-- Servidor ID Badge -->
-            <div class="bg-slate-800/90 border border-slate-700/80 p-4 rounded-xl text-xs space-y-2 min-w-[280px] shrink-0 shadow-lg">
-              <div class="text-slate-400 font-bold uppercase text-[10px] tracking-wider border-b border-slate-700 pb-1 flex justify-between items-center">
+            <div
+              class="bg-slate-800/90 border border-slate-700/80 p-4 rounded-xl text-xs space-y-2 min-w-[280px] shrink-0 shadow-lg">
+              <div
+                class="text-slate-400 font-bold uppercase text-[10px] tracking-wider border-b border-slate-700 pb-1 flex justify-between items-center">
                 <span>Dados do Interessado</span>
                 <i data-lucide="user" class="w-3.5 h-3.5 text-amber-400"></i>
               </div>
@@ -305,13 +367,14 @@
 
         <!-- KPI Summary Cards Grid -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 p-6 bg-slate-50 border-b border-slate-200">
-          
+
           <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm space-y-1">
             <div class="flex justify-between items-center text-slate-500 text-xs font-semibold uppercase">
               <span>Tempo Certificado</span>
               <i data-lucide="file-text" class="w-4 h-4 text-blue-500"></i>
             </div>
-            <div class="text-2xl font-black text-slate-800" id="rpt-kpi-gross">0 <span class="text-xs font-normal text-slate-500">dias</span></div>
+            <div class="text-2xl font-black text-slate-800" id="rpt-kpi-gross">0 <span
+                class="text-xs font-normal text-slate-500">dias</span></div>
             <p class="text-[11px] text-slate-500">Total informado nas CTCs</p>
           </div>
 
@@ -320,7 +383,8 @@
               <span>(-) Averbação SIAPE</span>
               <i data-lucide="minus-circle" class="w-4 h-4 text-amber-500"></i>
             </div>
-            <div class="text-2xl font-black text-amber-600" id="rpt-kpi-siape">0 <span class="text-xs font-normal text-slate-500">dias</span></div>
+            <div class="text-2xl font-black text-amber-600" id="rpt-kpi-siape">0 <span
+                class="text-xs font-normal text-slate-500">dias</span></div>
             <p class="text-[11px] text-slate-500">Glosa por registros prévios</p>
           </div>
 
@@ -329,7 +393,8 @@
               <span>(-) Exercício PRF</span>
               <i data-lucide="ban" class="w-4 h-4 text-red-500"></i>
             </div>
-            <div class="text-2xl font-black text-red-600" id="rpt-kpi-prf">0 <span class="text-xs font-normal text-slate-500">dias</span></div>
+            <div class="text-2xl font-black text-red-600" id="rpt-kpi-prf">0 <span
+                class="text-xs font-normal text-slate-500">dias</span></div>
             <p class="text-[11px] text-slate-500">Glosa por concomitância</p>
           </div>
 
@@ -338,7 +403,8 @@
               <span>Tempo Líquido Definitivo</span>
               <i data-lucide="check-circle-2" class="w-5 h-5 text-emerald-200"></i>
             </div>
-            <div class="text-2xl sm:text-3xl font-black" id="rpt-kpi-liquid">0 <span class="text-xs sm:text-sm font-normal text-emerald-100">dias</span></div>
+            <div class="text-2xl sm:text-3xl font-black" id="rpt-kpi-liquid">0 <span
+                class="text-xs sm:text-sm font-normal text-emerald-100">dias</span></div>
             <p id="rpt-kpi-liquid-ext" class="text-[11px] text-emerald-100 font-medium">0 meses e 0 dias</p>
           </div>
 
@@ -354,7 +420,9 @@
                 <i data-lucide="calculator" class="w-5 h-5 text-blue-600"></i>
                 Demonstrativo da Apuração do Tempo Líquido
               </h3>
-              <span id="rpt-formula-badge" class="text-xs font-mono text-slate-600 bg-slate-100 px-3 py-1 rounded-md">Fórmula: $0 - 0 - 0 = 0$ dias</span>
+              <span id="rpt-formula-badge"
+                class="text-xs font-mono text-slate-600 bg-slate-100 px-3 py-1 rounded-md">Fórmula: $0 - 0 - 0 = 0$
+                dias</span>
             </div>
 
             <div class="overflow-x-auto rounded-xl border border-slate-200 shadow-sm">
@@ -383,7 +451,9 @@
             </h3>
 
             <div class="bg-slate-50 p-5 rounded-xl border border-slate-200 space-y-4">
-              <div class="h-8 w-full bg-slate-200 rounded-lg overflow-hidden flex font-mono text-[11px] text-white font-bold shadow-inner" id="rpt-timeline-bar">
+              <div
+                class="h-8 w-full bg-slate-200 rounded-lg overflow-hidden flex font-mono text-[11px] text-white font-bold shadow-inner"
+                id="rpt-timeline-bar">
                 <!-- Dynamic timeline bar segments -->
               </div>
 
@@ -430,7 +500,8 @@
                   CF/1988 — Art. 201, § 9º
                 </div>
                 <p class="text-xs text-slate-600 leading-relaxed">
-                  Garante a contagem recíproca do tempo de contribuição entre a administração pública e os regimes de previdência, vedando expressamente a dupla contagem do mesmo intervalo.
+                  Garante a contagem recíproca do tempo de contribuição entre a administração pública e os regimes de
+                  previdência, vedando expressamente a dupla contagem do mesmo intervalo.
                 </p>
               </div>
 
@@ -440,7 +511,8 @@
                   Lei nº 8.112/1990 — Art. 103, I
                 </div>
                 <p class="text-xs text-slate-600 leading-relaxed">
-                  Autoriza a averbação do tempo de serviço prestado a Estados, Distrito Federal e Municípios para fins exclusivos de aposentadoria e disponibilidade no âmbito federal.
+                  Autoriza a averbação do tempo de serviço prestado a Estados, Distrito Federal e Municípios para fins
+                  exclusivos de aposentadoria e disponibilidade no âmbito federal.
                 </p>
               </div>
 
@@ -450,7 +522,8 @@
                   Lei nº 8.213/1991 — Art. 96, II
                 </div>
                 <p class="text-xs text-slate-600 leading-relaxed">
-                  Proíbe expressamente a contagem de tempo de serviço público ou privado exercido de forma concomitante com outro vínculo estatutário público já mantido.
+                  Proíbe expressamente a contagem de tempo de serviço público ou privado exercido de forma concomitante
+                  com outro vínculo estatutário público já mantido.
                 </p>
               </div>
             </div>
@@ -466,12 +539,15 @@
               <span class="text-xs font-mono bg-slate-200 text-slate-700 px-2.5 py-1 rounded">Para Cópia no SEI</span>
             </div>
 
-            <div class="p-6 sm:p-8 bg-amber-50/30 border border-slate-300 rounded-xl font-serif-doc text-sm text-slate-900 leading-relaxed space-y-4 shadow-sm">
-              
+            <div
+              class="p-6 sm:p-8 bg-amber-50/30 border border-slate-300 rounded-xl font-serif-doc text-sm text-slate-900 leading-relaxed space-y-4 shadow-sm">
+
               <div class="text-center font-sans space-y-1 pb-4 border-b border-slate-300">
-                <p class="font-extrabold text-slate-900 uppercase text-xs tracking-wider">MINISTÉRIO DA JUSTIÇA E SEGURANÇA PÚBLICA</p>
+                <p class="font-extrabold text-slate-900 uppercase text-xs tracking-wider">MINISTÉRIO DA JUSTIÇA E
+                  SEGURANÇA PÚBLICA</p>
                 <p class="font-bold text-slate-800 text-xs">POLÍCIA RODOVIÁRIA FEDERAL</p>
-                <p class="text-xs text-slate-600" id="rpt-doc-sub-header">Superintendência Regional — Núcleo de Administração de Pessoas</p>
+                <p class="text-xs text-slate-600" id="rpt-doc-sub-header">Superintendência Regional — Núcleo de
+                  Administração de Pessoas</p>
               </div>
 
               <div class="flex justify-between font-sans text-xs font-semibold text-slate-700 pt-2">
@@ -481,7 +557,8 @@
 
               <div class="font-sans text-xs space-y-1 bg-white/60 p-3 rounded border border-slate-200">
                 <p><strong>PROCESSO SEI Nº:</strong> <span id="rpt-doc-sei">xxxx.xxxxxx/2026-12</span></p>
-                <p><strong>INTERESSADO:</strong> <span id="rpt-doc-nome">xxxx xxx xxx</span> (SIAPE <span id="rpt-doc-siape">xxxxxxx</span>)</p>
+                <p><strong>INTERESSADO:</strong> <span id="rpt-doc-nome">xxxx xxx xxx</span> (SIAPE <span
+                    id="rpt-doc-siape">xxxxxxx</span>)</p>
                 <p><strong>ASSUNTO:</strong> Averbação de Tempo de Contribuição</p>
               </div>
 
@@ -490,11 +567,14 @@
               </p>
 
               <p class="text-justify indent-6">
-                2. Procedida à instrução e à conferência formal das datas declaradas na certidão apresentada em confronto com os registros do sistema SIAPE e data de posse no cargo efetivo, apuraram-se as glosas e descontos legais devidos.
+                2. Procedida à instrução e à conferência formal das datas declaradas na certidão apresentada em
+                confronto com os registros do sistema SIAPE e data de posse no cargo efetivo, apuraram-se as glosas e
+                descontos legais devidos.
               </p>
 
               <p class="text-justify indent-6 font-bold" id="rpt-doc-p3">
-                3. Ante o exposto, submetem-se os autos à consideração da autoridade competente para DEFERIMENTO PARCIAL da averbação do tempo de contribuição apurado...
+                3. Ante o exposto, submetem-se os autos à consideração da autoridade competente para DEFERIMENTO PARCIAL
+                da averbação do tempo de contribuição apurado...
               </p>
 
               <div class="pt-8 text-center font-sans space-y-1">
@@ -546,7 +626,7 @@
       if (totalDays <= 0) return '0 dias';
       const months = Math.floor(totalDays / 30);
       const days = totalDays % 30;
-      
+
       let res = '';
       if (months > 0) {
         res += `${months} Mês${months > 1 ? 'es' : ''}`;
@@ -564,7 +644,7 @@
       ctcCounter++;
       const id = `ctc-${ctcCounter}`;
       const container = document.getElementById('ctc-list');
-      
+
       const div = document.createElement('div');
       div.id = id;
       div.className = 'p-3 bg-slate-50 border border-slate-200 rounded-xl space-y-2 relative transition hover:border-slate-300';
@@ -690,7 +770,7 @@
 
         let curTime = new Date(ctc.start.getTime());
         while (curTime <= ctc.end) {
-          
+
           // Determine Day Status
           let status = 'VALID'; // Default
 
@@ -698,7 +778,7 @@
           const isSiape = siapeIntervals.some(s => curTime >= s.start && curTime <= s.end);
           if (isSiape) {
             status = 'GLOSA_SIAPE';
-          } 
+          }
           // Check PRF Concomitance Overlap
           else if (prfStart && curTime >= prfStart) {
             status = 'GLOSA_PRF';
@@ -835,7 +915,7 @@
         subSegments.forEach(seg => {
           const pct = ((seg.days / totalGrossDays) * 100).toFixed(1);
           const div = document.createElement('div');
-          
+
           let bgColor = 'bg-emerald-600';
           let label = `${seg.days}d Válidos`;
 
@@ -906,10 +986,10 @@
 
     // Load Default Example Case
     function loadExampleData() {
-      document.getElementById('input-nome').value = 'Carlos Alberto Rodrigues de Brito Junior';
-      document.getElementById('input-siape').value = '1073592';
+      document.getElementById('input-nome').value = 'xxxxx';
+      document.getElementById('input-siape').value = 'xxxxxx';
       document.getElementById('input-cargo').value = 'Policial Rodoviário Federal';
-      document.getElementById('input-sei').value = '08812.001796/2026-12';
+      document.getElementById('input-sei').value = 'xxxxxxx/2026-12';
       document.getElementById('input-data-prf').value = '1994-07-06';
       document.getElementById('input-unidade').value = 'SPRF-PA / NUAP';
 
@@ -972,9 +1052,10 @@
     }
 
     // Initialize on Load
-    window.onload = function() {
+    window.onload = function () {
       loadExampleData();
     };
   </script>
 </body>
+
 </html>
