@@ -2607,23 +2607,46 @@
         updateSyncStatusLabel();
       }
 
+      // Carregamento automático da nuvem ao iniciar (sempre, para todos os usuários)
       const gistToLoad = localStorage.getItem("github_gist_id_unified") ||
         localStorage.getItem("github_gist_id_procedures") ||
         localStorage.getItem("github_gist_id") ||
         SITE_GIST_ID;
       if (gistToLoad) {
+        const statusEl = document.getElementById("sync-status");
+        if (statusEl) statusEl.textContent = "Carregando da nuvem...";
         try {
           const cloudData = await cloudGet();
           if (cloudData) {
             applyUnifiedCloudData(cloudData);
-            if (isAdmin && document.getElementById("sync-status")) {
-              document.getElementById("sync-status").textContent = "Sincronizado";
-            }
+            const now = new Date().toLocaleTimeString();
+            if (statusEl) statusEl.textContent = `Atualizado às ${now}`;
+          } else {
+            console.warn("Nenhum dado retornado da nuvem no carregamento inicial.");
+            if (statusEl) statusEl.textContent = "Sem dados na nuvem";
           }
         } catch (e) {
           console.warn("Não foi possível carregar dados da nuvem, usando dados locais.", e);
+          if (statusEl) statusEl.textContent = "Erro ao carregar nuvem";
         }
       }
+
+      // Auto-refresh periódico a cada 5 minutos se cloud_auto_sync estiver ativo
+      setInterval(async () => {
+        if (localStorage.getItem("cloud_auto_sync") === "true") {
+          try {
+            const cloudData = await cloudGet();
+            if (cloudData) {
+              applyUnifiedCloudData(cloudData);
+              const now = new Date().toLocaleTimeString();
+              const statusEl = document.getElementById("sync-status");
+              if (statusEl) statusEl.textContent = `Auto-sync às ${now}`;
+            }
+          } catch (e) {
+            console.warn("Erro no auto-refresh periódico:", e);
+          }
+        }
+      }, 5 * 60 * 1000); // 5 minutos
 
       renderCategoryFilters();
       renderProcedures();
@@ -5066,10 +5089,21 @@
       }
     }
 
-    function toggleAutoSync(enabled) {
+    async function toggleAutoSync(enabled) {
       localStorage.setItem("cloud_auto_sync", enabled ? "true" : "false");
       if (enabled) {
-        syncUpload();
+        // Ao ativar: primeiro baixa dados mais recentes da nuvem, depois sobe os locais
+        const statusEl = document.getElementById("sync-status");
+        if (statusEl) statusEl.textContent = "Sincronizando...";
+        try {
+          const cloudData = await cloudGet();
+          if (cloudData) {
+            applyUnifiedCloudData(cloudData);
+          }
+        } catch (e) {
+          console.warn("Erro ao baixar dados ao ativar auto-sync:", e);
+        }
+        await syncUpload();
       }
     }
 
