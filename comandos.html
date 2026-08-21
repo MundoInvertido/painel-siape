@@ -5590,10 +5590,10 @@ matches:
 
       const method = localStorage.getItem("sync_method") || "gist";
       if (method === "gist") {
-        const token = localStorage.getItem("github_token");
+        const token = localStorage.getItem("github_token") || DEFAULT_GITHUB_TOKEN;
         const gistId = localStorage.getItem("github_gist_id_unified") ||
           localStorage.getItem("github_gist_id") ||
-          localStorage.getItem("github_gist_id_procedures");
+          localStorage.getItem("github_gist_id_procedures") || DEFAULT_GIST_ID;
         if (!token || !gistId) return false;
         try {
           const res = await fetch(`https://api.github.com/gists/${gistId}`, {
