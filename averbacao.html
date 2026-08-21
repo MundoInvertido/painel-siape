@@ -754,7 +754,7 @@
         }
       });
 
-      // Day-by-Day Analysis Algorithm
+      // Day-by-Day Analysis Algorithm (Unified Timeline to prevent CTC duplication and fragmented slices)
       let totalGrossDays = 0;
       let totalGlosaSiape = 0;
       let totalGlosaPrf = 0;
@@ -762,65 +762,77 @@
 
       const subSegments = [];
 
+      // Calculate total gross days from inputs
       ctcIntervals.forEach(ctc => {
-        const gross = daysBetween(ctc.start, ctc.end);
-        totalGrossDays += gross;
+        totalGrossDays += daysBetween(ctc.start, ctc.end);
+      });
 
-        let curSegmentStart = null;
-        let curStatus = null;
-
-        let curTime = new Date(ctc.start.getTime());
-        while (curTime <= ctc.end) {
-
-          // Determine Day Status
-          let status = 'VALID'; // Default
-
-          // Check SIAPE Overlap
-          const isSiape = siapeIntervals.some(s => curTime >= s.start && curTime <= s.end);
-          if (isSiape) {
-            status = 'GLOSA_SIAPE';
+      if (ctcIntervals.length > 0) {
+        // Collect all unique day timestamps across all CTC intervals
+        const dayMap = new Map();
+        ctcIntervals.forEach(ctc => {
+          let curTime = new Date(ctc.start.getTime());
+          while (curTime <= ctc.end) {
+            const timeKey = curTime.getTime();
+            if (!dayMap.has(timeKey)) {
+              let status = 'VALID';
+              if (siapeIntervals.some(s => curTime >= s.start && curTime <= s.end)) {
+                status = 'GLOSA_SIAPE';
+              } else if (prfStart && curTime >= prfStart) {
+                status = 'GLOSA_PRF';
+              }
+              dayMap.set(timeKey, status);
+            }
+            curTime.setUTCDate(curTime.getUTCDate() + 1);
           }
-          // Check PRF Concomitance Overlap
-          else if (prfStart && curTime >= prfStart) {
-            status = 'GLOSA_PRF';
+        });
+
+        // Sort unique timestamps chronologically
+        const sortedTimes = Array.from(dayMap.keys()).sort((a, b) => a - b);
+
+        if (sortedTimes.length > 0) {
+          let curSegmentStart = new Date(sortedTimes[0]);
+          let curStatus = dayMap.get(sortedTimes[0]);
+          let prevTime = sortedTimes[0];
+
+          for (let i = 0; i < sortedTimes.length; i++) {
+            const t = sortedTimes[i];
+            const status = dayMap.get(t);
+
+            // Accumulate Counters for unique days
+            if (status === 'VALID') totalLiquidDays++;
+            else if (status === 'GLOSA_SIAPE') totalGlosaSiape++;
+            else if (status === 'GLOSA_PRF') totalGlosaPrf++;
+
+            const isConsecutive = (i === 0) || ((t - prevTime) <= (1000 * 60 * 60 * 24 + 3600000));
+
+            if (status !== curStatus || !isConsecutive) {
+              if (i > 0) {
+                const segEnd = new Date(prevTime);
+                subSegments.push({
+                  start: curSegmentStart,
+                  end: segEnd,
+                  days: daysBetween(curSegmentStart, segEnd),
+                  status: curStatus
+                });
+              }
+              curSegmentStart = new Date(t);
+              curStatus = status;
+            }
+
+            prevTime = t;
           }
 
-          // Accumulate Counters
-          if (status === 'VALID') totalLiquidDays++;
-          else if (status === 'GLOSA_SIAPE') totalGlosaSiape++;
-          else if (status === 'GLOSA_PRF') totalGlosaPrf++;
-
-          // Segment Grouping
-          if (!curStatus) {
-            curStatus = status;
-            curSegmentStart = new Date(curTime.getTime());
-          } else if (status !== curStatus) {
-            // End segment
-            const segEnd = new Date(curTime.getTime() - (1000 * 60 * 60 * 24));
-            subSegments.push({
-              start: curSegmentStart,
-              end: segEnd,
-              days: daysBetween(curSegmentStart, segEnd),
-              status: curStatus
-            });
-            curStatus = status;
-            curSegmentStart = new Date(curTime.getTime());
-          }
-
-          // Advance 1 day
-          curTime.setUTCDate(curTime.getUTCDate() + 1);
-        }
-
-        // Close last segment
-        if (curStatus && curSegmentStart) {
+          // Push final segment
+          const segEnd = new Date(prevTime);
           subSegments.push({
             start: curSegmentStart,
-            end: new Date(ctc.end.getTime()),
-            days: daysBetween(curSegmentStart, ctc.end),
+            end: segEnd,
+            days: daysBetween(curSegmentStart, segEnd),
             status: curStatus
           });
         }
-      });
+      }
 
       // Update KPI Elements in UI Form
       document.getElementById('kpi-liquid-days').innerHTML = `${totalLiquidDays} <span class="text-lg font-normal text-emerald-100">dias</span>`;
