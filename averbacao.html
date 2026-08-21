@@ -670,6 +670,67 @@
       return Math.round((end - start) / msPerDay) + 1;
     }
 
+    // Official INSS Standard Calculation Algorithm (Decreto 3.048/99 / IN 128 / Portaria MPS)
+    // Decomposes periods into exact Years, Months and Days using standard 30-day month logic
+    function calculateInssBreakdown(startDate, endDate) {
+      if (!startDate || !endDate || endDate < startDate) {
+        return { years: 0, months: 0, days: 0, totalDaysInss: 0, totalDaysReal: 0, text: '0 dias' };
+      }
+
+      const totalDaysReal = daysBetween(startDate, endDate);
+
+      const y1 = startDate.getUTCFullYear();
+      const m1 = startDate.getUTCMonth() + 1;
+      const d1 = startDate.getUTCDate();
+
+      const y2 = endDate.getUTCFullYear();
+      const m2 = endDate.getUTCMonth() + 1;
+      const d2 = endDate.getUTCDate();
+
+      if (y1 === y2 && m1 === m2) {
+        const dEnd = Math.min(30, d2);
+        const dStart = Math.min(30, d1);
+        const fracDays = Math.max(0, dEnd - dStart + 1);
+        return {
+          years: 0,
+          months: Math.floor(fracDays / 30),
+          days: fracDays % 30,
+          totalDaysInss: fracDays,
+          totalDaysReal: totalDaysReal,
+          text: `0 ano(s), ${Math.floor(fracDays / 30)} mes(es), ${fracDays % 30} dia(s)`
+        };
+      }
+
+      // Initial partial days in start month (standardized to 30 days)
+      const startFrac = Math.max(0, 30 - Math.min(30, d1) + 1);
+      // Final partial days in end month (capped to 30)
+      const endFrac = Math.min(30, d2);
+
+      let totalFracDays = startFrac + endFrac;
+      let extraMonths = Math.floor(totalFracDays / 30);
+      let remDays = totalFracDays % 30;
+
+      // Full months in between
+      let totalFullMonths = (y2 - y1) * 12 + (m2 - m1 - 1);
+      if (totalFullMonths < 0) totalFullMonths = 0;
+
+      let netMonthsTotal = totalFullMonths + extraMonths;
+      let years = Math.floor(netMonthsTotal / 12);
+      let months = netMonthsTotal % 12;
+
+      // INSS total days formula: (Years * 365) + (Months * 30) + Days
+      const totalDaysInss = (years * 365) + (months * 30) + remDays;
+
+      return {
+        years,
+        months,
+        days: remDays,
+        totalDaysInss,
+        totalDaysReal,
+        text: `${years} ano(s), ${months} mes(es), ${remDays} dia(s)`
+      };
+    }
+
     // Helper: Days to Years, Months and Days (Legal Standard: Real Days + 365d/year & 30d/month breakdown)
     function daysToExtenso(totalDays) {
       if (!totalDays || isNaN(totalDays) || totalDays <= 0) return '0 dias';
@@ -703,9 +764,15 @@
           <span class="text-xs font-bold text-slate-800 flex items-center gap-1.5">
             <span class="w-2 h-2 rounded-full bg-blue-600"></span> Período CTC #${ctcCounter}
           </span>
-          <button onclick="removeElement('${id}')" class="text-slate-400 hover:text-red-500 transition" title="Remover Vínculo">
-            <i data-lucide="trash-2" class="w-4 h-4"></i>
-          </button>
+          <div class="flex items-center gap-2">
+            <select class="ctc-calc-mode text-[11px] font-semibold bg-white border border-slate-300 rounded px-2 py-0.5 text-slate-700 outline-none focus:ring-1 focus:ring-blue-500" onchange="recalculate()">
+              <option value="inss" ${(!data.calcMode || data.calcMode === 'inss') ? 'selected' : ''}>🏛️ Regra INSS (Meses 30d / 365d)</option>
+              <option value="real" ${data.calcMode === 'real' ? 'selected' : ''}>📅 Calendário Real (Dias Corridos)</option>
+            </select>
+            <button onclick="removeElement('${id}')" class="text-slate-400 hover:text-red-500 transition" title="Remover Vínculo">
+              <i data-lucide="trash-2" class="w-4 h-4"></i>
+            </button>
+          </div>
         </div>
         
         <!-- Período Integral da Contribuição (Vínculo Original) -->
@@ -728,13 +795,14 @@
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs bg-slate-100/80 p-2.5 rounded-lg border border-slate-200">
           <div class="sm:col-span-2">
             <label class="text-[11px] text-slate-700 font-semibold block mb-0.5 flex items-center justify-between">
-              <span>Tempo em Dias Declarado na CTC (Oficial)</span>
-              <span class="text-[10px] text-blue-600 font-normal">Preencha se a CTC cravar dias</span>
+              <span>Tempo em Dias Declarado na CTC</span>
+              <span class="text-[10px] text-blue-600 font-normal">Calculado automaticamente</span>
             </label>
-            <input type="number" value="${data.manualGross || ''}" class="ctc-manual-gross w-full px-2.5 py-1.5 border border-slate-300 rounded bg-white text-xs font-mono font-bold text-slate-900 focus:ring-1 focus:ring-blue-500 outline-none" oninput="recalculate()" placeholder="Ex: 141 (se vazio, usa calendário automático: 142)">
+            <input type="number" value="${data.manualGross || ''}" class="ctc-manual-gross w-full px-2.5 py-1.5 border border-slate-300 rounded bg-white text-xs font-mono font-bold text-slate-900 focus:ring-1 focus:ring-blue-500 outline-none" oninput="recalculate()" placeholder="Automático (calculado pelo modo selecionado)">
           </div>
-          <div class="text-[10px] text-slate-500 flex items-center pt-3">
-            <span>ℹ️ O INSS usa meses padrão de 30 dias (ex: 141d). Informe aqui se quiser bater o valor do papel.</span>
+          <div class="text-[10px] text-slate-600 flex flex-col justify-center">
+            <span class="font-bold text-slate-700">Padrão da CTC:</span>
+            <span class="ctc-auto-preview text-blue-700 font-mono font-semibold">Preencha as datas</span>
           </div>
         </div>
 
@@ -859,10 +927,22 @@
         const afastDaysInput = parseInt(el.querySelector('.ctc-afast-days')?.value, 10);
         const afastMotivo = el.querySelector('.ctc-afast-motivo')?.value || 'Licença sem Vencimento';
         const manualGrossInput = parseInt(el.querySelector('.ctc-manual-gross')?.value, 10);
+        const calcMode = el.querySelector('.ctc-calc-mode')?.value || 'inss';
 
         if (start && end && end >= start) {
-          const autoGross = daysBetween(start, end);
-          const grossToUse = (!isNaN(manualGrossInput) && manualGrossInput > 0) ? manualGrossInput : autoGross;
+          const effectiveStart = aprovStart || start;
+          const effectiveEnd = aprovEnd || end;
+
+          const inssInfo = calculateInssBreakdown(effectiveStart, effectiveEnd);
+
+          // Update preview text in card
+          const previewEl = el.querySelector('.ctc-auto-preview');
+          if (previewEl) {
+            previewEl.innerText = `${inssInfo.text} = ${inssInfo.totalDaysInss}d (INSS) | ${inssInfo.totalDaysReal}d (Real)`;
+          }
+
+          const autoCalculatedGross = (calcMode === 'inss') ? inssInfo.totalDaysInss : inssInfo.totalDaysReal;
+          const grossToUse = (!isNaN(manualGrossInput) && manualGrossInput > 0) ? manualGrossInput : autoCalculatedGross;
 
           let computedAfastDays = 0;
           if (!isNaN(afastDaysInput) && afastDaysInput > 0) {
@@ -872,8 +952,8 @@
           }
 
           ctcIntervals.push({
-            start: aprovStart || start,
-            end: aprovEnd || end,
+            start: effectiveStart,
+            end: effectiveEnd,
             rawStart: start,
             rawEnd: end,
             hasCustomAproveitado: !!(el.querySelector('.ctc-aprov-end')?.value),
@@ -881,7 +961,9 @@
             afastEnd,
             afastDays: computedAfastDays,
             afastMotivo,
-            manualGross: (!isNaN(manualGrossInput) && manualGrossInput > 0) ? manualGrossInput : null,
+            manualGross: grossToUse,
+            calcMode,
+            inssInfo,
             org
           });
         }
