@@ -429,15 +429,15 @@
               <table class="w-full text-left text-sm">
                 <thead class="bg-slate-800 text-white uppercase text-[11px] tracking-wider">
                   <tr>
-                    <th class="py-3 px-4">Segmento Temporal</th>
-                    <th class="py-3 px-4">Intervalo</th>
-                    <th class="py-3 px-4 text-center">Dias Brutos</th>
-                    <th class="py-3 px-4 text-center">Status Legal</th>
-                    <th class="py-3 px-4 text-center">Dias Averbáveis</th>
+                    <th class="py-3 px-4">Vínculo / Órgão Emissor</th>
+                    <th class="py-3 px-4">Período Total da CTC</th>
+                    <th class="py-3 px-4 text-center">Tempo Bruto (+)</th>
+                    <th class="py-3 px-4">Glosas & Descontos (-)</th>
+                    <th class="py-3 px-4 text-center">Tempo Líquido Averbável (=)</th>
                   </tr>
                 </thead>
                 <tbody id="rpt-table-body" class="divide-y divide-slate-200 bg-white">
-                  <!-- Dynamic rows rendered here -->
+                  <!-- Dynamic intuitive accounting rows rendered here -->
                 </tbody>
               </table>
             </div>
@@ -803,22 +803,24 @@
         }
       });
 
-      // Per-CTC Analysis for Demonstrativo Table (lists ALL periods/vínculos from certidão, including concomitant ones)
-      const tableRows = [];
-      const claimedDaySet = new Set(); // Tracks unique days approved for averbação
+      // Intuitive Accounting Engine: Grouping by CTC Employer with Positive (+) and Negative (-) breakdown
+      const ctcBreakdownList = [];
 
-      let totalGrossDaysSum = 0;
-      let totalGlosaSiapeSum = 0;
-      let totalGlosaPrfSum = 0;
-      let totalGlosaConcomitanteSum = 0;
-      let totalLiquidDaysSum = 0;
+      let grandTotalGross = 0;
+      let grandTotalGlosas = 0;
+      let grandTotalLiquid = 0;
+
+      const globalClaimedDays = new Set(); // Tracks unique days approved across CTCs to handle concomitance
 
       ctcIntervals.forEach((ctc, ctcIdx) => {
-        const ctcGross = daysBetween(ctc.start, ctc.end);
-        totalGrossDaysSum += ctcGross;
+        const grossDays = daysBetween(ctc.start, ctc.end);
+        grandTotalGross += grossDays;
 
-        let curSegStart = null;
-        let curSegStatus = null;
+        const glosasDetail = [];
+        let validDaysForThisCtc = 0;
+
+        let curGlosaStart = null;
+        let curGlosaStatus = null;
         let prevTime = null;
 
         let curTime = new Date(ctc.start.getTime());
@@ -830,48 +832,70 @@
             status = 'GLOSA_SIAPE';
           } else if (prfStart && curTime >= prfStart) {
             status = 'GLOSA_PRF';
-          } else if (claimedDaySet.has(timeKey)) {
+          } else if (globalClaimedDays.has(timeKey)) {
             status = 'GLOSA_CONCOMITANTE';
           } else {
-            claimedDaySet.add(timeKey);
+            globalClaimedDays.add(timeKey);
           }
 
-          // Accumulate Counters
-          if (status === 'VALID') totalLiquidDaysSum++;
-          else if (status === 'GLOSA_SIAPE') totalGlosaSiapeSum++;
-          else if (status === 'GLOSA_PRF') totalGlosaPrfSum++;
-          else if (status === 'GLOSA_CONCOMITANTE') totalGlosaConcomitanteSum++;
-
-          if (!curSegStatus) {
-            curSegStatus = status;
-            curSegStart = new Date(curTime.getTime());
-          } else if (status !== curSegStatus) {
-            const segEnd = new Date(curTime.getTime() - (1000 * 60 * 60 * 24));
-            tableRows.push({
-              org: ctc.org || `Vínculo #${ctcIdx + 1}`,
-              start: curSegStart,
-              end: segEnd,
-              days: daysBetween(curSegStart, segEnd),
-              status: curSegStatus
-            });
-            curSegStatus = status;
-            curSegStart = new Date(curTime.getTime());
+          if (status === 'VALID') {
+            validDaysForThisCtc++;
+            if (curGlosaStatus && curGlosaStart && prevTime) {
+              const segEnd = new Date(prevTime);
+              glosasDetail.push({
+                start: curGlosaStart,
+                end: segEnd,
+                days: daysBetween(curGlosaStart, segEnd),
+                type: curGlosaStatus
+              });
+              curGlosaStatus = null;
+              curGlosaStart = null;
+            }
+          } else {
+            if (!curGlosaStatus) {
+              curGlosaStatus = status;
+              curGlosaStart = new Date(curTime.getTime());
+            } else if (status !== curGlosaStatus) {
+              const segEnd = new Date(prevTime);
+              glosasDetail.push({
+                start: curGlosaStart,
+                end: segEnd,
+                days: daysBetween(curGlosaStart, segEnd),
+                type: curGlosaStatus
+              });
+              curGlosaStatus = status;
+              curGlosaStart = new Date(curTime.getTime());
+            }
           }
 
           prevTime = curTime.getTime();
           curTime.setUTCDate(curTime.getUTCDate() + 1);
         }
 
-        if (curSegStatus && curSegStart && prevTime) {
+        if (curGlosaStatus && curGlosaStart && prevTime) {
           const segEnd = new Date(prevTime);
-          tableRows.push({
-            org: ctc.org || `Vínculo #${ctcIdx + 1}`,
-            start: curSegStart,
+          glosasDetail.push({
+            start: curGlosaStart,
             end: segEnd,
-            days: daysBetween(curSegStart, segEnd),
-            status: curSegStatus
+            days: daysBetween(curGlosaStart, segEnd),
+            type: curGlosaStatus
           });
         }
+
+        let totalCtcGlosas = 0;
+        glosasDetail.forEach(g => totalCtcGlosas += g.days);
+        grandTotalGlosas += totalCtcGlosas;
+        grandTotalLiquid += validDaysForThisCtc;
+
+        ctcBreakdownList.push({
+          org: ctc.org || `Vínculo #${ctcIdx + 1}`,
+          start: ctc.start,
+          end: ctc.end,
+          grossDays: grossDays,
+          glosas: glosasDetail,
+          totalGlosas: totalCtcGlosas,
+          liquidDays: validDaysForThisCtc
+        });
       });
 
       // Unified Subsegments array for multi-track timeline render
@@ -932,15 +956,13 @@
         }
       }
 
-      const totalAllGlosas = totalGlosaSiapeSum + totalGlosaPrfSum + totalGlosaConcomitanteSum;
-
       // Update KPI Elements in UI Form
-      document.getElementById('kpi-liquid-days').innerHTML = `${totalLiquidDaysSum} <span class="text-lg font-normal text-emerald-100">dias</span>`;
-      document.getElementById('kpi-liquid-text').innerText = `Equivale a aproximadamente ${daysToExtenso(totalLiquidDaysSum)}`;
-      document.getElementById('kpi-gross-days').innerText = `${totalGrossDaysSum} dias`;
-      document.getElementById('kpi-glosa-siape').innerText = `${totalGlosaSiapeSum} dias`;
-      document.getElementById('kpi-glosa-prf').innerText = `${totalGlosaPrfSum + totalGlosaConcomitanteSum} dias`;
-      document.getElementById('kpi-formula-text').innerText = `${totalGrossDaysSum} - ${totalAllGlosas} = ${totalLiquidDaysSum} dias`;
+      document.getElementById('kpi-liquid-days').innerHTML = `${grandTotalLiquid} <span class="text-lg font-normal text-emerald-100">dias</span>`;
+      document.getElementById('kpi-liquid-text').innerText = `Equivale a aproximadamente ${daysToExtenso(grandTotalLiquid)}`;
+      document.getElementById('kpi-gross-days').innerText = `${grandTotalGross} dias`;
+      document.getElementById('kpi-glosa-siape').innerText = `${grandTotalGlosas} dias`;
+      document.getElementById('kpi-glosa-prf').innerText = `${grandTotalGlosas} dias`;
+      document.getElementById('kpi-formula-text').innerText = `${grandTotalGross} - ${grandTotalGlosas} = ${grandTotalLiquid} dias`;
 
       // Update Report Header Data
       document.getElementById('rpt-nome').innerText = nome;
@@ -951,18 +973,18 @@
       document.getElementById('rpt-sei-tag').innerText = `SEI nº ${sei}`;
 
       // Update Report KPI Cards
-      document.getElementById('rpt-kpi-gross').innerHTML = `${totalGrossDaysSum} <span class="text-xs font-normal text-slate-500">dias</span>`;
-      document.getElementById('rpt-kpi-siape').innerHTML = `${totalGlosaSiapeSum} <span class="text-xs font-normal text-slate-500">dias</span>`;
-      document.getElementById('rpt-kpi-prf').innerHTML = `${totalGlosaPrfSum + totalGlosaConcomitanteSum} <span class="text-xs font-normal text-slate-500">dias</span>`;
-      document.getElementById('rpt-kpi-liquid').innerHTML = `${totalLiquidDaysSum} <span class="text-xs sm:text-sm font-normal text-emerald-100">dias</span>`;
-      document.getElementById('rpt-kpi-liquid-ext').innerText = `Equivale a ${daysToExtenso(totalLiquidDaysSum)}`;
-      document.getElementById('rpt-formula-badge').innerText = `Fórmula: $${totalGrossDaysSum} - ${totalAllGlosas} = ${totalLiquidDaysSum}$ dias`;
+      document.getElementById('rpt-kpi-gross').innerHTML = `${grandTotalGross} <span class="text-xs font-normal text-slate-500">dias</span>`;
+      document.getElementById('rpt-kpi-siape').innerHTML = `${grandTotalGlosas} <span class="text-xs font-normal text-slate-500">dias</span>`;
+      document.getElementById('rpt-kpi-prf').innerHTML = `${grandTotalGlosas} <span class="text-xs font-normal text-slate-500">dias</span>`;
+      document.getElementById('rpt-kpi-liquid').innerHTML = `${grandTotalLiquid} <span class="text-xs sm:text-sm font-normal text-emerald-100">dias</span>`;
+      document.getElementById('rpt-kpi-liquid-ext').innerText = `Equivale a ${daysToExtenso(grandTotalLiquid)}`;
+      document.getElementById('rpt-formula-badge').innerText = `Fórmula: $${grandTotalGross} - ${grandTotalGlosas} = ${grandTotalLiquid}$ dias`;
 
-      // Render Sub-segments Table (Contains ALL CTC Periods including concomitances)
+      // Render Sub-segments Table (Intuitive Accounting Format with Positive (+) and Negative (-) breakdown)
       const tbody = document.getElementById('rpt-table-body');
       tbody.innerHTML = '';
 
-      if (tableRows.length === 0) {
+      if (ctcBreakdownList.length === 0) {
         tbody.innerHTML = `
           <tr>
             <td colspan="5" class="py-6 text-center text-slate-400 italic text-xs">
@@ -971,42 +993,56 @@
           </tr>
         `;
       } else {
-        tableRows.forEach((seg, idx) => {
+        ctcBreakdownList.forEach((item, idx) => {
           const tr = document.createElement('tr');
-          tr.className = 'hover:bg-slate-50 transition';
+          tr.className = 'hover:bg-slate-50 transition border-b border-slate-200';
 
-          let statusBadge = '';
-          let averbavelTxt = '';
-          let dotColor = 'bg-slate-400';
+          let glosasHtml = '';
+          if (item.glosas.length === 0) {
+            glosasHtml = `<span class="text-xs text-slate-400 italic font-mono">Nenhum desconto (0d)</span>`;
+          } else {
+            glosasHtml = `<div class="space-y-1 text-xs">`;
+            item.glosas.forEach(g => {
+              let label = 'Glosa';
+              let badgeColor = 'bg-slate-100 text-slate-700 border-slate-300';
+              if (g.type === 'GLOSA_SIAPE') {
+                label = 'SIAPE Prévia';
+                badgeColor = 'bg-purple-50 text-purple-800 border-purple-200';
+              } else if (g.type === 'GLOSA_PRF') {
+                label = 'Concomitância PRF';
+                badgeColor = 'bg-rose-50 text-rose-800 border-rose-200';
+              } else if (g.type === 'GLOSA_CONCOMITANTE') {
+                label = 'Concomitância Interna RGPS';
+                badgeColor = 'bg-amber-50 text-amber-900 border-amber-200';
+              }
 
-          if (seg.status === 'VALID') {
-            dotColor = 'bg-emerald-500';
-            statusBadge = `<span class="px-2.5 py-1 bg-emerald-100 text-emerald-800 rounded-full text-xs font-bold">Aprovado</span>`;
-            averbavelTxt = `<span class="font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded font-mono">+ ${seg.days} dias</span>`;
-          } else if (seg.status === 'GLOSA_SIAPE') {
-            dotColor = 'bg-purple-500';
-            statusBadge = `<span class="px-2.5 py-1 bg-purple-100 text-purple-800 rounded-full text-xs font-bold">Glosado (SIAPE)</span>`;
-            averbavelTxt = `<span class="font-bold text-slate-400 font-mono">0 dias</span>`;
-          } else if (seg.status === 'GLOSA_PRF') {
-            dotColor = 'bg-rose-500';
-            statusBadge = `<span class="px-2.5 py-1 bg-rose-100 text-rose-800 rounded-full text-xs font-bold">Glosado (PRF)</span>`;
-            averbavelTxt = `<span class="font-bold text-slate-400 font-mono">0 dias</span>`;
-          } else if (seg.status === 'GLOSA_CONCOMITANTE') {
-            dotColor = 'bg-amber-500';
-            statusBadge = `<span class="px-2.5 py-1 bg-amber-100 text-amber-900 rounded-full text-xs font-bold">Glosado (Concomitância Interna)</span>`;
-            averbavelTxt = `<span class="font-bold text-slate-400 font-mono">0 dias</span>`;
+              glosasHtml += `
+                <div class="flex items-center gap-1.5 font-mono text-[11px]">
+                  <span class="px-1.5 py-0.5 rounded border ${badgeColor} font-bold">- ${g.days}d</span>
+                  <span class="text-slate-600">(${label}: ${formatDate(g.start)} a ${formatDate(g.end)})</span>
+                </div>
+              `;
+            });
+            glosasHtml += `</div>`;
+          }
+
+          let liquidHtml = '';
+          if (item.liquidDays > 0) {
+            liquidHtml = `<span class="font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded border border-emerald-200 font-mono text-sm">+ ${item.liquidDays} dias</span>`;
+          } else {
+            liquidHtml = `<span class="font-bold text-slate-400 bg-slate-100 px-2.5 py-1 rounded font-mono text-xs">0 dias</span>`;
           }
 
           tr.innerHTML = `
-            <td class="py-3 px-4 font-semibold text-slate-900">
-              <span class="inline-flex items-center gap-1.5">
-                <span class="w-2.5 h-2.5 rounded-full ${dotColor}"></span> ${seg.org} (Trecho #${idx + 1})
+            <td class="py-3.5 px-4 font-bold text-slate-900">
+              <span class="inline-flex items-center gap-2">
+                <span class="w-2.5 h-2.5 rounded-full bg-blue-600"></span> ${item.org}
               </span>
             </td>
-            <td class="py-3 px-4 font-mono text-xs">${formatDate(seg.start)} a ${formatDate(seg.end)}</td>
-            <td class="py-3 px-4 text-center font-mono">${seg.days} dias</td>
-            <td class="py-3 px-4 text-center">${statusBadge}</td>
-            <td class="py-3 px-4 text-center">${averbavelTxt}</td>
+            <td class="py-3.5 px-4 font-mono text-xs text-slate-700">${formatDate(item.start)} a ${formatDate(item.end)}</td>
+            <td class="py-3.5 px-4 text-center font-mono font-bold text-slate-800 text-sm">+ ${item.grossDays} dias</td>
+            <td class="py-3.5 px-4">${glosasHtml}</td>
+            <td class="py-3.5 px-4 text-center">${liquidHtml}</td>
           `;
           tbody.appendChild(tr);
         });
@@ -1015,11 +1051,11 @@
         const trTotal = document.createElement('tr');
         trTotal.className = 'bg-slate-900 text-white font-bold border-t-2 border-slate-700';
         trTotal.innerHTML = `
-          <td class="py-3.5 px-4" colspan="2">TOTAL DO TEMPO LÍQUIDO APROVADO</td>
-          <td class="py-3.5 px-4 text-center font-mono text-slate-300">${totalGrossDaysSum} dias brutos</td>
-          <td class="py-3.5 px-4 text-center font-mono text-amber-300">${totalAllGlosas} dias glosados</td>
-          <td class="py-3.5 px-4 text-center font-mono text-emerald-400 text-base bg-slate-950">
-            ${totalLiquidDaysSum} DIAS
+          <td class="py-4 px-4" colspan="2">TOTAL DO TEMPO LÍQUIDO APROVADO</td>
+          <td class="py-4 px-4 text-center font-mono text-slate-200 text-sm">+ ${grandTotalGross} dias</td>
+          <td class="py-4 px-4 font-mono text-amber-300 text-xs">- ${grandTotalGlosas} dias glosados</td>
+          <td class="py-4 px-4 text-center font-mono text-emerald-400 text-base bg-slate-950">
+            + ${grandTotalLiquid} DIAS
           </td>
         `;
         tbody.appendChild(trTotal);
