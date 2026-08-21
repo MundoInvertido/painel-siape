@@ -708,16 +708,22 @@
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs">
           <div>
             <label class="text-[11px] text-slate-500 block mb-0.5">Órgão Emissor / Descrição</label>
-            <input type="text" value="${data.org || 'Secretaria de Educação'}" class="ctc-org w-full px-2.5 py-1.5 border border-slate-300 rounded-md focus:ring-1 focus:ring-blue-500 outline-none" oninput="recalculate()">
+            <input type="text" value="${data.org || 'Órgão / Empregador'}" class="ctc-org w-full px-2.5 py-1.5 border border-slate-300 rounded-md focus:ring-1 focus:ring-blue-500 outline-none" oninput="recalculate()">
           </div>
           <div>
             <label class="text-[11px] text-slate-500 block mb-0.5">Data Início *</label>
             <input type="date" value="${data.start || ''}" class="ctc-start w-full px-2.5 py-1.5 border border-slate-300 rounded-md focus:ring-1 focus:ring-blue-500 outline-none font-mono" onchange="recalculate()">
           </div>
           <div>
-            <label class="text-[11px] text-slate-500 block mb-0.5">Data Fim *</label>
-            <input type="date" value="${data.end || ''}" class="ctc-end w-full px-2.5 py-1.5 border border-slate-300 rounded-md focus:ring-1 focus:ring-blue-500 outline-none font-mono" onchange="recalculate()">
+            <label class="text-[11px] text-slate-700 font-semibold block mb-0.5 flex items-center justify-between">
+              <span>Data Fim / Aproveitada *</span>
+              <span class="text-[10px] text-blue-600 font-normal">Período Aproveitado</span>
+            </label>
+            <input type="date" value="${data.end || ''}" class="ctc-end w-full px-2.5 py-1.5 border border-slate-300 rounded-md focus:ring-1 focus:ring-blue-500 outline-none font-mono" onchange="recalculate()" title="Caso a CTC informe um *Período Aproveitado menor que o vínculo, insira a data final do período aproveitado">
           </div>
+        </div>
+        <div class="text-[10px] text-slate-500 italic bg-white/80 px-2 py-1 rounded border border-slate-200">
+          💡 <strong>Atenção:</strong> Caso a CTC indique <em>"*Período Aproveitado"</em> com data anterior ao término do contrato, informe a data aproveitada para que a apuração em dias feche exatamente com a Portaria.
         </div>
       `;
       container.appendChild(div);
