@@ -711,6 +711,12 @@
             </svg>
             Calculadora de Substituição
           </button>
+          <button class="app-tab-btn" id="tab-btn-averbacao" onclick="switchAppTab('averbacao')">
+            <svg class="icon" viewBox="0 0 24 24">
+              <path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.89 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm4 18H6V4h7v5h5v11zm-3-7H9v-2h6v2zm0 4H9v-2h6v2z" />
+            </svg>
+            Gerador de Averbação
+          </button>
         </div>
 
         <!-- VIEW 1: OVERVIEW GRID -->
@@ -828,6 +834,31 @@
             </div>
           </div>
 
+          <!-- App Card 4: Gerador de Averbação -->
+          <div class="app-card">
+            <div style="display: flex; align-items: center; gap: 1rem;">
+              <div class="app-card-icon" style="background: linear-gradient(135deg, #1d4ed8 0%, #3b82f6 100%);">
+                <svg class="icon" viewBox="0 0 24 24" style="width: 1.75rem; height: 1.75rem;">
+                  <path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.89 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm4 18H6V4h7v5h5v11zm-3-7H9v-2h6v2zm0 4H9v-2h6v2z" />
+                </svg>
+              </div>
+              <div>
+                <h3>Gerador de Averbação</h3>
+                <span style="font-size: 0.75rem; font-weight: 700; color: #1d4ed8; text-transform: uppercase;">Tempo de Contribuição</span>
+              </div>
+            </div>
+            <p>Calcula o tempo líquido averbável com glosas automáticas (SIAPE e concomitância PRF) e gera a minuta de despacho SEI pronta para copiar.</p>
+            <div class="app-card-actions">
+              <button class="btn btn-accent" style="flex: 1; background-color: #1d4ed8; border-color: #1d4ed8;"
+                onclick="switchAppTab('averbacao')">
+                ▶️ Abrir Aplicativo
+              </button>
+              <a href="averbacao.html" target="_blank" class="btn" title="Abrir em Nova Aba">
+                ↗️ Nova Aba
+              </a>
+            </div>
+          </div>
+
         </div>
 
         <!-- VIEW 0: ADICIONAL DE PERICULOSIDADE IFRAME -->
@@ -849,6 +880,11 @@
         <div id="view-substituicao" style="display: none; width: 100%;">
           <iframe src="calculadora_substituicao_aprimorada.html" class="app-iframe-container"
             id="iframe-substituicao"></iframe>
+        </div>
+
+        <!-- VIEW 4: GERADOR DE AVERBAÇÃO IFRAME -->
+        <div id="view-averbacao" style="display: none; width: 100%;">
+          <iframe src="averbacao.html" class="app-iframe-container" id="iframe-averbacao"></iframe>
         </div>
 
       </div>
@@ -892,6 +928,7 @@
       document.getElementById("view-calculadora").style.display = "none";
       document.getElementById("view-contador").style.display = "none";
       document.getElementById("view-substituicao").style.display = "none";
+      document.getElementById("view-averbacao").style.display = "none";
 
       // Remove active from all buttons
       document.getElementById("tab-btn-overview").classList.remove("active");
@@ -899,6 +936,7 @@
       document.getElementById("tab-btn-calculadora").classList.remove("active");
       document.getElementById("tab-btn-contador").classList.remove("active");
       document.getElementById("tab-btn-substituicao").classList.remove("active");
+      document.getElementById("tab-btn-averbacao").classList.remove("active");
 
       // Show selected view
       if (tabName === 'periculosidade') {
@@ -913,6 +951,9 @@
       } else if (tabName === 'substituicao') {
         document.getElementById("view-substituicao").style.display = "block";
         document.getElementById("tab-btn-substituicao").classList.add("active");
+      } else if (tabName === 'averbacao') {
+        document.getElementById("view-averbacao").style.display = "block";
+        document.getElementById("tab-btn-averbacao").classList.add("active");
       } else {
         document.getElementById("view-overview").style.display = "grid";
         document.getElementById("tab-btn-overview").classList.add("active");
