@@ -998,8 +998,8 @@
 
       ctcIntervals.forEach((ctc, ctcIdx) => {
         const glosasDetail = [];
-        let uniqueGrossDays = 0;     // Unique days belonging only to this contract
-        let validDaysForThisCtc = 0;
+        const grossDaysThisCtc = ctc.manualGross || (ctc.calcMode === 'inss' ? ctc.inssInfo.totalDaysInss : daysBetween(ctc.start, ctc.end));
+        let validDaysCount = 0;
 
         let curGlosaStart = null;
         let curGlosaStatus = null;
@@ -1021,48 +1021,9 @@
             status = 'GLOSA_CONCOMITANTE';
           }
 
-          // Only count this day if not yet globally accounted (avoid double counting)
-          const alreadyAccountedGlobally = globalAccountedDays.has(timeKey);
-
-          if (!alreadyAccountedGlobally) {
-            // This day is unique to this contract in the global ledger
-            uniqueGrossDays++;
+          if (status === 'VALID') {
             globalAccountedDays.add(timeKey);
-
-            if (status === 'VALID') {
-              validDaysForThisCtc++;
-              if (curGlosaStatus && curGlosaStart && prevTime) {
-                const segEnd = new Date(prevTime);
-                glosasDetail.push({
-                  start: curGlosaStart,
-                  end: segEnd,
-                  days: daysBetween(curGlosaStart, segEnd),
-                  type: curGlosaStatus,
-                  motivo: ctc.afastMotivo
-                });
-                curGlosaStatus = null;
-                curGlosaStart = null;
-              }
-            } else {
-              if (!curGlosaStatus) {
-                curGlosaStatus = status;
-                curGlosaStart = new Date(curTime.getTime());
-              } else if (status !== curGlosaStatus) {
-                const segEnd = new Date(prevTime);
-                glosasDetail.push({
-                  start: curGlosaStart,
-                  end: segEnd,
-                  days: daysBetween(curGlosaStart, segEnd),
-                  type: curGlosaStatus,
-                  motivo: ctc.afastMotivo
-                });
-                curGlosaStatus = status;
-                curGlosaStart = new Date(curTime.getTime());
-              }
-            }
-          } else {
-            // Day already counted in a previous contract (concomitant overlap)
-            // Close any open glosa segment before skipping
+            validDaysCount++;
             if (curGlosaStatus && curGlosaStart && prevTime) {
               const segEnd = new Date(prevTime);
               glosasDetail.push({
@@ -1074,6 +1035,22 @@
               });
               curGlosaStatus = null;
               curGlosaStart = null;
+            }
+          } else {
+            if (!curGlosaStatus) {
+              curGlosaStatus = status;
+              curGlosaStart = new Date(curTime.getTime());
+            } else if (status !== curGlosaStatus) {
+              const segEnd = new Date(prevTime);
+              glosasDetail.push({
+                start: curGlosaStart,
+                end: segEnd,
+                days: daysBetween(curGlosaStart, segEnd),
+                type: curGlosaStatus,
+                motivo: ctc.afastMotivo
+              });
+              curGlosaStatus = status;
+              curGlosaStart = new Date(curTime.getTime());
             }
           }
 
@@ -1101,12 +1078,6 @@
             type: 'GLOSA_AFASTAMENTO',
             motivo: ctc.afastMotivo
           });
-          validDaysForThisCtc = Math.max(0, validDaysForThisCtc - ctc.afastDays);
-        }
-
-        const finalGrossForThisCtc = ctc.manualGross || uniqueGrossDays;
-        if (ctc.manualGross && ctc.manualGross !== uniqueGrossDays) {
-          uniqueGrossDays = ctc.manualGross;
         }
 
         let totalCtcGlosas = 0;
@@ -1118,14 +1089,14 @@
           else if (g.type === 'GLOSA_AFASTAMENTO') grandTotalGlosaAfastamento += g.days;
         });
 
-        // Recalculate liquid based on manual gross if set
-        if (ctc.manualGross) {
-          validDaysForThisCtc = Math.max(0, ctc.manualGross - totalCtcGlosas);
+        let liquidDaysThisCtc = Math.max(0, grossDaysThisCtc - totalCtcGlosas);
+        if (validDaysCount === 0) {
+          liquidDaysThisCtc = 0;
         }
 
-        grandTotalGross += uniqueGrossDays;
+        grandTotalGross += grossDaysThisCtc;
         grandTotalGlosas += totalCtcGlosas;
-        grandTotalLiquid += validDaysForThisCtc;
+        grandTotalLiquid += liquidDaysThisCtc;
 
         ctcBreakdownList.push({
           org: ctc.org || `Vínculo #${ctcIdx + 1}`,
@@ -1134,11 +1105,12 @@
           rawStart: ctc.rawStart || ctc.start,
           rawEnd: ctc.rawEnd || ctc.end,
           hasCustomAproveitado: ctc.hasCustomAproveitado,
-          grossDays: uniqueGrossDays,
+          grossDays: grossDaysThisCtc,
           grossDaysRaw: daysBetween(ctc.rawStart || ctc.start, ctc.rawEnd || ctc.end),
           glosas: glosasDetail,
           totalGlosas: totalCtcGlosas,
-          liquidDays: validDaysForThisCtc
+          liquidDays: liquidDaysThisCtc,
+          inssInfo: ctc.inssInfo
         });
       });
 
