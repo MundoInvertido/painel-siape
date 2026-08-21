@@ -843,6 +843,9 @@
 
       let grandTotalGross = 0;
       let grandTotalGlosas = 0;
+      let grandTotalGlosaSiape = 0;
+      let grandTotalGlosaPrf = 0;
+      let grandTotalGlosaConcomitante = 0;
       let grandTotalLiquid = 0;
 
       // Track globally which days have already been accounted for in any contract
@@ -939,7 +942,13 @@
         }
 
         let totalCtcGlosas = 0;
-        glosasDetail.forEach(g => totalCtcGlosas += g.days);
+        glosasDetail.forEach(g => {
+          totalCtcGlosas += g.days;
+          if (g.type === 'GLOSA_SIAPE') grandTotalGlosaSiape += g.days;
+          else if (g.type === 'GLOSA_PRF') grandTotalGlosaPrf += g.days;
+          else if (g.type === 'GLOSA_CONCOMITANTE') grandTotalGlosaConcomitante += g.days;
+        });
+
         grandTotalGross += uniqueGrossDays;
         grandTotalGlosas += totalCtcGlosas;
         grandTotalLiquid += validDaysForThisCtc;
@@ -1021,9 +1030,15 @@
       document.getElementById('kpi-liquid-days').innerHTML = `${grandTotalLiquid} <span class="text-lg font-normal text-emerald-100">dias</span>`;
       document.getElementById('kpi-liquid-text').innerText = `Equivale a aproximadamente ${daysToExtenso(grandTotalLiquid)}`;
       document.getElementById('kpi-gross-days').innerText = `${grandTotalGross} dias`;
-      document.getElementById('kpi-glosa-siape').innerText = `${grandTotalGlosas} dias`;
-      document.getElementById('kpi-glosa-prf').innerText = `${grandTotalGlosas} dias`;
-      document.getElementById('kpi-formula-text').innerText = `${grandTotalGross} - ${grandTotalGlosas} = ${grandTotalLiquid} dias`;
+      document.getElementById('kpi-glosa-siape').innerText = `${grandTotalGlosaSiape} dias`;
+      document.getElementById('kpi-glosa-prf').innerText = `${grandTotalGlosaPrf} dias`;
+      
+      let formulaStr = `${grandTotalGross}`;
+      if (grandTotalGlosaSiape > 0) formulaStr += ` - ${grandTotalGlosaSiape}`;
+      if (grandTotalGlosaPrf > 0) formulaStr += ` - ${grandTotalGlosaPrf}`;
+      if (grandTotalGlosaConcomitante > 0) formulaStr += ` - ${grandTotalGlosaConcomitante}`;
+      formulaStr += ` = ${grandTotalLiquid} dias`;
+      document.getElementById('kpi-formula-text').innerText = formulaStr;
 
       // Update Report Header Data
       document.getElementById('rpt-nome').innerText = nome;
@@ -1035,11 +1050,11 @@
 
       // Update Report KPI Cards
       document.getElementById('rpt-kpi-gross').innerHTML = `${grandTotalGross} <span class="text-xs font-normal text-slate-500">dias</span>`;
-      document.getElementById('rpt-kpi-siape').innerHTML = `${grandTotalGlosas} <span class="text-xs font-normal text-slate-500">dias</span>`;
-      document.getElementById('rpt-kpi-prf').innerHTML = `${grandTotalGlosas} <span class="text-xs font-normal text-slate-500">dias</span>`;
+      document.getElementById('rpt-kpi-siape').innerHTML = `${grandTotalGlosaSiape} <span class="text-xs font-normal text-slate-500">dias</span>`;
+      document.getElementById('rpt-kpi-prf').innerHTML = `${grandTotalGlosaPrf} <span class="text-xs font-normal text-slate-500">dias</span>`;
       document.getElementById('rpt-kpi-liquid').innerHTML = `${grandTotalLiquid} <span class="text-xs sm:text-sm font-normal text-emerald-100">dias</span>`;
       document.getElementById('rpt-kpi-liquid-ext').innerText = `Equivale a ${daysToExtenso(grandTotalLiquid)}`;
-      document.getElementById('rpt-formula-badge').innerText = `Fórmula: $${grandTotalGross} - ${grandTotalGlosas} = ${grandTotalLiquid}$ dias`;
+      document.getElementById('rpt-formula-badge').innerText = `Fórmula: ${formulaStr}`;
 
       // Render Sub-segments Table (Intuitive Accounting Format with Positive (+) and Negative (-) breakdown)
       const tbody = document.getElementById('rpt-table-body');
