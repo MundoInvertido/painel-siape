@@ -5481,14 +5481,37 @@ matches:
     async function cloudGet() {
       const method = localStorage.getItem("sync_method") || "gist";
       if (method === "gist") {
-        const token = localStorage.getItem("github_token") || DEFAULT_GITHUB_TOKEN;
         let gistId = localStorage.getItem("github_gist_id_unified") ||
           localStorage.getItem("github_gist_id") ||
           localStorage.getItem("github_gist_id_procedures") || DEFAULT_GIST_ID;
         if (!gistId || gistId.length < 20) gistId = DEFAULT_GIST_ID;
 
         try {
-          // 1. Tenta API do GitHub primeiro para dados em tempo real (sem cache de CDN)
+          // 1. Tenta buscar o arquivo completo via URL Raw com no-cache
+          // Isso evita o limite de 1MB da API do GitHub e evita erros CORS com headers de Auth.
+          let rawUrl = `https://gist.githubusercontent.com/raw/${gistId}/siape_unified_data.json?t=${Date.now()}`;
+          let res = await fetch(rawUrl, { cache: "no-store" });
+          if (res.ok) {
+            const data = await res.json();
+            if (data && (data.procedures || data.agendamentos || data.yaml || data.kanban || data.links)) {
+              return data;
+            }
+          }
+
+          // Fallback para Gist ID padrao se o ID customizado falhar
+          if (gistId !== DEFAULT_GIST_ID) {
+            rawUrl = `https://gist.githubusercontent.com/raw/${DEFAULT_GIST_ID}/siape_unified_data.json?t=${Date.now()}`;
+            res = await fetch(rawUrl, { cache: "no-store" });
+            if (res.ok) {
+              const data = await res.json();
+              if (data && (data.procedures || data.agendamentos || data.yaml || data.kanban || data.links)) {
+                return data;
+              }
+            }
+          }
+
+          // 2. Fallback para API do GitHub (caso rawUrl falhe)
+          const token = localStorage.getItem("github_token") || DEFAULT_GITHUB_TOKEN;
           const headers = {};
           if (token) headers["Authorization"] = `Bearer ${token}`;
           const apiRes = await fetch(`https://api.github.com/gists/${gistId}`, {
@@ -5496,37 +5519,19 @@ matches:
             cache: "no-store"
           });
           if (apiRes.ok) {
-            const data = await apiRes.json();
-            const fileInfo = data.files && data.files["siape_unified_data.json"];
+            const gistData = await apiRes.json();
+            const fileInfo = gistData.files && gistData.files["siape_unified_data.json"];
             if (fileInfo) {
-              // A API do GitHub trunca arquivos >1MB no campo "content".
-              // Quando truncated=true, usamos o raw_url retornado pela API para buscar o conteúdo completo.
-              if (fileInfo.truncated && fileInfo.raw_url) {
-                console.warn("Arquivo do Gist truncado (>1MB). Buscando conteúdo completo via raw_url...");
-                const rawHeaders = {};
-                if (token) rawHeaders["Authorization"] = `Bearer ${token}`;
-                const rawRes = await fetch(fileInfo.raw_url, { headers: rawHeaders, cache: "no-store" });
+              if (fileInfo.raw_url) {
+                // Sem header Authorization no raw_url para evitar erro CORS
+                const rawRes = await fetch(fileInfo.raw_url, { cache: "no-store" });
                 if (rawRes.ok) {
                   return await rawRes.json();
                 }
-              } else {
+              }
+              if (fileInfo.content && !fileInfo.truncated) {
                 return JSON.parse(fileInfo.content);
               }
-            }
-          }
-
-          // 2. Fallback para URL raw do Gist com cache: "no-store"
-          let rawUrl = `https://gist.githubusercontent.com/raw/${gistId}/siape_unified_data.json?t=${Date.now()}`;
-          let res = await fetch(rawUrl, { cache: "no-store" });
-          if (res.ok) {
-            return await res.json();
-          }
-
-          if (gistId !== DEFAULT_GIST_ID) {
-            rawUrl = `https://gist.githubusercontent.com/raw/${DEFAULT_GIST_ID}/siape_unified_data.json?t=${Date.now()}`;
-            res = await fetch(rawUrl, { cache: "no-store" });
-            if (res.ok) {
-              return await res.json();
             }
           }
         } catch (e) {
@@ -5537,9 +5542,7 @@ matches:
         if (!syncKey) return null;
         try {
           const res = await fetch(`https://jsonblob.com/api/jsonBlob/${syncKey}`);
-          if (res.ok) {
-            return await res.json();
-          }
+          if (res.ok) return await res.json();
         } catch (e) {
           console.warn("Erro ao ler do JSONBlob:", e);
         }

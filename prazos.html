@@ -1343,12 +1343,29 @@
 
     // Cloud Sync
     async function cloudGet() {
-      const token = localStorage.getItem("github_token") || DEFAULT_GITHUB_TOKEN;
       let gistId = localStorage.getItem("github_gist_id_unified") || localStorage.getItem("github_gist_id_procedures") || localStorage.getItem("github_gist_id") || SITE_GIST_ID;
-
       if (!gistId || gistId.length < 20) gistId = DEFAULT_GIST_ID;
 
       try {
+        // 1. Tenta buscar via URL Raw primeiro (evita erros CORS e limites de 1MB)
+        let rawUrl = `https://gist.githubusercontent.com/raw/${gistId}/siape_unified_data.json?t=${Date.now()}`;
+        let res = await fetch(rawUrl, { cache: "no-store" });
+        if (res.ok) {
+          const data = await res.json();
+          if (data && (data.procedures || data.agendamentos || data.yaml || data.kanban)) return data;
+        }
+
+        if (gistId !== DEFAULT_GIST_ID) {
+          rawUrl = `https://gist.githubusercontent.com/raw/${DEFAULT_GIST_ID}/siape_unified_data.json?t=${Date.now()}`;
+          res = await fetch(rawUrl, { cache: "no-store" });
+          if (res.ok) {
+            const data = await res.json();
+            if (data && (data.procedures || data.agendamentos || data.yaml || data.kanban)) return data;
+          }
+        }
+
+        // 2. Fallback para API do GitHub
+        const token = localStorage.getItem("github_token") || DEFAULT_GITHUB_TOKEN;
         const headers = {};
         if (token) headers["Authorization"] = `Bearer ${token}`;
         const apiRes = await fetch(`https://api.github.com/gists/${gistId}`, {
@@ -1358,14 +1375,17 @@
 
         if (apiRes.ok) {
           const gistData = await apiRes.json();
-          if (gistData.files && gistData.files["siape_unified_data.json"]) {
-            return JSON.parse(gistData.files["siape_unified_data.json"].content);
+          const fileInfo = gistData.files && gistData.files["siape_unified_data.json"];
+          if (fileInfo) {
+            if (fileInfo.raw_url) {
+              const rawRes = await fetch(fileInfo.raw_url, { cache: "no-store" });
+              if (rawRes.ok) return await rawRes.json();
+            }
+            if (fileInfo.content && !fileInfo.truncated) {
+              return JSON.parse(fileInfo.content);
+            }
           }
         }
-
-        let rawUrl = `https://gist.githubusercontent.com/raw/${gistId}/siape_unified_data.json?t=${Date.now()}`;
-        let res = await fetch(rawUrl, { cache: "no-store" });
-        if (res.ok) return await res.json();
       } catch (e) {
         console.warn("Erro ao ler do Gist:", e);
       }

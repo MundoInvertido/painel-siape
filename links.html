@@ -1164,18 +1164,42 @@
 
     // Nuvem Gist Sync
     async function cloudGetLinks() {
-      const token = localStorage.getItem("github_token") || DEFAULT_GITHUB_TOKEN;
-      const gistId = localStorage.getItem("github_gist_id_unified") || DEFAULT_GIST_ID;
+      let gistId = localStorage.getItem("github_gist_id_unified") || DEFAULT_GIST_ID;
+      if (!gistId || gistId.length < 20) gistId = DEFAULT_GIST_ID;
+
       try {
-        const res = await fetch(`https://api.github.com/gists/${gistId}`, {
-          headers: { "Authorization": `Bearer ${token}` }
-        });
+        let rawUrl = `https://gist.githubusercontent.com/raw/${gistId}/siape_unified_data.json?t=${Date.now()}`;
+        let res = await fetch(rawUrl, { cache: "no-store" });
         if (res.ok) {
-          const gist = await res.json();
-          if (gist.files && gist.files["siape_unified_data.json"]) {
-            const parsed = JSON.parse(gist.files["siape_unified_data.json"].content);
-            if (parsed && Array.isArray(parsed.links) && parsed.links.length > 0) {
-              LINKS = parsed.links;
+          const parsed = await res.json();
+          if (parsed && Array.isArray(parsed.links) && parsed.links.length > 0) {
+            LINKS = parsed.links;
+            localStorage.setItem("sgp_nuap_links", JSON.stringify(LINKS));
+            renderCategoryPills();
+            renderLinks();
+            return;
+          }
+        }
+
+        const token = localStorage.getItem("github_token") || DEFAULT_GITHUB_TOKEN;
+        const apiRes = await fetch(`https://api.github.com/gists/${gistId}`, {
+          headers: { "Authorization": `Bearer ${token}` },
+          cache: "no-store"
+        });
+        if (apiRes.ok) {
+          const gist = await apiRes.json();
+          const fileInfo = gist.files && gist.files["siape_unified_data.json"];
+          if (fileInfo) {
+            let data = null;
+            if (fileInfo.raw_url) {
+              const rawRes = await fetch(fileInfo.raw_url, { cache: "no-store" });
+              if (rawRes.ok) data = await rawRes.json();
+            }
+            if (!data && fileInfo.content && !fileInfo.truncated) {
+              data = JSON.parse(fileInfo.content);
+            }
+            if (data && Array.isArray(data.links) && data.links.length > 0) {
+              LINKS = data.links;
               localStorage.setItem("sgp_nuap_links", JSON.stringify(LINKS));
               renderCategoryPills();
               renderLinks();
@@ -1190,26 +1214,8 @@
     // ⬇️ BAIXAR: Puxa os links da nuvem e aplica localmente
     async function syncDownloadLinks() {
       try {
-        const token = localStorage.getItem("github_token") || DEFAULT_GITHUB_TOKEN;
-        const gistId = localStorage.getItem("github_gist_id_unified") || DEFAULT_GIST_ID;
-        const res = await fetch(`https://api.github.com/gists/${gistId}`, {
-          headers: { "Authorization": `Bearer ${token}` }
-        });
-        if (res.ok) {
-          const gist = await res.json();
-          if (gist.files && gist.files["siape_unified_data.json"]) {
-            const parsed = JSON.parse(gist.files["siape_unified_data.json"].content);
-            if (parsed && Array.isArray(parsed.links) && parsed.links.length > 0) {
-              LINKS = parsed.links;
-              localStorage.setItem("sgp_nuap_links", JSON.stringify(LINKS));
-              renderCategoryPills();
-              renderLinks();
-              showToast("⬇️ Links baixados da nuvem com sucesso!");
-              return;
-            }
-          }
-        }
-        showToast("ℹ️ Nenhum link encontrado na nuvem.");
+        await cloudGetLinks();
+        showToast("⬇️ Links sincronizados com a nuvem!");
       } catch (e) {
         console.error("Erro ao baixar links da nuvem:", e);
         showToast("❌ Erro ao conectar com a nuvem.");
